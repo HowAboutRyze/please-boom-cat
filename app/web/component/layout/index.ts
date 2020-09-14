@@ -7,9 +7,9 @@ import Index from './index.vue';
   }
 })
 export default class Layout extends Vue {
-  @Prop({ type: String, default: 'egg' }) title?: string;
-  @Prop({ type: String, default: 'Vue TypeScript Framework, Server Side Render' }) description?: string;
-  @Prop({ type: String, default: 'Vue,TypeScript,Isomorphic' }) keywords?: string;
+  @Prop({ type: String, default: 'Please Boom' }) title?: string;
+  @Prop({ type: String, default: 'Boom cat' }) description?: string;
+  @Prop({ type: String, default: 'boom, cat' }) keywords?: string;
 
   isNode: boolean = EASY_ENV_IS_NODE;
 

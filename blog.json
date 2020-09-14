@@ -1,5 +1,13 @@
 {
-  "user": {},
+  "user": [
+    {
+      "id": 123,
+      "avatar": "http://abc.com/头像.png",
+      "name": "我啊",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
+    }
+  ],
   "article": [
     {
       "id": 946940,

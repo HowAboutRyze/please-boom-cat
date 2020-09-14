@@ -9,7 +9,16 @@
       "dom",
       "es2017",
       "esnext"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@asset/*": ["asset/*"],
+      "@component/*": ["component/*"],
+      "@framework/*": ["framework/*"],
+      "@store/*": ["page/home/store/*"],
+      "@router/*": ["page/home/router/*"],
+      "@view/*": ["page/home/view/*"]
+    }
   },
   "include": [
     "./**/*.ts",
