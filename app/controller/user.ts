@@ -6,6 +6,6 @@ export default class AdminController extends Controller {
 
   public async getUserById(ctx: Context) {
     const { id } = ctx.params;
-    ctx.body = await ctx.service.user.query({ id: Number(id) });
+    ctx.body = await ctx.service.user.query({ userId: id });
   }
 }

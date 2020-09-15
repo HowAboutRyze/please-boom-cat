@@ -37,5 +37,15 @@ export default (appInfo: EggAppConfig) => {
     'global'
   ];
 
+  config.io = {
+    init: { }, // passed to engine.io
+    namespace: {
+      '/': {
+        connectionMiddleware: ['connection'],
+        packetMiddleware: [],
+      }
+    },
+  };
+
   return config;
 };

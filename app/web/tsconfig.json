@@ -17,7 +17,8 @@
       "@framework/*": ["framework/*"],
       "@store/*": ["page/home/store/*"],
       "@router/*": ["page/home/router/*"],
-      "@view/*": ["page/home/view/*"]
+      "@view/*": ["page/home/view/*"],
+      "@lib/*": ["lib/*"]
     }
   },
   "include": [

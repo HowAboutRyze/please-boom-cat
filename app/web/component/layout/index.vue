@@ -7,6 +7,7 @@
       <meta http-equiv="content-type" content="text/html;charset=utf-8">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+      <template v-html="socketIoScript"></template>
     </head>
     <body>
       <div id="app"><slot></slot></div>    
