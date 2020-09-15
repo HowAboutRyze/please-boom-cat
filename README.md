@@ -1,4 +1,6 @@
-# egg-vue-typescript-boilerplate
+# please-boom-cat
+
+一个爆炸猫游戏
 
 基于 Egg + Vue + Webpack SSR 服务端渲染和 CSR 前端渲染工程骨架项目。
 
@@ -16,8 +18,6 @@ Single Page Application Isomorphic Example for Egg + Vue, Front-End and Node of 
 - Development
 
 ```bash
-$ npm install -g easywebpack-cli
-$ easy init
 $ npm install
 $ npm run dev
 $ open http://localhost:7001
