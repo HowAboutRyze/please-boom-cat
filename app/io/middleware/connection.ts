@@ -15,5 +15,9 @@ export default () => {
       id,
       msg: 'I got you'
     });
+
+    await next();
+
+    socketServer.onSocketDisconnect(socket);
   };
 };

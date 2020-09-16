@@ -19,6 +19,16 @@ export default class SocketServer {
     this.addUser(user);
   }
 
+  public onSocketDisconnect(socket) {
+    const { id } = socket;
+    const index = this.userList.findIndex(u => u.socketId === id);
+    if (index !== -1) {
+      this.userList.splice(index, 1);
+    }
+    delete this.userHash[id];
+    console.log('>>>>> disconnect', this.userList);
+  }
+
   public addUser(user: User) {
     const { socketId } = user;
     let userInfo = this.getUserBySocket(socketId);
