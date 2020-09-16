@@ -1,3 +1,5 @@
+import { PlainObject } from 'egg';
+
 interface UserHash {
   [key: string]: User;
 }
@@ -12,8 +14,8 @@ export default class SocketServer {
   }
 
 
-  public onGetUserInfo(socketId, userInfo) {
-    const user = new User({ ...userInfo, socketId });
+  public onGetUserInfo(socket, userInfo) {
+    const user = new User({ ...userInfo, socket });
     this.addUser(user);
   }
 
@@ -28,6 +30,7 @@ export default class SocketServer {
     }
     this.userList.push(user);
     this.userHash[socketId] = user;
+    console.log('>>>>>> userlist:', this.userList);
   }
 
   public getUserBySocket(socketId) {
@@ -36,14 +39,16 @@ export default class SocketServer {
 }
 
 class User {
+  public socket: PlainObject;
   public userId: string;
   public socketId: string;
   public avatar: string;
   public nickName: string;
-  constructor(options) {
-    this.userId = options.userId || '';
-    this.socketId = options.socketId || '';
-    this.avatar = options.avatar || '';
-    this.nickName = options.nickName || '';
+  constructor({ socket, userId = '', avatar = '', nickName = '' }) {
+    this.socket = socket;
+    this.userId = userId;
+    this.socketId = socket.id || '';
+    this.avatar = avatar;
+    this.nickName = nickName;
   }
 }

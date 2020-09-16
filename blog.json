@@ -6,32 +6,41 @@
       "nickName": "我啊",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
-    }
-  ],
-  "article": [
-    {
-      "id": 946940,
-      "space": "egg-vue",
-      "slug": "learn",
-      "url": "https://easyjs.cn/egg-vue/learn",
-      "title": "Egg + Vue 工程化方案- 工程介绍",
-      "summary": "Egg Vue 工程解决方案特性支持Node 端基于 Egg 开发，遵循 Egg 开发规范和 Egg 生态，支持 Egg 所有特性，比如插件机制，多进程机制。使用 TypeScript 或 JavaScript 编写前端和Node端代码，支持 ts-node 无编译 和 Webpack 编译开...",
-      "coverImage": null,
-      "createTime": "2019-11-30T06:48:54.000Z",
-      "updateTime": "2019-11-30T06:48:54.000Z",
-      "wordCount": 2152
     },
     {
-      "id": 685667,
-      "space": "egg-vue",
-      "slug": "init",
-      "url": "https://easyjs.cn/egg-vue/init",
-      "title": "Egg + Vue 工程化方案 - 快速开始",
-      "summary": "基于 Egg + Vue + Webpack 服务端渲染开发指南1. 项目初始化1.1 easywebpack-cli 脚手架初始化项目安装脚手架 npm install easywebpack-cli -g 命令行，然后就可以使用 easywebpack 或 easy 命令命令行运行 eas...",
-      "coverImage": null,
-      "createTime": "2019-03-01T08:48:05.000Z",
-      "updateTime": "2019-10-18T02:12:11.000Z",
-      "wordCount": 2712
+      "userId": "234",
+      "avatar": "http://abc.com/头像.png",
+      "nickName": "你啊",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
+    },
+    {
+      "userId": "345",
+      "avatar": "http://abc.com/头像.png",
+      "nickName": "他啊",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
+    },
+    {
+      "userId": "456",
+      "avatar": "http://abc.com/头像.png",
+      "nickName": "nick",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
+    },
+    {
+      "userId": "678",
+      "avatar": "http://abc.com/头像.png",
+      "nickName": "huck",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
+    },
+    {
+      "userId": "789",
+      "avatar": "http://abc.com/头像.png",
+      "nickName": "lack",
+      "createTime": "2019-11-30T06:48:54.000Z",
+      "updateTime": "2019-11-30T06:48:54.000Z"
     }
   ]
 }

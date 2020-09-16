@@ -1,5 +1,5 @@
 import { Vue, Component, Emit } from 'vue-property-decorator';
-import { State } from 'vuex-class';
+import { State, Action } from 'vuex-class';
 import axios from 'axios';
 import socket from '@lib/socket';
 
@@ -9,11 +9,15 @@ export default class Home extends Vue {
 
   @State(state => state.origin) origin;
 
+  @State(state => state.user.user) user;
+
+  @Action('getUser') getUser;
+
   async login() {
-    const res = await axios.get(`${this.origin}/api/user/${this.account}`);
-    console.log('>>>>>login:', res, this.$socket);
+    await this.getUser({ id: this.account });
+    console.log('>>>>>login:', this.user, this.$socket);
     if (!this.$socket) {
-      socket.connect(res.data);
+      socket.connect(this.user);
     }
   }
 }

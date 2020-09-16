@@ -9,9 +9,9 @@ db._.mixin({
     });
   }
 })
-const result = db.get('article')
+const result = db.get('user')
   .filter(item => {
-    return item.title && item.title.indexOf('webpack')>-1;
+    return item.userId && item.userId.indexOf('3')>-1;
   })
   .value();
 

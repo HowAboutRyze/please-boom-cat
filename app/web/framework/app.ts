@@ -46,7 +46,6 @@ export default class App {
   }
 
   client() {
-    Vue.prototype.$http = require('axios');
     const vm = this.create(window.__INITIAL_STATE__);
     vm.router.afterEach(() => {
       this.fetch(vm);

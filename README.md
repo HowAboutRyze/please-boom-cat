@@ -2,16 +2,7 @@
 
 一个爆炸猫游戏
 
-基于 Egg + Vue + Webpack SSR 服务端渲染和 CSR 前端渲染工程骨架项目。
-
-Single Page Application Isomorphic Example for Egg + Vue, Front-End and Node of The Application are Written in TypeScript.
-
-## Document
-
-- https://www.yuque.com/easy-team/egg-vue
-- https://www.yuque.com/easy-team/easywebpack
-- https://easyjs.cn
-
+基于 Egg + Vue + socket.io + Webpack SSR 服务端渲染和 CSR 前端渲染工程骨架项目。
 
 ## QuickStart
 
@@ -23,6 +14,8 @@ $ npm run dev
 $ open http://localhost:7001
 ```
 
+> 开发过程中多次启动应用，可能会导致 7001 端口进程未关闭，影响开发，可以使用 `npm run kill 7001` 干掉端口进程
+
 - Publish
 
 ```bash
@@ -31,11 +24,11 @@ npm run build
 npm start
 ```
 
-## Features
+## 参考技术文档
 
-- ✔︎ Single Page Application, Support Vue Server Side Render and Client Side Render Modes, Rendering Cache, Automatic Downgrade
-- ✔︎ Front-End and Node of The Application are Written in TypeScript, Use `vue-property-decorator` and `vuex-class`
-- ✔︎ Build with Webpack + TypeScript, Auto Building, Hot Reload, Code Splitting, High Speed, Performance Optimization
+- https://www.yuque.com/easy-team/egg-vue
+- https://www.yuque.com/easy-team/easywebpack
+- https://easyjs.cn
 
 ## Rendering
 
@@ -46,10 +39,6 @@ npm start
 - Node TypeScript
 
 ![Node TypeScript](https://github.com/easy-team/egg-vue-typescript-boilerplate/blob/master/docs/images/vue-node.png?raw=true)
-
-- UI ScreenShot
-
-![UI ScreenShot](https://github.com/easy-team/egg-vue-typescript-boilerplate/blob/master/docs/images/vue-admin-ui.png?raw=true)
 
 ## TypeScript
 

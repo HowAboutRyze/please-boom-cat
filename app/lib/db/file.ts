@@ -15,7 +15,7 @@ export default class FileDB extends BaseDB {
   }
 
   public create() {
-    this.instance.defaults({ article: [], user: {} }).write();
+    this.instance.defaults({ user: [] }).write();
   }
 
   public get(collectionName: string) {
