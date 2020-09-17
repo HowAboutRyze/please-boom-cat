@@ -12,6 +12,10 @@
       style="width: 100%;margin-bottom: 18px"
       @click="login"
     >登录</button>
+    <div class="user-info">
+      <p>昵称：{{user.nickName}}</p>
+      <p>头像链接：{{user.avatar}}</p>
+    </div>
   </div>
 </template>
 <style>

@@ -2,9 +2,13 @@ import { Vue, Component, Emit } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import socket from '@lib/socket';
 
+// 假数据，先顶上
+const mockUserAccounts = ['123', '234', '345', '456', '456'];
+const userAcount = mockUserAccounts[Math.floor(Math.random() * mockUserAccounts.length)];
+
 @Component
 export default class Home extends Vue {
-  account: string = '123';
+  account: string = userAcount;
 
   @State(state => state.origin) origin;
 

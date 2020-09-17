@@ -3,35 +3,35 @@
     {
       "userId": "123",
       "avatar": "http://abc.com/头像.png",
-      "nickName": "我啊",
+      "nickName": "李大大",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
     },
     {
       "userId": "234",
       "avatar": "http://abc.com/头像.png",
-      "nickName": "你啊",
+      "nickName": "小涛子",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
     },
     {
       "userId": "345",
       "avatar": "http://abc.com/头像.png",
-      "nickName": "他啊",
+      "nickName": "小海子",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
     },
     {
       "userId": "456",
       "avatar": "http://abc.com/头像.png",
-      "nickName": "nick",
+      "nickName": "小洪子",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
     },
     {
       "userId": "678",
       "avatar": "http://abc.com/头像.png",
-      "nickName": "huck",
+      "nickName": "小菊子",
       "createTime": "2019-11-30T06:48:54.000Z",
       "updateTime": "2019-11-30T06:48:54.000Z"
     },
