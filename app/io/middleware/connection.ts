@@ -1,6 +1,7 @@
 
 export default () => {
   return async (ctx, next) => {
+    // 刚连接上
     const { app, socket, helper } = ctx;
     const { socketServer } = app;
     const query = socket.handshake.query;
@@ -18,6 +19,7 @@ export default () => {
 
     await next();
 
+    // 断开连接
     socketServer.onSocketDisconnect(socket);
   };
 };

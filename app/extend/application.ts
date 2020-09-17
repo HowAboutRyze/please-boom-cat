@@ -9,6 +9,9 @@ export default {
   get db(): DB {
     return DBFactory();
   },
+  /**
+   * 挂载到 this.app 下的 socket server
+   */
   get socketServer(): SocketServer {
     if (!this[SocketServerSymbol]) {
       this[SocketServerSymbol] = new SocketServer(this);

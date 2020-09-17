@@ -1,6 +1,5 @@
 import { Vue, Component, Emit } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
-import axios from 'axios';
 import socket from '@lib/socket';
 
 @Component
@@ -16,6 +15,8 @@ export default class Home extends Vue {
   async login() {
     await this.getUser({ id: this.account });
     console.log('>>>>>login:', this.user, this.$socket);
+    // 登录成功后连接 websocket
+    // TODO：改为点击 开始匹配 按钮再连接 websocket 好一点？
     if (!this.$socket) {
       socket.connect(this.user);
     }
