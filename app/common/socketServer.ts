@@ -8,9 +8,12 @@ export default class SocketServer {
   public userList: Array<User> = [];
   public userHash: UserHash = {};
   public app: any;
+  public config: PlainObject;
 
   constructor(app) {
     this.app = app;
+    // 先占个位
+    this.config = app.config.socketServer;
   }
 
 

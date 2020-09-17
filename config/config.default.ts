@@ -47,5 +47,8 @@ export default (appInfo: EggAppConfig) => {
     },
   };
 
+  // socket server 的配置
+  config.socketServer = {};
+
   return config;
 };

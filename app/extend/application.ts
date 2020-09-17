@@ -1,3 +1,5 @@
+'use strict';
+
 import { Application } from 'egg';
 import DB from '../lib/db/base';
 import DBFactory from '../lib/db/factory';
