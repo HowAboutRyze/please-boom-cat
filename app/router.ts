@@ -6,8 +6,9 @@ export default (application: Application) => {
 
   // 用户信息
   router.get('/api/user/:id', controller.user.getUserById);
-  router.get('/api/user/save', controller.user.saveUser);
+  router.post('/api/user/save', controller.user.saveUser);
 
   // 页面相关
   router.get('/', controller.home.game);
+  router.get('/*', controller.home.game);
 };

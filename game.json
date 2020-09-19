@@ -1,0 +1,39 @@
+{
+  "user": [
+    {
+      "id": "XgaD-4aPt",
+      "userId": "123",
+      "avatar": "/public/images/lidada.gif",
+      "nickName": "李大大",
+      "createTime": 1600486294606
+    },
+    {
+      "id": "bzwVnzsRy",
+      "userId": "234",
+      "avatar": "https://gw.alicdn.com/tps/TB1W_X6OXXXXXcZXVXXXXXXXXXX-400-400.png",
+      "nickName": "小涛子",
+      "createTime": 1600486570609
+    },
+    {
+      "id": "N6MbU2Xgz",
+      "userId": "345",
+      "avatar": "https://gw.alicdn.com/tps/TB1W_X6OXXXXXcZXVXXXXXXXXXX-400-400.png",
+      "nickName": "小海子",
+      "createTime": 1600486602400
+    },
+    {
+      "id": "MJzxj4l_C",
+      "userId": "456",
+      "avatar": "https://gw.alicdn.com/tps/TB1W_X6OXXXXXcZXVXXXXXXXXXX-400-400.png",
+      "nickName": "小洪子",
+      "createTime": 1600486613860
+    },
+    {
+      "id": "w_lc3mN08",
+      "userId": "678",
+      "avatar": "https://gw.alicdn.com/tps/TB1W_X6OXXXXXcZXVXXXXXXXXXX-400-400.png",
+      "nickName": "小菊子",
+      "createTime": 1600486625245
+    }
+  ]
+}

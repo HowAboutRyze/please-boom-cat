@@ -6,7 +6,7 @@ import { PlainObject } from 'egg';
 export default class DB {
   public instance: any;
   public name: string;
-  constructor(name: string = 'blog.json') {
+  constructor(name: string = 'game.json') {
     this.name = name;
   }
 

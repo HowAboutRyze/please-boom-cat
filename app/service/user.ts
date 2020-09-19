@@ -15,10 +15,10 @@ export default class ArticeService extends Service {
 
   public async saveUser(data: object) {
     const user: User = deserialize(User, data);
-    if (user.userId) {
-      return this.colllection.update({ userId: user.userId }, user);
+    if (user.id) {
+      return this.colllection.update({ id: user.id }, user);
     }
-    user.userId = this.context.db.getUniqueId();
+    user.id = this.context.db.getUniqueId();
     this.colllection.add(user);
     return user;
   }
