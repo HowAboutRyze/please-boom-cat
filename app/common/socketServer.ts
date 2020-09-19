@@ -1,5 +1,6 @@
 import { PlainObject } from 'egg';
 import UserServer from './user';
+import RoomServer from './room';
 
 export default class SocketServer {
   public app: any;
@@ -14,12 +15,15 @@ export default class SocketServer {
   // TODO: 增加个房间功能
 
   /**
-   * 处理用户信息
+   * 用户连接游戏
    * @param socket 用户 websocket 实例
    * @param userInfo 用户信息 
    */
-  public onGetUserInfo(socket, userInfo) {
-    UserServer.addUser({ ...userInfo, socket });
+  public onSocketConnect(socket, userInfo) {
+    const user = UserServer.addUser({ ...userInfo, socket });
+    const room = RoomServer.findJoinableRoom();
+    user.roomId = room.id;
+    room.addPlayer(user);
   }
 
   /**
@@ -27,6 +31,17 @@ export default class SocketServer {
    * @param socket 用户 websocket 实例
    */
   public onSocketDisconnect(socket) {
+    // TODO: 断开连接就移除用户，那如果是游戏中，用户重连怎么办？
+
+    const user = UserServer.getUserBySocket(socket.id);
+    // 从房间里移除用户咯
+    if (user.roomId) {
+      const room = RoomServer.getRoomById(user.roomId);
+      room.removePlayer(user);
+      if (room.isEmpty) {
+        RoomServer.removeRoom(room.id);
+      }
+    }
     UserServer.removeUser(socket);
   }
 }

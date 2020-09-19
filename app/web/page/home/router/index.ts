@@ -28,13 +28,15 @@ export default function createRouter() {
     ]
   });
   router.beforeEach((to, from, next) => {
-    const hasLogin = _session.get(USER_ID);
-    if (to.path !== '/' && !hasLogin) {
-      // 未登录就登录咯
-      next('/');
-    } else if (to.path === '/' && hasLogin) {
-      // 登录了就去游戏页啊
-      next('/game');
+    if (!EASY_ENV_IS_NODE) {
+      const hasLogin = _session.get(USER_ID);
+      if (to.path !== '/' && !hasLogin) {
+        // 未登录就登录咯
+        next('/');
+      } else if (to.path === '/' && hasLogin) {
+        // 登录了就去游戏页啊
+        next('/game');
+      }
     }
     next();
   })

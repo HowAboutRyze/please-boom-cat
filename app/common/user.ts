@@ -11,6 +11,7 @@ class UserServer {
   /**
    * 新增用户
    * @param user 用户信息
+   * @return user
    */
   public addUser(user) {
     const newUser = new User(user);
@@ -26,6 +27,7 @@ class UserServer {
     this.userList.push(newUser);
     this.userHash[socketId] = newUser;
     console.log('>>>>>> userlist:', this.userList);
+    return newUser;
   }
 
   /**
@@ -51,12 +53,13 @@ class UserServer {
   }
 }
 
-class User {
+export class User {
   public socket: PlainObject;
   public userId: string;
   public socketId: string;
   public avatar: string;
   public nickName: string;
+  public roomId?: string;
   constructor({ socket, userId = '', avatar = '', nickName = '' }) {
     this.socket = socket;
     this.userId = userId;

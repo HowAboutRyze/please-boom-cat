@@ -9,7 +9,7 @@ export default () => {
     const id = socket.id;
 
     console.log('>>>>>>>user info', now, id, userInfo);
-    socketServer.onGetUserInfo(socket, userInfo);
+    socketServer.onSocketConnect(socket, userInfo);
 
     // 给他返回一条消息试试
     socket.emit(id, {
