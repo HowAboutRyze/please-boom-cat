@@ -24,6 +24,13 @@ npm run build
 npm start
 ```
 
+## 效率
+
+### 前端开发代码片段
+
+1. vue 文件中输入 `cvue` 然后按 tab 键即可输出组件 vue 模板
+2. ts 文件中输入 `cts` 然后按 tab 键即可输出组件 ts 模板
+
 ## 参考技术文档
 
 - https://www.yuque.com/easy-team/egg-vue

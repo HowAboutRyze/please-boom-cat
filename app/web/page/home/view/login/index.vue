@@ -50,7 +50,5 @@
 .form {
   margin-bottom: 10px;
 }
-</style>>
-
 </style>
 <script type="ts"  src="./index.ts"></script>

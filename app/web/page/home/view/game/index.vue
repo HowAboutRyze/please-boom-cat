@@ -16,7 +16,6 @@
 img {
   max-height: 100px;
 }
-</style>>
-
 </style>
+
 <script type="ts"  src="./index.ts"></script>
