@@ -1,12 +1,16 @@
 import { PlainObject } from 'egg';
 import UserServer from './user';
 import RoomServer from './room';
+import GameServer from './gameServer';
+import { IGamePlayer } from './game';
+import { START_GAMER } from '../lib/constant';
 
 export default class SocketServer {
   public app: any;
   public config: PlainObject;
   public roomServer: RoomServer;
   public userServer: UserServer;
+  public gameServer: GameServer;
 
   constructor(app) {
     this.app = app;
@@ -14,6 +18,7 @@ export default class SocketServer {
     this.config = app.config.socketServer;
     this.roomServer = new RoomServer(app.config.socketServer);
     this.userServer = new UserServer(app.config.socketServer);
+    this.gameServer = new GameServer(app.config.socketServer);
   }
 
   /**
@@ -41,11 +46,13 @@ export default class SocketServer {
     const user = this.userServer.getUserBySocket(socket.id);
     // 从房间里移除用户咯
     if (user.roomId) {
+      console.log('>>>> 临时看看');
       const room = this.roomServer.getRoomById(user.roomId);
       room.removePlayer(user);
       if (room.isEmpty) {
         this.roomServer.removeRoom(room.id);
       }
+      room.broadcast();
     }
     this.userServer.removeUser(socket);
   }
@@ -55,7 +62,10 @@ export default class SocketServer {
    * @param socket 
    */
   public addSocketListener(socket) {
-    // TODO: socket 事件监听
-    // socket.on();
+    // 开始游戏
+    socket.on(START_GAMER, data => {
+      const playerList: IGamePlayer[] = data.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false }));
+      this.gameServer.addGame({ playerList });
+    });
   }
 }

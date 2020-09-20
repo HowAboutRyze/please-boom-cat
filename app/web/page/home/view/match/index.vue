@@ -13,12 +13,16 @@
           <span>{{player.nickName}}</span>
         </li>
       </ul>
-      <p>匹配中<dot>...</dot></p>
+      <p>匹配中<em>...</em></p>
       <button
         v-if="isMater(user.userId)"
         :class="startClass"
         @click="startGame"
       >开始游戏</button>
+      <button
+        v-if="roomId"
+        @click="quitRoom"
+      >取消匹配</button>
     </div>
     <button
       v-else
@@ -38,7 +42,7 @@ img {
 .start-btn.active {
   opacity: 1;
 }
-dot {
+p > em {
   display: inline-block;
   width: 3ch;
   text-align: left;

@@ -23,16 +23,19 @@ export default class Match extends Vue {
   }
 
   async joinRoom() {
-    // TODO：改为点击 开始匹配 按钮再连接 websocket 好一点？
-    if (!this.$socket) {
-      this.$socketServer.connect(this.user);
-    }
+    this.$socketServer.connect(this.user);
+  }
+
+  quitRoom() {
+    console.log('>>>>> 退出匹配');
+    this.$socketServer.disconnect();
   }
 
   // 开始游戏，房主才有开始游戏按钮
   startGame() {
     if (this.canStart) {
       console.log('开始游戏啊');
+      this.$socketServer.startGame(this.playerList);
     }
   }
 

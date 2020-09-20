@@ -118,9 +118,9 @@ class Room {
     if (index !== -1) {
       this.playerList.splice(index, 1);
       // 如果房主被移除了
-      // TODO: 什么场景呢？掉线？
+      // TODO: 什么场景呢？掉线？哦哦，房主退出匹配也是
       if (this.masterId === player.userId && !this.isEmpty) {
-        this.masterId === this.playerList[0].userId;
+        this.masterId = this.playerList[0].userId;
       }
     }
   }

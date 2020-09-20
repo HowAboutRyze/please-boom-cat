@@ -1,11 +1,14 @@
 import Vue from 'vue';
-import { ROOM_BROADCAST } from '../../../app/lib/constant';
+import { ROOM_BROADCAST, START_GAMER } from '../../../app/lib/constant';
 
 export class Socket {
   public store: any;
 
+  public socket: any;
+
   constructor(store) {
     this.store = store;
+    this.socket = null;
   }
 
   public connect(userInfo) {
@@ -26,8 +29,18 @@ export class Socket {
         });
       });
       
+      this.socket = socket;
       Vue.prototype.$socket = socket;
     }
+  }
+
+  public startGame(playerList) {
+    this.socket?.emit(START_GAMER, { playerList });
+  }
+
+  disconnect() {
+    this.socket?.disconnect();
+    this.store.dispatch('quitRoom');
   }
 }
 

@@ -15,6 +15,9 @@ export default class RoomModule implements Module<RoomState, RootState> {
     saveRoom({ commit, dispatch, state , rootState}, data) {
       commit(SET_ROOM_INFO, data);
     },
+    quitRoom({ commit, dispatch, state , rootState}) {
+      commit(SET_ROOM_INFO, { id: '', masterId: '', playerList: [], hasStarted: false });
+    },
   };
 
   mutations: MutationTree<RoomState> = {
