@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import VueRouter from 'vue-router';
 import Login from '../view/login/index.vue';
-import Game from '../view/game/index.vue';
+import Match from '../view/match/index.vue';
 
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
@@ -19,8 +19,8 @@ export default function createRouter() {
         component: Login
       },
       {
-        path: '/game',
-        component: Game
+        path: '/match',
+        component: Match
       },
       {
         path: '*', component: () => import('../view/notfound/index.vue')
@@ -34,8 +34,8 @@ export default function createRouter() {
         // 未登录就登录咯
         next('/');
       } else if (to.path === '/' && hasLogin) {
-        // 登录了就去游戏页啊
-        next('/game');
+        // 登录了就去匹配页啊
+        next('/match');
       }
     }
     next();

@@ -4,7 +4,7 @@ import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
 
 @Component
-export default class Game extends Vue {
+export default class Match extends Vue {
   @State(state => state.user.user) user;
   @State(state => state.room.id) roomId;
   @State(state => state.room.masterId) masterId;
