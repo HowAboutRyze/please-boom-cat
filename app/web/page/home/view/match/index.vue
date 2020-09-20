@@ -1,5 +1,5 @@
 <template>
-  <div class="game-page">
+  <div class="match-page">
     <h1>爆炸猫啊</h1>
     <div class="user-info">
       <p>昵称：{{user.nickName}}</p>

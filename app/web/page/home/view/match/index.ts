@@ -1,4 +1,4 @@
-import { Vue, Component, Emit } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
@@ -9,8 +9,16 @@ export default class Match extends Vue {
   @State(state => state.room.id) roomId;
   @State(state => state.room.masterId) masterId;
   @State(state => state.room.playerList) playerList;
+  @State(state => state.game.id) gameId;
 
   @Action('getUser') getUser;
+
+  @Watch('gameId')
+  private watchGame(val) {
+    if (val) {
+      this.$router.push(`/game`);
+    }
+  }
 
   // 2人就可以开始游戏啦
   get canStart() {
@@ -26,16 +34,16 @@ export default class Match extends Vue {
     this.$socketServer.connect(this.user);
   }
 
-  quitRoom() {
+  async quitRoom() {
     console.log('>>>>> 退出匹配');
-    this.$socketServer.disconnect();
+    await this.$socketServer.disconnect();
   }
 
   // 开始游戏，房主才有开始游戏按钮
-  startGame() {
+  async startGame() {
     if (this.canStart) {
       console.log('开始游戏啊');
-      this.$socketServer.startGame(this.playerList);
+      await this.$socketServer.startGame();
     }
   }
 

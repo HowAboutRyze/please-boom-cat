@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Login from '../view/login/index.vue';
 import Match from '../view/match/index.vue';
+import Game from '../view/game/index.vue';
 
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
@@ -16,15 +17,19 @@ export default function createRouter() {
     routes: [
       {
         path: '/',
-        component: Login
+        component: Login,
       },
       {
         path: '/match',
-        component: Match
+        component: Match,
+      },
+      {
+        path: '/game',
+        component: Game,
       },
       {
         path: '*', component: () => import('../view/notfound/index.vue')
-      }
+      },
     ]
   });
   router.beforeEach((to, from, next) => {

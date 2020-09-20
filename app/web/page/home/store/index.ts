@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import RootState from './state';
 import User from './modules/user';
 import Room from './modules/room';
+import Game from './modules/game';
 import Socket from '@lib/socket';
 
 Vue.use(Vuex);
@@ -16,6 +17,16 @@ export default function createStore(initState: any = {}) {
     modules: {
       user: new User(user),
       room: new Room({ id: '', masterId: '', playerList: [], hasStarted: false }),
+      game: new Game({
+        id: '',
+        type: null,
+        remain: 0,
+        origin: null,
+        target: null,
+        cardType: null,
+        playerList: [],
+        currentPlayer: '',
+      }),
     }
   });
 

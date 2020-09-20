@@ -1,7 +1,7 @@
 import { PlainObject } from 'egg';
 import { uuidv4 } from '../lib/utils';
 import { User as TypeUser } from './user';
-import { ROOM_BROADCAST } from '../lib/constant';
+import { SOCKET_ROOM_BROADCAST } from '../lib/constant';
 import { IRoomInfo } from '../model/room';
 
 class RoomServer {
@@ -69,6 +69,8 @@ class Room {
 
   // 房主 id
   public masterId: string;
+
+  public gameId?: string;
 
   public playerList: TypeUser[];
 
@@ -150,7 +152,7 @@ class Room {
         playerList: formatPlayerList,
         hasStarted,
       };
-      player.socket.emit(ROOM_BROADCAST, data);
+      player.socket.emit(SOCKET_ROOM_BROADCAST, data);
     });
   }
 }

@@ -3,7 +3,7 @@ import UserServer from './user';
 import RoomServer from './room';
 import GameServer from './gameServer';
 import { IGamePlayer } from './game';
-import { START_GAMER } from '../lib/constant';
+import { SOCKET_START_GAMER, SOCKET_GAMER_INFO } from '../lib/constant';
 
 export default class SocketServer {
   public app: any;
@@ -46,10 +46,13 @@ export default class SocketServer {
     const user = this.userServer.getUserBySocket(socket.id);
     // 从房间里移除用户咯
     if (user.roomId) {
-      console.log('>>>> 临时看看');
       const room = this.roomServer.getRoomById(user.roomId);
       room.removePlayer(user);
       if (room.isEmpty) {
+        // 人去房空，顺便把游戏也销毁了吧
+        if (room.gameId) {
+          this.gameServer.removeGame(room.gameId);
+        }
         this.roomServer.removeRoom(room.id);
       }
       room.broadcast();
@@ -63,9 +66,21 @@ export default class SocketServer {
    */
   public addSocketListener(socket) {
     // 开始游戏
-    socket.on(START_GAMER, data => {
-      const playerList: IGamePlayer[] = data.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false }));
-      this.gameServer.addGame({ playerList });
+    socket.on(SOCKET_START_GAMER, () => {
+      const user = this.userServer.getUserBySocket(socket.id);
+      const room = this.roomServer.getRoomById(user.roomId);
+      if (room.gameId) {
+        return;
+      }
+
+      const playerList: IGamePlayer[] = room.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false, user: p }));
+      const game = this.gameServer.addGame({ roomId: user.roomId, playerList });
+
+      // 房间绑定游戏id
+      room.gameId = game.id;
+      room.hasStarted = true;
+
+      game.sendGameInfo();
     });
   }
 }

@@ -49,6 +49,7 @@ export default (appInfo: EggAppConfig) => {
 
   // socket server 的配置
   config.socketServer = {
+    initCardNum: 5, // 初始手牌数量
     roomSize: 7, // 房间最多人数
   };
 

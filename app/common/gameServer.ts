@@ -36,7 +36,7 @@ class GameServer {
    */
   public removeGame(id) {
     delete this.gameHash[id];
-    console.log('>>>>> disconnect', this.gameHash);
+    console.log('>>>>> 移除游戏', this.gameHash);
   }
 
   /**

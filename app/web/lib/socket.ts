@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { ROOM_BROADCAST, START_GAMER } from '../../../app/lib/constant';
+import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO } from '../../../app/lib/constant';
 
 export class Socket {
   public store: any;
@@ -23,9 +23,16 @@ export class Socket {
       socket.on('connect', () => {
         console.log('#connect');
     
-        socket.on(ROOM_BROADCAST, data => {
+        // 房间广播
+        socket.on(SOCKET_ROOM_BROADCAST, data => {
           console.log('>>>>> 房间消息：', data);
           this.store.dispatch('saveRoom', data);
+        });
+
+        // 游戏消息
+        socket.on(SOCKET_GAMER_INFO, data => {
+          console.log('>>>>> 游戏消息：', data);
+          this.store.dispatch('saveGame', data);
         });
       });
       
@@ -34,12 +41,12 @@ export class Socket {
     }
   }
 
-  public startGame(playerList) {
-    this.socket?.emit(START_GAMER, { playerList });
+  public async startGame() {
+    await this.socket?.emit(SOCKET_START_GAMER);
   }
 
-  disconnect() {
-    this.socket?.disconnect();
+  public async disconnect() {
+    await this.socket?.disconnect();
     this.store.dispatch('quitRoom');
   }
 }

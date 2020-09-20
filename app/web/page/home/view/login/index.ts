@@ -35,7 +35,7 @@ export default class Home extends Vue {
     await this.getUser({ id: this.account });
     _session.set(USER_ID, this.account);
     console.log('>>>>>login:', this.user, this.$socket);
-    this.$router.push(`/game`);
+    this.$router.push(`/match`);
   }
 
   async register() {
@@ -47,7 +47,7 @@ export default class Home extends Vue {
     });
     _session.set(USER_ID, this.userId);
     console.log('>>>>>>register', this.user);
-    this.$router.push(`/game`);
+    this.$router.push(`/match`);
   }
 
   changeTab() {

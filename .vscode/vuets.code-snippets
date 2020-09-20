@@ -40,6 +40,7 @@
 			"\t<div class=\"$1\">",
 			"\t\t$2",
 			"\t</div>",
+			"</template>",
 			"<style scoped>",
 			"$3",
 			"</style>",
