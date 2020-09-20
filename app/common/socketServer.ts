@@ -5,14 +5,16 @@ import RoomServer from './room';
 export default class SocketServer {
   public app: any;
   public config: PlainObject;
+  public roomServer: RoomServer;
+  public userServer: UserServer;
 
   constructor(app) {
     this.app = app;
     // 先占个位
     this.config = app.config.socketServer;
+    this.roomServer = new RoomServer(app.config.socketServer);
+    this.userServer = new UserServer(app.config.socketServer);
   }
-
-  // TODO: 增加个房间功能
 
   /**
    * 用户连接游戏
@@ -20,10 +22,13 @@ export default class SocketServer {
    * @param userInfo 用户信息 
    */
   public onSocketConnect(socket, userInfo) {
-    const user = UserServer.addUser({ ...userInfo, socket });
-    const room = RoomServer.findJoinableRoom();
+    const user = this.userServer.addUser({ ...userInfo, socket });
+    const room = this.roomServer.findJoinableRoom();
     user.roomId = room.id;
     room.addPlayer(user);
+    room.broadcast();
+
+    this.addSocketListener(socket);
   }
 
   /**
@@ -33,15 +38,24 @@ export default class SocketServer {
   public onSocketDisconnect(socket) {
     // TODO: 断开连接就移除用户，那如果是游戏中，用户重连怎么办？
 
-    const user = UserServer.getUserBySocket(socket.id);
+    const user = this.userServer.getUserBySocket(socket.id);
     // 从房间里移除用户咯
     if (user.roomId) {
-      const room = RoomServer.getRoomById(user.roomId);
+      const room = this.roomServer.getRoomById(user.roomId);
       room.removePlayer(user);
       if (room.isEmpty) {
-        RoomServer.removeRoom(room.id);
+        this.roomServer.removeRoom(room.id);
       }
     }
-    UserServer.removeUser(socket);
+    this.userServer.removeUser(socket);
+  }
+
+  /**
+   * 添加 socket 事件监听
+   * @param socket 
+   */
+  public addSocketListener(socket) {
+    // TODO: socket 事件监听
+    // socket.on();
   }
 }

@@ -12,7 +12,7 @@ axios.defaults.timeout = 15000;
 axios.defaults.xsrfHeaderName = 'x-csrf-token';
 axios.defaults.xsrfCookieName = 'csrfToken';
 
-export default class AdminModule implements Module<UserState, RootState> {
+export default class UserModule implements Module<UserState, RootState> {
   state: UserState;
 
   actions: ActionTree<UserState, RootState> = {

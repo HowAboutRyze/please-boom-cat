@@ -1,6 +1,7 @@
+import { Context } from 'egg';
 
 export default () => {
-  return async (ctx, next) => {
+  return async (ctx: Context, next) => {
     // 刚连接上
     const { app, socket, helper } = ctx;
     const { socketServer } = app;
@@ -10,12 +11,6 @@ export default () => {
 
     console.log('>>>>>>>user info', now, id, userInfo);
     socketServer.onSocketConnect(socket, userInfo);
-
-    // 给他返回一条消息试试
-    socket.emit(id, {
-      id,
-      msg: 'I got you'
-    });
 
     await next();
 

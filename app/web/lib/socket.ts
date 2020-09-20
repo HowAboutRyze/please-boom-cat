@@ -1,6 +1,13 @@
 import Vue from 'vue';
+import { ROOM_BROADCAST } from '../../../app/lib/constant';
 
 export class Socket {
+  public store: any;
+
+  constructor(store) {
+    this.store = store;
+  }
+
   public connect(userInfo) {
     if (!EASY_ENV_IS_NODE && (window as any).io) {
       const socket = (window as any).io?.('/', {
@@ -11,18 +18,17 @@ export class Socket {
         transports: ['websocket']
       });
       socket.on('connect', () => {
-        const id = socket.id;
+        console.log('#connect');
     
-        console.log('#connect,', id, socket);
-    
-        // 监听自身 id 试试
-        socket.on(id, msg => {
-          console.log('#receive,', msg);
+        socket.on(ROOM_BROADCAST, data => {
+          console.log('>>>>> 房间消息：', data);
+          this.store.dispatch('saveRoom', data);
         });
       });
+      
       Vue.prototype.$socket = socket;
     }
   }
 }
 
-export default new Socket();
+export default Socket;

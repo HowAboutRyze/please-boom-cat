@@ -5,8 +5,13 @@ interface UserHash {
 }
 
 class UserServer {
+  public config: any;
   public userList: Array<User> = [];
   public userHash: UserHash = {};
+
+  constructor(config) {
+    this.config = config;
+  }
 
   /**
    * 新增用户
@@ -69,4 +74,4 @@ export class User {
   }
 }
 
-export default new UserServer();
+export default UserServer;

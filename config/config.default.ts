@@ -48,7 +48,9 @@ export default (appInfo: EggAppConfig) => {
   };
 
   // socket server 的配置
-  config.socketServer = {};
+  config.socketServer = {
+    roomSize: 7, // 房间最多人数
+  };
 
   return config;
 };

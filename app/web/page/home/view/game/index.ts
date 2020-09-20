@@ -1,20 +1,43 @@
 import { Vue, Component, Emit } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
-import socket from '@lib/socket';
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
 
 @Component
 export default class Game extends Vue {
   @State(state => state.user.user) user;
+  @State(state => state.room.id) roomId;
+  @State(state => state.room.masterId) masterId;
+  @State(state => state.room.playerList) playerList;
 
   @Action('getUser') getUser;
 
-  async startGame() {
+  // 2人就可以开始游戏啦
+  get canStart() {
+    return this.playerList.length >= 2;
+  }
+
+  // 开始游戏按钮 class
+  get startClass() {
+    return `start-btn ${this.canStart ? 'active' : ''}`;
+  }
+
+  async joinRoom() {
     // TODO：改为点击 开始匹配 按钮再连接 websocket 好一点？
     if (!this.$socket) {
-      socket.connect(this.user);
+      this.$socketServer.connect(this.user);
     }
+  }
+
+  // 开始游戏，房主才有开始游戏按钮
+  startGame() {
+    if (this.canStart) {
+      console.log('开始游戏啊');
+    }
+  }
+
+  isMater(id) {
+    return id === this.masterId;
   }
 
   async mounted() {
@@ -23,5 +46,9 @@ export default class Game extends Vue {
       const userId = _session.get(USER_ID);
       await this.getUser({ id: userId });
     }
+  }
+
+  updated() {
+    console.log('>>>> update', this.roomId);
   }
 }

@@ -4,6 +4,7 @@ declare var EASY_ENV_IS_NODE: boolean;
 type PlainObject<T = any> = { [key: string]: T };
 declare module 'vue/types/vue' {
   interface Vue {
-    $socket: Socket
+    $socket: any;
+    $socketServer: Socket;
   }
 }
