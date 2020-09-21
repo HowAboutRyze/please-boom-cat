@@ -1,5 +1,5 @@
 import { SOCKET_GAMER_INFO, CardType, cardMap } from '../lib/constant';
-import { IGameInfo, InfoType } from '../model/game';
+import { IGameInfo, GameInfoType } from '../model/game';
 import { uuidv4 } from '../lib/utils';
 import * as _ from 'lodash';
 
@@ -117,7 +117,7 @@ export default class Game {
       });
       const data: IGameInfo = {
         id: this.id,
-        type: InfoType.system,
+        type: GameInfoType.system,
         remain: this.total,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,

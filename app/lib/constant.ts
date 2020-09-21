@@ -11,6 +11,7 @@ export const SOCKET_START_GAMER = 'SOCKET_START_GAMER';
  * 游戏相关资料
  */
 export const SOCKET_GAMER_INFO = 'SOCKET_GAMER_INFO';
+export const SOCKET_GAMER_PLAY = 'SOCKET_GAMER_PLAY';
 // 卡牌类型
 export enum CardType {
   boom, // 炸弹, n - 1 张

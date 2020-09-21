@@ -23,7 +23,7 @@ export default function createStore(initState: any = {}) {
         remain: 0,
         origin: null,
         target: null,
-        cardType: null,
+        cards: [],
         playerList: [],
         currentPlayer: '',
       }),

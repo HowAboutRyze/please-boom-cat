@@ -18,6 +18,7 @@ module.exports = {
   },
   module:{
     rules:[
+      { stylus: true },
       { babel: false },
       { 
         ts: {

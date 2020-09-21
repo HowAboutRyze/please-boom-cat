@@ -34,8 +34,8 @@ export default class GameModule implements Module<GameState, RootState> {
       state.remain = data.remain;
       state.origin = data.origin;
       state.target = data.target;
-      state.cardType = data.cardType;
-      state.playerList = data.playerList;
+      state.cards = data.cards || [];
+      state.playerList = data.playerList || [];
       state.currentPlayer = data.currentPlayer;
     },
   };

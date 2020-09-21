@@ -3,7 +3,7 @@ import UserServer from './user';
 import RoomServer from './room';
 import GameServer from './gameServer';
 import { IGamePlayer } from './game';
-import { SOCKET_START_GAMER, SOCKET_GAMER_INFO } from '../lib/constant';
+import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY } from '../lib/constant';
 
 export default class SocketServer {
   public app: any;
@@ -82,5 +82,10 @@ export default class SocketServer {
 
       game.sendGameInfo();
     });
+
+    // 游戏中，玩家发送消息过来了
+    socket.on(SOCKET_GAMER_PLAY, data => {
+      console.log('玩家在干嘛？', data);
+    })
   }
 }

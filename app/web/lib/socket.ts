@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO } from '../../../app/lib/constant';
+import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY } from '../../../app/lib/constant';
+import { IGamePlay } from '../../model/game';
 
 export class Socket {
   public store: any;
@@ -32,6 +33,7 @@ export class Socket {
         // 游戏消息
         socket.on(SOCKET_GAMER_INFO, data => {
           console.log('>>>>> 游戏消息：', data);
+          // TODO: 判断服务端发送过来的 data.type 进行游戏操作
           this.store.dispatch('saveGame', data);
         });
       });
@@ -43,6 +45,10 @@ export class Socket {
 
   public async startGame() {
     await this.socket?.emit(SOCKET_START_GAMER);
+  }
+
+  public async sendPlayData(data: IGamePlay) {
+    await this.socket?.emit(SOCKET_GAMER_PLAY, data);
   }
 
   public async disconnect() {
