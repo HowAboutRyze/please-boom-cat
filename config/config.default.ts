@@ -1,9 +1,9 @@
-import { EggAppConfig } from 'egg';
+import { EggAppInfo, EggAppConfig, PowerPartial } from 'egg';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export default (appInfo: EggAppConfig) => {
-  const config: any = {};
+export default (appInfo: EggAppInfo) => {
+  const config = {} as PowerPartial<EggAppConfig>;
 
   config.siteFile = {
     '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/web/asset/images/favicon.ico'))
@@ -37,21 +37,25 @@ export default (appInfo: EggAppConfig) => {
     'global'
   ];
 
-  config.io = {
-    init: { }, // passed to engine.io
-    namespace: {
-      '/': {
-        connectionMiddleware: ['connection'],
-        packetMiddleware: [],
-      }
+  const bizConfig = {
+    io: {
+      init: { }, // passed to engine.io
+      namespace: {
+        '/': {
+          connectionMiddleware: ['connection'],
+          packetMiddleware: [],
+        }
+      },
     },
+    // socket server 的配置
+    socketServer: {
+      initCardNum: 5, // 初始手牌数量
+      roomSize: 7, // 房间最多人数
+    }
   };
 
-  // socket server 的配置
-  config.socketServer = {
-    initCardNum: 5, // 初始手牌数量
-    roomSize: 7, // 房间最多人数
+  return {
+    ...config,
+    ...bizConfig,
   };
-
-  return config;
 };

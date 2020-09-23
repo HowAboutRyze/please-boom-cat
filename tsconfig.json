@@ -9,18 +9,13 @@
     "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
     "strictNullChecks": false
   },
-  "include": [
-    "index.ts",
-    "app/**/*.ts",
-    "config/**/*.ts",
-    "mock/**/*.ts",
-    "test/**/*.ts"
-  ],
   "exclude": [
     "public",
     "app/web",
     "app/public",
     "app/view",
-    "node_modules"
+    "node_modules",
+    "test/*.js",
+    "webpack.config.js"
   ]
 }

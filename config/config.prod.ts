@@ -4,10 +4,13 @@
  *  prod + default（override）
  */
 
-import { Application, EggAppConfig } from 'egg';
+import { EggAppConfig, PowerPartial } from 'egg';
+// 获取 default config
+import defaultConfig from './config.default';
+type DefaultConfig = ReturnType<typeof defaultConfig>;
 
-export default (appInfo: EggAppConfig) => {
-  const exports: any = {};
+export default () => {
+  const config = {} as PowerPartial<EggAppConfig & DefaultConfig>;
 
-  return exports;
+  return config;
 };
