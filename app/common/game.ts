@@ -1,5 +1,5 @@
 import { SOCKET_GAMER_INFO, CardType, cardMap } from '../lib/constant';
-import { IGameInfo, GameInfoType } from '../model/game';
+import { IGameInfo, GameInfoType, IGamePlay, PlayInfoType } from '../model/game';
 import { uuidv4 } from '../lib/utils';
 import * as _ from 'lodash';
 
@@ -102,9 +102,25 @@ export default class Game {
   }
 
   /**
+   * 轮到下一个玩家
+   */
+  public nextPlayerTurn() {
+    const currIndex = this.playerList.findIndex(p => p.userId === this.currentPlayer);
+    if (currIndex === -1) {
+      return;
+    }
+    if (currIndex === this.playerList.length - 1) {
+      this.currentPlayer = this.playerList[0].userId;
+    } else {
+      this.currentPlayer = this.playerList[currIndex + 1].userId;
+    }
+  }
+
+  /**
    * 发送游戏信息
    */
-  public sendGameInfo() {
+  public sendGameInfo(info: Partial<IGameInfo> = {}) {
+    const { type = GameInfoType.system, origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     this.playerList.forEach(player => {
       const socket = player.user.socket;
@@ -117,13 +133,63 @@ export default class Game {
       });
       const data: IGameInfo = {
         id: this.id,
-        type: GameInfoType.system,
+        type,
         remain: this.total,
+        // TODO: 继续加类型啊---------------------------
+        origin,
+        target,
+        cards,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,
       };
       socket.emit(SOCKET_GAMER_INFO, data);
     });
 
+  }
+
+  /**
+   * 处理玩家游戏信息
+   * @param data 游戏数据
+   */
+  public gamePlayHandle(data: IGamePlay) {
+    const { type } = data;
+    if (type === PlayInfoType.touch) {
+      this.playerTouchCard(data);
+    } else if (type === PlayInfoType.show) {
+      // TODO: 出牌
+    } else {
+      // TODO: 报错！！！没有对应的类型 type
+    }
+  }
+
+  public playerTouchCard(data: IGamePlay) {
+    console.log('>>>>> 摸牌来了');
+    const { origin } = data;
+    const card = this.touchCard();
+    if (card === CardType.boom) {
+      // TODO: 爆炸了
+      // - 如果当前玩家没有拆解，直接凉凉
+      // - 如果有，就继续出牌
+      console.log('>>> boom 咯');
+    } else {
+      // 摸完牌了，下一个玩家
+      this.playerAddCard(origin, [card]);
+      this.nextPlayerTurn();
+      this.sendGameInfo({ type: GameInfoType.next, origin });
+    }
+  }
+
+  /**
+   * 玩家添加牌
+   */
+  public playerAddCard(userId: string, cards: CardType[]) {
+    const player = this.playerList.find(p => p.userId === userId);
+    if (player) {
+      player.cards.push(...cards);
+      return true;
+    } else {
+      // TODO: 报错啊！！！！没找到这个用户
+      return false;
+    }
   }
 }

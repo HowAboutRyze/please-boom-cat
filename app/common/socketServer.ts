@@ -4,6 +4,7 @@ import RoomServer from './room';
 import GameServer from './gameServer';
 import { IGamePlayer } from './game';
 import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY } from '../lib/constant';
+import { IGamePlay } from '../model/game';
 
 export default class SocketServer {
   public app: any;
@@ -84,8 +85,14 @@ export default class SocketServer {
     });
 
     // 游戏中，玩家发送消息过来了
-    socket.on(SOCKET_GAMER_PLAY, data => {
+    socket.on(SOCKET_GAMER_PLAY, (data: IGamePlay) => {
       console.log('玩家在干嘛？', data);
+      if (!data.id) {
+        return;
+      }
+
+      const game = this.gameServer.getGameById(data.id);
+      game.gamePlayHandle(data);
     })
   }
 }

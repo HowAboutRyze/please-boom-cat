@@ -20,6 +20,14 @@ export default class Game extends Vue {
   }
 
   /**
+   * 是否当前出牌玩家
+   * @param userId 用户id
+   */
+  isCurrentPlayer(userId) {
+    return userId === this.currentPlayer;
+  }
+
+  /**
    * 卡牌 class
    * @param index 
    */
@@ -33,6 +41,18 @@ export default class Game extends Vue {
    */
   isSelected(index) {
     return this.selectedCards.indexOf(index) !== -1;
+  }
+
+  /**
+   * 摸牌
+   */
+  touchCard() {
+    const data: IGamePlay = {
+      id: this.gameId,
+      type: PlayInfoType.touch,
+      origin: this.user.userId,
+    }
+    this.$socketServer.sendPlayData(data);
   }
 
   /**

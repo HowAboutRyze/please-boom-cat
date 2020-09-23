@@ -7,15 +7,15 @@
     <h3>游戏已开始，牌堆剩余数量：{{remain}}</h3>
     <ul class="other-player">
       <li v-for="(player) in otherPlayers" :key="player.userId">
-        <p>{{getNickName(player.userId)}}<span v-show="player.userId === currentPlayer">(出牌玩家)</span></p>
+        <p>{{getNickName(player.userId)}}<span v-show="isCurrentPlayer(player.userId)">(出牌玩家)</span></p>
         <p>手牌数：{{player.total}}</p>
       </li>
     </ul>
     <div>
-      <p>{{user.nickName}}<span v-show="user.userId === currentPlayer">(出牌玩家)</span></p>
+      <p>{{user.nickName}}<span v-show="isCurrentPlayer(user.userId)">(出牌玩家)</span></p>
       <p>手牌数：{{selfGameInfo.total}}</p>
       <div>
-        <button v-show="!canShowCards">摸牌</button>
+        <button v-show="!canShowCards && isCurrentPlayer(user.userId)" @click="touchCard">摸牌</button>
         <button v-show="canShowCards" @click="wantShowCard">出牌</button>
       </div>
       <div>
