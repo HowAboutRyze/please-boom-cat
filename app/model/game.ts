@@ -11,6 +11,7 @@ export enum GameInfoType {
   play, // 出牌
   boom, // 爆炸
   waitDefuse, // 等待拆解
+  gameOver, // 游戏结束
 }
 
 // 服务端下发游戏消息
@@ -37,4 +38,5 @@ export interface IGamePlay {
   origin: string; // 事件发起者
   target?: string; // 事件目标
   cards?: number[]; // 出的牌
+  position?: number; // 放爆炸牌的位置
 }

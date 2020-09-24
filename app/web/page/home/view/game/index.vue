@@ -7,12 +7,12 @@
     <h3>游戏已开始，牌堆剩余数量：{{remain}}</h3>
     <ul class="other-player">
       <li v-for="(player) in otherPlayers" :key="player.userId">
-        <p>{{getNickName(player.userId)}}<span v-show="isCurrentPlayer(player.userId)">(出牌玩家)</span></p>
+        <p>{{getNickName(player.userId)}}<span v-show="isCurrentPlayer(player.userId)">(出牌玩家{{waitingDefuse ? '，等待拆解' : ''}})</span></p>
         <p>手牌数：{{player.total}}</p>
       </li>
     </ul>
     <div>
-      <p>{{user.nickName}}<span v-show="isCurrentPlayer(user.userId)">(出牌玩家)</span></p>
+      <p>{{user.nickName}}<span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{waitingDefuse ? '，快出拆解啊！！' : ''}})</span></p>
       <p>手牌数：{{selfGameInfo.total}}</p>
       <div>
         <button v-show="!canShowCards && isCurrentPlayer(user.userId)" @click="touchCard">摸牌</button>
@@ -28,6 +28,13 @@
           <span>{{getCardName(card)}}</span>
           <span>[{{getCardDesc(card)}}]</span>
         </div>
+      </div>
+    </div>
+    <div :class="showPop ? 'game-pop': 'game-pop-hidden'">
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h1>{{popTitle}}</h1>
+        <p>{{popText}}</p>
       </div>
     </div>
   </div>
@@ -48,5 +55,25 @@
   border-radius 3px
   &.selected
     background pink
+.game-pop
+  display flex
+  flex-direction column
+  align-items center
+  justify-content center
+  position fixed
+  top 0
+  right 0
+  bottom 0
+  left 0
+  background-color rgba(0,0,0,.5)
+  animation: 1s hiddenPop 1;
+  &.game-pop-hidden
+    display none
+  .pop-content
+    display flex
+    flex-direction column
+    align-items center
+    justify-content center
+    background-color white
 </style>
 <script type="ts"  src="./index.ts"></script>

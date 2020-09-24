@@ -26,6 +26,11 @@ export default function createStore(initState: any = {}) {
         cards: [],
         playerList: [],
         currentPlayer: '',
+
+        // 弹窗
+        showPop: false,
+        popTitle: '',
+        popText: '',
       }),
     }
   });

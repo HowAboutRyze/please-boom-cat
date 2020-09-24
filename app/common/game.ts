@@ -46,12 +46,18 @@ export default class Game {
     return this.deck.length;
   }
 
+  // 存活的玩家
+  get survivePlayers() {
+    return this.playerList.filter(p => !p.isOver);
+  }
+
   /**
    * 初始化游戏
    */
   public initGame() {
     const playerNum = this.playerList.length;
-    for (let i = 0; i <= CardType.beardcat; i++) {
+    // for (let i = 0; i <= CardType.beardcat; i++) {
+    for (let i = 0; i <= CardType.attack; i++) { // 临时牌减少
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -102,17 +108,26 @@ export default class Game {
   }
 
   /**
+   * 通过 userId 找到玩家
+   * @param userId 
+   */
+  public getPlayerById(userId) {
+    return this.playerList.find(p => p.userId === userId);
+  }
+
+  /**
    * 轮到下一个玩家
    */
   public nextPlayerTurn() {
-    const currIndex = this.playerList.findIndex(p => p.userId === this.currentPlayer);
+    const survivePlayers = this.survivePlayers;
+    const currIndex = survivePlayers.findIndex(p => p.userId === this.currentPlayer);
     if (currIndex === -1) {
       return;
     }
-    if (currIndex === this.playerList.length - 1) {
-      this.currentPlayer = this.playerList[0].userId;
+    if (currIndex === survivePlayers.length - 1) {
+      this.currentPlayer = survivePlayers[0].userId;
     } else {
-      this.currentPlayer = this.playerList[currIndex + 1].userId;
+      this.currentPlayer = survivePlayers[currIndex + 1].userId;
     }
   }
 
@@ -135,7 +150,6 @@ export default class Game {
         id: this.id,
         type,
         remain: this.total,
-        // TODO: 继续加类型啊---------------------------
         origin,
         target,
         cards,
@@ -167,10 +181,20 @@ export default class Game {
     const { origin } = data;
     const card = this.touchCard();
     if (card === CardType.boom) {
-      // TODO: 爆炸了
-      // - 如果当前玩家没有拆解，直接凉凉
-      // - 如果有，就继续出牌
       console.log('>>> boom 咯');
+      const player = this.getPlayerById(origin);
+      if (player.cards.includes(CardType.defuse)) {
+        // 如果玩家有拆解，等待拆解并插爆炸牌
+        this.sendGameInfo({ type: GameInfoType.waitDefuse, origin });
+      } else if (this.survivePlayers.length <= 2) {
+        // 如果玩家没有拆解，且最后两个玩家，游戏结束
+        this.nextPlayerTurn();
+        player.isOver = true;
+        this.sendGameInfo({ type: GameInfoType.gameOver, origin });
+      } else {
+        // 玩家凉凉，开始插爆炸牌
+        this.sendGameInfo({ type: GameInfoType.boom, origin });
+      }
     } else {
       // 摸完牌了，下一个玩家
       this.playerAddCard(origin, [card]);

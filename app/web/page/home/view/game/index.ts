@@ -1,19 +1,25 @@
 import { Vue, Component, Emit } from 'vue-property-decorator';
-import { State, Getter } from 'vuex-class';
+import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
 import { IGamePlay, PlayInfoType } from '../../../../../model/game';
 
 @Component
 export default class Game extends Vue {
   public selectedCards: number[] = [];
+  public position: number | undefined  = undefined;
 
   @State(state => state.user.user) user;
   @State(state => state.game.id) gameId;
   @State(state => state.game.currentPlayer) currentPlayer;
   @State(state => state.game.remain) remain;
+  @State(state => state.game.showPop) showPop;
+  @State(state => state.game.popTitle) popTitle;
+  @State(state => state.game.popText) popText;
   @State(state => state.room.playerList) roomPlayerList;
   @Getter('otherPlayers') otherPlayers: any;
   @Getter('selfGameInfo') selfGameInfo: any;
+  @Getter('waitingDefuse') waitingDefuse: any;
+  @Action('removeCards') removeCards;
 
   get canShowCards() {
     return this.selectedCards.length > 0;
@@ -122,6 +128,12 @@ export default class Game extends Vue {
       // 选玩家
       return;
     }
+    if (cardType === CardType.defuse) {
+      console.log('>>> 拆解');
+      // TODO: 将爆炸牌放个位置
+      this.showCards();
+      return;
+    }
     // 其他卡牌直接出吧
     this.showCards();
   }
@@ -136,12 +148,15 @@ export default class Game extends Vue {
       origin: this.user.userId,
       target,
       cards: this.selectedCards,
+      position: this.position,
     }
     this.$socketServer.sendPlayData(data);
 
-    // TODO: 将出了卡牌从 store 中移除
+    const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
+    this.removeCards(selectCardTypes);
 
     this.clearSelectedCards();
+    this.position = undefined;
   }
 
   getNickName(userId) {
