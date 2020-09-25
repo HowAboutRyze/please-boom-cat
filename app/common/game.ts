@@ -57,7 +57,7 @@ export default class Game {
   public initGame() {
     const playerNum = this.playerList.length;
     // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.attack; i++) { // FIXME: 临时把牌减少用于开发
+    for (let i = 0; i <= CardType.shuffle; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -172,8 +172,9 @@ export default class Game {
     if (type === PlayInfoType.touch) {
       this.playerTouchCard(data);
     } else if (type === PlayInfoType.show) {
-      // TODO: 出牌
       this.playerShowCard(data);
+    } else if (type === PlayInfoType.soul) {
+      this.soulSetBoomPosition(data);
     } else {
       // TODO: 报错！！！没有对应的类型 type
     }
@@ -238,6 +239,19 @@ export default class Game {
       this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
+  }
+
+  /**
+   * 爆炸了的灵魂放炸弹猫
+   * @param data 
+   */
+  public soulSetBoomPosition(data: IGamePlay) {
+    const { origin, cards, position } = data;
+    this.deck.splice(position, 0, CardType.boom);
+    this.nextPlayerTurn();
+    const player = this.getPlayerById(origin);
+    player.isOver = true;
+    this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 爆炸凉凉，到下一个` });
   }
 
   /**

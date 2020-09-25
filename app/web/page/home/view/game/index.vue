@@ -3,18 +3,32 @@
     <h1>爆炸猫啊</h1>
     <button @click="quitGame">退出游戏</button>
     <h3>游戏已开始，牌堆剩余数量：{{remain}}</h3>
+
+    <!-- 别的玩家 -->
     <ul class="other-player">
       <li v-for="(player) in otherPlayers" :key="player.userId">
-        <p>{{getNickName(player.userId)}}<span v-show="isCurrentPlayer(player.userId)">(出牌玩家{{waitingDefuse ? '，等待拆解' : ''}})</span></p>
+        <p>
+          {{getNickName(player.userId)}}
+          <span v-show="isCurrentPlayer(player.userId)">(出牌玩家{{waitingDefuse ? '，等待拆解' : ''}})</span>
+          <span v-if="isBoomPlayer(player.userId)">~爆炸了~</span>
+          <span v-if="player.isOver">（尸体）</span>
+        </p>
         <p>手牌数：{{player.total}}</p>
       </li>
     </ul>
+
+    <!-- 自己的游戏面板 -->
     <div>
-      <p>{{user.nickName}}<span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{waitingDefuse ? '，快出拆解啊！！' : ''}})</span></p>
+      <p>
+        {{user.nickName}}
+        <span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{waitingDefuse ? '，快出拆解啊！！' : ''}})</span>
+        <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
+        <span v-if="selfGameInfo.isOver">（尸体）</span>
+      </p>
       <p>手牌数：{{selfGameInfo.total}}</p>
       <div>
         <button v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse" @click="touchCard">摸牌</button>
-        <button v-show="canShowCards" @click="wantShowCard">出牌</button>
+        <button v-show="canShowCards && !selfGameInfo.isOver" @click="wantShowCard">出牌</button>
       </div>
       <div>
         <div
@@ -28,6 +42,8 @@
         </div>
       </div>
     </div>
+
+    <!-- 弹窗们 -->
     <div :class="`game-pop ${showPop ? 'normal-pop': 'normal-pop-hidden'}`">
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">

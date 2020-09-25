@@ -25,6 +25,9 @@ export default class GameModule implements Module<GameState, RootState> {
     waitingDefuse(state, getters, rootState) {
       return state.type === GameInfoType.waitDefuse;
     },
+    someoneBoom(state, getters, rootState) {
+      return state.type === GameInfoType.boom ? state.origin : '';
+    },
   };
 
   actions: ActionTree<GameState, RootState> = {
@@ -35,12 +38,24 @@ export default class GameModule implements Module<GameState, RootState> {
       console.log('>>> 关闭了弹窗');
       commit(SET_GAME_INFO, data);
     },
+    async playerBoom({ commit, dispatch, state , rootState}, data: IGameInfo) {
+      // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
+      const { origin } = data;
+      const player = rootState.room.playerList.find(p => p.userId === origin);
+      const nickName = player.nickName;
+      await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
+    },
+    async waitDefuse({ commit, dispatch, state , rootState}, data) {
+      const { origin } = data;
+      const player = rootState.room.playerList.find(p => p.userId === origin);
+      const nickName = player.nickName;
+      await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
+    },
     async gameOver({ commit, dispatch, state , rootState}, data) {
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
       const nickName = player.nickName;
-      await dispatch('showGamePop', { popTitle: 'Congratulation', popText: `玩家 ${nickName} 爆炸了！！` });
-      commit(SET_GAME_INFO, data);
+      await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 爆炸了！！` });
     },
     removeCards({ commit, dispatch, state , rootState}, data: number[]) {
       console.log('移除卡 data', data);

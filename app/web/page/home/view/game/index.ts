@@ -1,4 +1,4 @@
-import { Vue, Component, Emit } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
 import { IGamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
@@ -22,7 +22,15 @@ export default class Game extends Vue {
   @Getter('otherPlayers') otherPlayers: any;
   @Getter('selfGameInfo') selfGameInfo: any;
   @Getter('waitingDefuse') waitingDefuse: any;
+  @Getter('someoneBoom') someoneBoom: any;
   @Action('removeCards') removeCards;
+
+  @Watch('someoneBoom')
+  private watchBoom(val) {
+    if (val && val === this.user.userId) {
+      this.showPositionPop();
+    }
+  }
 
   get canShowCards() {
     return this.selectedCards.length > 0;
@@ -30,6 +38,14 @@ export default class Game extends Vue {
 
   get isGameOver() {
     return this.gameType === GameInfoType.gameOver;
+  }
+
+  /**
+   * 是否爆炸了的倒霉玩家
+   * @param userId 用户id
+   */
+  isBoomPlayer(userId) {
+    return userId === this.someoneBoom;
   }
 
   /**
@@ -155,9 +171,10 @@ export default class Game extends Vue {
    */
   showCards() {
     const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
+    const playType = this.isBoomPlayer(this.user.userId) ? PlayInfoType.soul : PlayInfoType.show;
     const data: IGamePlay = {
       id: this.gameId,
-      type: PlayInfoType.show,
+      type: playType,
       origin: this.user.userId,
       target: this.targetPlayer,
       cards: selectCardTypes,

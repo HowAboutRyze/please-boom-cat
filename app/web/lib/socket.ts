@@ -50,17 +50,14 @@ export class Socket {
               break;
             }
             case GameInfoType.boom: {
-              // TODO: 玩家爆炸，开始插爆炸牌
-              // this.store.dispatch('', data);
+              // 玩家爆炸，开始插爆炸牌
+              this.store.dispatch('playerBoom', data);
               break;
             }
             case GameInfoType.waitDefuse: {
               // 等待玩家拆解
               console.log('>>>> 拆解');
-              // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
-              const player = this.store.state.room?.playerList?.find(p => p.userId === origin);
-              const nickName = player.nickName;
-              await this.store.dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
+              this.store.dispatch('waitDefuse', data);
               break;
             }
             case GameInfoType.gameOver: {
