@@ -1,7 +1,7 @@
 import { Vue, Component, Emit } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
-import { IGamePlay, PlayInfoType } from '../../../../../model/game';
+import { IGamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
 
 @Component
 export default class Game extends Vue {
@@ -12,6 +12,7 @@ export default class Game extends Vue {
 
   @State(state => state.user.user) user;
   @State(state => state.game.id) gameId;
+  @State(state => state.game.type) gameType;
   @State(state => state.game.currentPlayer) currentPlayer;
   @State(state => state.game.remain) remain;
   @State(state => state.game.showPop) showPop;
@@ -25,6 +26,10 @@ export default class Game extends Vue {
 
   get canShowCards() {
     return this.selectedCards.length > 0;
+  }
+
+  get isGameOver() {
+    return this.gameType === GameInfoType.gameOver;
   }
 
   /**
@@ -69,6 +74,12 @@ export default class Game extends Vue {
    * @param index 卡牌序号
    */
   selectCard(type: number, index: number) {
+    if (this.waitingDefuse && type !== CardType.defuse) {
+      // TODO: 改为toast 吧
+      console.log('你要选拆解啊！！！别选其他牌');
+      return;
+    }
+
     if (this.canShowCards) {
       const sIndex = this.selectedCards.indexOf(index);
       if (sIndex !== -1) {

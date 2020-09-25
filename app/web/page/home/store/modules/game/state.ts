@@ -5,3 +5,8 @@ export default interface GameState extends IGameInfo {
   popTitle: string;
   popText: string;
 }
+
+export interface IGamePop {
+  popTitle: string;
+  popText: string;
+}

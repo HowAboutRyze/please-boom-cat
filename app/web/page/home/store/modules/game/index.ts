@@ -5,10 +5,10 @@ import {
   SET_PLAYER,
   SET_GAME_POP,
 } from './type';
-import { GameInfoType } from '../../../../../../model/game';
+import { GameInfoType, IGameInfo } from '../../../../../../model/game';
 
 import RootState from '../../state';
-import GameState from './state';
+import GameState, { IGamePop } from './state';
 import { sleep } from '@lib/utils';
 
 
@@ -28,11 +28,18 @@ export default class GameModule implements Module<GameState, RootState> {
   };
 
   actions: ActionTree<GameState, RootState> = {
-    async showGamePop({ commit, dispatch, state , rootState}, data) {
+    async showGamePop({ commit, dispatch, state , rootState}, data: IGameInfo & IGamePop) {
       commit(SET_GAME_POP, { showPop: true, ...data });
       await sleep(2500);
       commit(SET_GAME_POP, { showPop: false });
       console.log('>>> 关闭了弹窗');
+      commit(SET_GAME_INFO, data);
+    },
+    async gameOver({ commit, dispatch, state , rootState}, data) {
+      const { origin } = data;
+      const player = rootState.room.playerList.find(p => p.userId === origin);
+      const nickName = player.nickName;
+      await dispatch('showGamePop', { popTitle: 'Congratulation', popText: `玩家 ${nickName} 爆炸了！！` });
       commit(SET_GAME_INFO, data);
     },
     removeCards({ commit, dispatch, state , rootState}, data: number[]) {

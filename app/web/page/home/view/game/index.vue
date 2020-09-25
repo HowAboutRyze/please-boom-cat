@@ -1,9 +1,7 @@
 <template>
   <div class="game-page">
     <h1>爆炸猫啊</h1>
-    <button
-      @click="quitGame"
-    >退出游戏</button>
+    <button @click="quitGame">退出游戏</button>
     <h3>游戏已开始，牌堆剩余数量：{{remain}}</h3>
     <ul class="other-player">
       <li v-for="(player) in otherPlayers" :key="player.userId">
@@ -15,7 +13,7 @@
       <p>{{user.nickName}}<span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{waitingDefuse ? '，快出拆解啊！！' : ''}})</span></p>
       <p>手牌数：{{selfGameInfo.total}}</p>
       <div>
-        <button v-show="!canShowCards && isCurrentPlayer(user.userId)" @click="touchCard">摸牌</button>
+        <button v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse" @click="touchCard">摸牌</button>
         <button v-show="canShowCards" @click="wantShowCard">出牌</button>
       </div>
       <div>
@@ -45,6 +43,11 @@
         <p><input type="number" v-model.number="position" min="0" :max="remain" /></p>
         <button @click="setBoomPosition">放好了</button>
       </div>
+    </div>
+    <div class="game-over" v-if="isGameOver">
+      <h1>游戏结束</h1>
+      <p>恭喜 {{getNickName(currentPlayer)}} 获胜！！</p>
+      <button @click="quitGame">离开游戏</button>
     </div>
   </div>
 </template>
@@ -84,5 +87,16 @@
     background-color white
 .normal-pop-hidden
   display none
+
+// 游戏结束啦
+.game-over
+  position fixed
+  top 0
+  right 0
+  bottom 0
+  left 0
+  padding 50px
+  text-align center
+  background-color white
 </style>
 <script type="ts"  src="./index.ts"></script>

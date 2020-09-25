@@ -1,5 +1,3 @@
-import { resolve } from 'dns';
-
 /**
  * 延时函数
  * @param delay 延时时间

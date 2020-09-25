@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY } from '../../../app/lib/constant';
 import { IGamePlay, IGameInfo, GameInfoType } from '../../model/game';
-import { sleep } from './utils';
 
 export class Socket {
   public store: any;
@@ -56,15 +55,17 @@ export class Socket {
               break;
             }
             case GameInfoType.waitDefuse: {
-              // TODO: 等待玩家拆解
+              // 等待玩家拆解
               console.log('>>>> 拆解');
-              await this.store.dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `账号 ${origin} 抽到爆炸猫了！！` });
-              // this.store.dispatch('', data);
+              // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
+              const player = this.store.state.room?.playerList?.find(p => p.userId === origin);
+              const nickName = player.nickName;
+              await this.store.dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
               break;
             }
             case GameInfoType.gameOver: {
-              // TODO: 游戏结束了
-              // this.store.dispatch('', data);
+              // 游戏结束了
+              this.store.dispatch('gameOver', data);
               break;
             }
             default: {
