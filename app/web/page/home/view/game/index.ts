@@ -6,7 +6,9 @@ import { IGamePlay, PlayInfoType } from '../../../../../model/game';
 @Component
 export default class Game extends Vue {
   public selectedCards: number[] = [];
-  public position: number | undefined  = undefined;
+  public position: number  = 0;
+  public targetPlayer = '';
+  public positionPopShow  = false;
 
   @State(state => state.user.user) user;
   @State(state => state.game.id) gameId;
@@ -130,8 +132,7 @@ export default class Game extends Vue {
     }
     if (cardType === CardType.defuse) {
       console.log('>>> 拆解');
-      // TODO: 将爆炸牌放个位置
-      this.showCards();
+      this.showPositionPop();
       return;
     }
     // 其他卡牌直接出吧
@@ -141,22 +142,35 @@ export default class Game extends Vue {
   /**
    * 出牌吧
    */
-  showCards(target = undefined) {
+  showCards() {
+    const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
     const data: IGamePlay = {
       id: this.gameId,
       type: PlayInfoType.show,
       origin: this.user.userId,
-      target,
-      cards: this.selectedCards,
+      target: this.targetPlayer,
+      cards: selectCardTypes,
       position: this.position,
     }
     this.$socketServer.sendPlayData(data);
 
-    const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
     this.removeCards(selectCardTypes);
 
     this.clearSelectedCards();
-    this.position = undefined;
+    this.position = 0;
+  }
+
+  setBoomPosition() {
+    this.hidePositionPop();
+    this.showCards();
+  }
+
+  showPositionPop() {
+    this.positionPopShow = true;
+  }
+
+  hidePositionPop() {
+    this.positionPopShow = false;
   }
 
   getNickName(userId) {

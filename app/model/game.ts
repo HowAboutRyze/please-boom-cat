@@ -17,6 +17,7 @@ export enum GameInfoType {
 // 服务端下发游戏消息
 export interface IGameInfo {
   id: string; // 游戏 id
+  msg?: string; // 额外消息
   type: GameInfoType; // 游戏消息类型
   remain: number; // 剩余牌数
   origin?: string; // 事件发起者
@@ -36,7 +37,7 @@ export interface IGamePlay {
   id: string; // 游戏 id
   type: PlayInfoType; // 游戏消息类型
   origin: string; // 事件发起者
-  target?: string; // 事件目标
+  target?: string; // 事件目标玩家
   cards?: number[]; // 出的牌
   position?: number; // 放爆炸牌的位置
 }

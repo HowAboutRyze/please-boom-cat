@@ -6,7 +6,7 @@ import { resolve } from 'dns';
  */
 export function sleep(delay = 1000) {
   return new Promise(resolve => {
-    const timer = setTimeout(() => {
+    let timer = setTimeout(() => {
       clearTimeout(timer);
       resolve();
     }, delay);

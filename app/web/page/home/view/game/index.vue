@@ -30,11 +30,20 @@
         </div>
       </div>
     </div>
-    <div :class="showPop ? 'game-pop': 'game-pop-hidden'">
+    <div :class="`game-pop ${showPop ? 'normal-pop': 'normal-pop-hidden'}`">
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
         <h1>{{popTitle}}</h1>
         <p>{{popText}}</p>
+      </div>
+    </div>
+    <div :class="`position-pop ${positionPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h3>请选择爆炸猫的位置</h3>
+        <p>牌堆顶部为 0，牌堆底部为 {{remain}}</p>
+        <p><input type="number" v-model.number="position" min="0" :max="remain" /></p>
+        <button @click="setBoomPosition">放好了</button>
       </div>
     </div>
   </div>
@@ -55,7 +64,7 @@
   border-radius 3px
   &.selected
     background pink
-.game-pop
+.normal-pop
   display flex
   flex-direction column
   align-items center
@@ -67,13 +76,13 @@
   left 0
   background-color rgba(0,0,0,.5)
   animation: 1s hiddenPop 1;
-  &.game-pop-hidden
-    display none
   .pop-content
     display flex
     flex-direction column
     align-items center
     justify-content center
     background-color white
+.normal-pop-hidden
+  display none
 </style>
 <script type="ts"  src="./index.ts"></script>

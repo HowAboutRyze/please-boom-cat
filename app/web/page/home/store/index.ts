@@ -19,6 +19,7 @@ export default function createStore(initState: any = {}) {
       room: new Room({ id: '', masterId: '', playerList: [], hasStarted: false }),
       game: new Game({
         id: '',
+        msg: '',
         type: null,
         remain: 0,
         origin: null,

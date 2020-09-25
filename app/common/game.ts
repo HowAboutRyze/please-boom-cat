@@ -56,8 +56,8 @@ export default class Game {
    */
   public initGame() {
     const playerNum = this.playerList.length;
-    // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.attack; i++) { // 临时牌减少
+    for (let i = 0; i <= CardType.beardcat; i++) {
+    // for (let i = 0; i <= CardType.attack; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -111,7 +111,7 @@ export default class Game {
    * 通过 userId 找到玩家
    * @param userId 
    */
-  public getPlayerById(userId) {
+  public getPlayerById(userId: string) {
     return this.playerList.find(p => p.userId === userId);
   }
 
@@ -133,9 +133,10 @@ export default class Game {
 
   /**
    * 发送游戏信息
+   * @param info 
    */
   public sendGameInfo(info: Partial<IGameInfo> = {}) {
-    const { type = GameInfoType.system, origin, target, cards = [] } = info;
+    const { type = GameInfoType.system, msg, origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     this.playerList.forEach(player => {
       const socket = player.user.socket;
@@ -148,6 +149,7 @@ export default class Game {
       });
       const data: IGameInfo = {
         id: this.id,
+        msg,
         type,
         remain: this.total,
         origin,
@@ -171,11 +173,16 @@ export default class Game {
       this.playerTouchCard(data);
     } else if (type === PlayInfoType.show) {
       // TODO: 出牌
+      this.playerShowCard(data);
     } else {
       // TODO: 报错！！！没有对应的类型 type
     }
   }
 
+  /**
+   * 玩家摸牌
+   * @param data 
+   */
   public playerTouchCard(data: IGamePlay) {
     console.log('>>>>> 摸牌来了');
     const { origin } = data;
@@ -204,12 +211,69 @@ export default class Game {
   }
 
   /**
-   * 玩家添加牌
+   * 玩家出牌
+   * @param data 
    */
-  public playerAddCard(userId: string, cards: CardType[]) {
-    const player = this.playerList.find(p => p.userId === userId);
+  public playerShowCard(data: IGamePlay) {
+    const { origin, cards, position } = data;
+    if (cards.length === 0) {
+      // TODO: 报错啊，都没牌，出什么？
+      console.error('没牌出啊？');
+      return;
+    }
+
+    // FIXME: 先删掉玩家的牌没问题吧？
+    this.playerRemoveCard(origin, cards);
+    const card = cards[0];
+    if (cards.length > 1) {
+      // TODO: 这是两张牌以上的组合啊，太强了
+      console.log('>>>> 两种牌组合，还没写呢');
+      return;
+    }
+
+    if (card === CardType.defuse) {
+      // 插一张爆炸猫
+      this.deck.splice(position, 0, CardType.boom);
+      this.nextPlayerTurn();
+      this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
+    }
+    // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
+  }
+
+  /**
+   * 玩家添加牌
+   * @param userId 
+   * @param cards 添加的卡牌们
+   */
+  public playerAddCard(userId: string, cards: CardType[] = []) {
+    const player = this.getPlayerById(userId);
     if (player) {
       player.cards.push(...cards);
+      return true;
+    } else {
+      // TODO: 报错啊！！！！没找到这个用户
+      return false;
+    }
+  }
+
+  /**
+   * 玩家失去牌
+   * @param userId 
+   * @param cards 
+   */
+  public playerRemoveCard(userId: string, cards: CardType[] = []) {
+    const player = this.getPlayerById(userId);
+    if (player) {
+      const targetCards = [...cards];
+      // @ts-ignore
+      const resCards = player.cards.reduce((group, currCard) => {
+        if (targetCards.includes(currCard)) {
+          targetCards.shift();
+          return group;
+        }
+        return [...group, currCard];
+      }, []);
+      player.cards = resCards;
       return true;
     } else {
       // TODO: 报错啊！！！！没找到这个用户
