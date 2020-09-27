@@ -246,7 +246,7 @@ export default class Game {
    * @param data
    */
   public soulSetBoomPosition(data: IGamePlay) {
-    const { origin, cards, position } = data;
+    const { origin, position } = data;
     this.deck.splice(position, 0, CardType.boom);
     this.nextPlayerTurn();
     const player = this.getPlayerById(origin);

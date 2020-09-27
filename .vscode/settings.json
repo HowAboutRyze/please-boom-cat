@@ -12,5 +12,14 @@
     "page": "${workspaceRoot}/app/web/page",
     "store": "${workspaceRoot}/app/web/store",
   },
+  "editor.tabSize": 2,
+  "eslint.validate": [
+    "javascript",
+    "vue",
+    "typescript"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
   "typescript.tsdk": "node_modules/typescript/lib"
 }

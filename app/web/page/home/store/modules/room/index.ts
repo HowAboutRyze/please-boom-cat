@@ -12,10 +12,10 @@ export default class RoomModule implements Module<RoomState, RootState> {
   state: RoomState;
 
   actions: ActionTree<RoomState, RootState> = {
-    saveRoom({ commit, dispatch, state , rootState}, data) {
+    saveRoom({ commit, dispatch, state , rootState }, data) {
       commit(SET_ROOM_INFO, data);
     },
-    quitRoom({ commit, dispatch, state , rootState}) {
+    quitRoom({ commit, dispatch, state , rootState }) {
       commit(SET_ROOM_INFO, { id: '', masterId: '', playerList: [], hasStarted: false });
     },
   };

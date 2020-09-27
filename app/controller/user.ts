@@ -1,7 +1,6 @@
 import { Controller, Context } from 'egg';
 import { deserialize } from '@hubcarl/json-typescript-mapper';
 import User from '../model/user';
-import Condition from '../lib/condition';
 
 export default class AdminController extends Controller {
 

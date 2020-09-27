@@ -1,4 +1,3 @@
-import { PlainObject } from 'egg';
 import { uuidv4 } from '../lib/utils';
 import { User as TypeUser } from './user';
 import { SOCKET_ROOM_BROADCAST } from '../lib/constant';

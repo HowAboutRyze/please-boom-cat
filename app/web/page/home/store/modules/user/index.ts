@@ -16,7 +16,7 @@ export default class UserModule implements Module<UserState, RootState> {
   state: UserState;
 
   actions: ActionTree<UserState, RootState> = {
-    async getUser({ commit, dispatch, state , rootState}, { id }) {
+    async getUser({ commit, dispatch, state , rootState }, { id }) {
       const res = await axios.get(`${rootState.origin}/api/user/${id}`);
       commit(SET_USER_INFO, res.data);
     },

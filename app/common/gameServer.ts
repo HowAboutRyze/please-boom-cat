@@ -1,4 +1,3 @@
-import { PlainObject } from 'egg';
 import Game from './game';
 
 interface GameHash {
