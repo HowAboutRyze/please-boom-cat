@@ -109,7 +109,7 @@ export default class Game {
 
   /**
    * 通过 userId 找到玩家
-   * @param userId 
+   * @param userId
    */
   public getPlayerById(userId: string) {
     return this.playerList.find(p => p.userId === userId);
@@ -133,7 +133,7 @@ export default class Game {
 
   /**
    * 发送游戏信息
-   * @param info 
+   * @param info
    */
   public sendGameInfo(info: Partial<IGameInfo> = {}) {
     const { type = GameInfoType.system, msg, origin, target, cards = [] } = info;
@@ -182,7 +182,7 @@ export default class Game {
 
   /**
    * 玩家摸牌
-   * @param data 
+   * @param data
    */
   public playerTouchCard(data: IGamePlay) {
     console.log('>>>>> 摸牌来了');
@@ -213,7 +213,7 @@ export default class Game {
 
   /**
    * 玩家出牌
-   * @param data 
+   * @param data
    */
   public playerShowCard(data: IGamePlay) {
     const { origin, cards, position } = data;
@@ -243,7 +243,7 @@ export default class Game {
 
   /**
    * 爆炸了的灵魂放炸弹猫
-   * @param data 
+   * @param data
    */
   public soulSetBoomPosition(data: IGamePlay) {
     const { origin, cards, position } = data;
@@ -256,7 +256,7 @@ export default class Game {
 
   /**
    * 玩家添加牌
-   * @param userId 
+   * @param userId
    * @param cards 添加的卡牌们
    */
   public playerAddCard(userId: string, cards: CardType[] = []) {
@@ -272,8 +272,8 @@ export default class Game {
 
   /**
    * 玩家失去牌
-   * @param userId 
-   * @param cards 
+   * @param userId
+   * @param cards
    */
   public playerRemoveCard(userId: string, cards: CardType[] = []) {
     const player = this.getPlayerById(userId);

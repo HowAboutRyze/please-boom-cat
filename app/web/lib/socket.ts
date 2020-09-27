@@ -23,7 +23,7 @@ export class Socket {
       });
       socket.on('connect', () => {
         console.log('#connect');
-    
+
         // 房间广播
         socket.on(SOCKET_ROOM_BROADCAST, data => {
           console.log('>>>>> 房间消息：', data);
@@ -71,7 +71,7 @@ export class Socket {
           }
         });
       });
-      
+
       this.socket = socket;
       Vue.prototype.$socket = socket;
     }

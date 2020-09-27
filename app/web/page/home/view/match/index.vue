@@ -47,7 +47,7 @@ p > em {
   width: 3ch;
   text-align: left;
   text-indent: -1ch;
-  vertical-align: bottom; 
+  vertical-align: bottom;
   overflow: hidden;
   animation: dotAnim 3s infinite step-start both;
   /* 等宽字体很重要 */

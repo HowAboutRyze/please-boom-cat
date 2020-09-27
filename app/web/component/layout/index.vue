@@ -10,7 +10,7 @@
       <template v-html="socketIoScript"></template>
     </head>
     <body>
-      <div id="app"><slot></slot></div>    
+      <div id="app"><slot></slot></div>
     </body>
   </html>
   <div v-else-if="!isNode" id="app"><slot></slot></div>

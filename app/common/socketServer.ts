@@ -25,7 +25,7 @@ export default class SocketServer {
   /**
    * 用户连接游戏
    * @param socket 用户 websocket 实例
-   * @param userInfo 用户信息 
+   * @param userInfo 用户信息
    */
   public onSocketConnect(socket, userInfo) {
     const user = this.userServer.addUser({ ...userInfo, socket });
@@ -63,7 +63,7 @@ export default class SocketServer {
 
   /**
    * 添加 socket 事件监听
-   * @param socket 
+   * @param socket
    */
   public addSocketListener(socket) {
     // 开始游戏

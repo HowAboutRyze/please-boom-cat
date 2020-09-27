@@ -58,7 +58,7 @@ export default class Game extends Vue {
 
   /**
    * 卡牌 class
-   * @param index 
+   * @param index
    */
   cardClass(index) {
     return `card ${this.isSelected(index) ? 'selected' : ''}`

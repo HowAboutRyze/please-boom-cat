@@ -13,7 +13,7 @@ export default class User {
   public nickName?: string;
   @JsonProperty('createTime')
   public createTime?: number;
-  
+
 
   // constructor must be init everyone JsonProperty
   constructor() {

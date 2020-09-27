@@ -6,4 +6,3 @@ interface Window {
   localStorage: any;
   sessionStorage: any;
 }
-
