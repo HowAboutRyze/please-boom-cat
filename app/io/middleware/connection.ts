@@ -1,7 +1,7 @@
 import { Context } from 'egg';
 
 export default () => {
-  return async(ctx: Context, next) => {
+  return async (ctx: Context, next) => {
     // 刚连接上
     const { app, socket } = ctx;
     const { socketServer } = app;

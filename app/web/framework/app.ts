@@ -60,7 +60,7 @@ export default class App {
       const vm = this.create(context.state);
       const { store, router } = vm;
       router.push(context.state.url);
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         router.onReady(() => {
           this.fetch(vm).then(() => {
             context.state = store.state;

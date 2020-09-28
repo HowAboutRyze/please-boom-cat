@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { Module, GetterTree, ActionTree, MutationTree } from 'vuex';
 import {
   SET_GAME_INFO,
@@ -22,42 +21,42 @@ export default class GameModule implements Module<GameState, RootState> {
     selfGameInfo(state, getters, rootState) {
       return state.playerList?.find(player => player.userId === rootState.user.user.userId) || {};
     },
-    waitingDefuse(state, getters, rootState) {
+    waitingDefuse(state) {
       return state.type === GameInfoType.waitDefuse;
     },
-    someoneBoom(state, getters, rootState) {
+    someoneBoom(state) {
       return state.type === GameInfoType.boom ? state.origin : '';
     },
   };
 
   actions: ActionTree<GameState, RootState> = {
-    async showGamePop({ commit, dispatch, state , rootState }, data: IGameInfo & IGamePop) {
+    async showGamePop({ commit }, data: IGameInfo & IGamePop) {
       commit(SET_GAME_POP, { showPop: true, ...data });
       await sleep(2500);
       commit(SET_GAME_POP, { showPop: false });
       console.log('>>> 关闭了弹窗');
       commit(SET_GAME_INFO, data);
     },
-    async playerBoom({ commit, dispatch, state , rootState }, data: IGameInfo) {
+    async playerBoom({ dispatch, rootState }, data: IGameInfo) {
       // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
       const nickName = player.nickName;
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
     },
-    async waitDefuse({ commit, dispatch, state , rootState }, data) {
+    async waitDefuse({ dispatch, rootState }, data) {
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
       const nickName = player.nickName;
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
     },
-    async gameOver({ commit, dispatch, state , rootState }, data) {
+    async gameOver({ dispatch, rootState }, data) {
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
       const nickName = player.nickName;
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 爆炸了！！` });
     },
-    removeCards({ commit, dispatch, state , rootState }, data: number[]) {
+    removeCards({ commit, state, rootState }, data: number[]) {
       console.log('移除卡 data', data);
       const targetCards = [...data];
       const removeNum = targetCards.length;
@@ -66,7 +65,6 @@ export default class GameModule implements Module<GameState, RootState> {
         return;
       }
       const player = state.playerList[playerIndex];
-      // @ts-ignore
       const cards = player.cards.reduce((group, currCard) => {
         if (targetCards.includes(currCard)) {
           targetCards.shift();
@@ -78,7 +76,7 @@ export default class GameModule implements Module<GameState, RootState> {
       const total = player.total - removeNum;
       commit(SET_PLAYER, { index: playerIndex, player: { ...player, cards, total } });
     },
-    saveGame({ commit, dispatch, state , rootState }, data) {
+    saveGame({ commit }, data) {
       commit(SET_GAME_INFO, data);
     },
   };

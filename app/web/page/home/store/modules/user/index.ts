@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Module, GetterTree, ActionTree, MutationTree } from 'vuex';
+import { Module, ActionTree, MutationTree } from 'vuex';
 import {
   SET_USER_INFO,
 } from './type';
@@ -16,11 +16,11 @@ export default class UserModule implements Module<UserState, RootState> {
   state: UserState;
 
   actions: ActionTree<UserState, RootState> = {
-    async getUser({ commit, dispatch, state , rootState }, { id }) {
+    async getUser({ commit, rootState }, { id }) {
       const res = await axios.get(`${rootState.origin}/api/user/${id}`);
       commit(SET_USER_INFO, res.data);
     },
-    async saveUser({ commit, dispatch, state, rootState }, data) {
+    async saveUser({ commit, rootState }, data) {
       // node need auth
       const res = await axios.post(`${rootState.origin}/api/user/save`, data);
       commit(SET_USER_INFO, res.data);

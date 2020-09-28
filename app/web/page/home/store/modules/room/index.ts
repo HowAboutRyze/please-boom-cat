@@ -1,26 +1,24 @@
-import axios from 'axios';
-import { Module, GetterTree, ActionTree, MutationTree } from 'vuex';
+import { Module, ActionTree, MutationTree } from 'vuex';
 import {
   SET_ROOM_INFO,
 } from './type';
 
 import RootState from '../../state';
-import RoomState from './state';
+import { IRoomInfo } from '../../../../../../model/room';
 
+export default class RoomModule implements Module<Partial<IRoomInfo>, RootState> {
+  state: Partial<IRoomInfo>;
 
-export default class RoomModule implements Module<RoomState, RootState> {
-  state: RoomState;
-
-  actions: ActionTree<RoomState, RootState> = {
-    saveRoom({ commit, dispatch, state , rootState }, data) {
+  actions: ActionTree<Partial<IRoomInfo>, RootState> = {
+    saveRoom({ commit }, data) {
       commit(SET_ROOM_INFO, data);
     },
-    quitRoom({ commit, dispatch, state , rootState }) {
+    quitRoom({ commit }) {
       commit(SET_ROOM_INFO, { id: '', masterId: '', playerList: [], hasStarted: false });
     },
   };
 
-  mutations: MutationTree<RoomState> = {
+  mutations: MutationTree<Partial<IRoomInfo>> = {
     [SET_ROOM_INFO](state, data) {
       console.log('>>> store commit ', data);
       state.id = data.id;

@@ -34,7 +34,7 @@ export class Socket {
         socket.on(SOCKET_GAMER_INFO, async (data: IGameInfo) => {
           console.log('>>>>> 游戏消息：', data);
           // TODO: 判断服务端发送过来的 data.type 进行游戏操作
-          const { type, origin } = data;
+          const { type } = data;
           switch (type) {
             case GameInfoType.system: {
               this.store.dispatch('saveGame', data);

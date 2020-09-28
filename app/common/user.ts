@@ -21,7 +21,7 @@ class UserServer {
   public addUser(user) {
     const newUser = new User(user);
     const { socketId } = newUser;
-    let userInfo = this.getUserBySocket(socketId);
+    const userInfo = this.getUserBySocket(socketId);
     if (userInfo) {
       const index = this.userList.findIndex(u => u.socketId === socketId);
       if (index !== -1) {

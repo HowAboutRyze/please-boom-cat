@@ -6,7 +6,7 @@ import { IGamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game
 @Component
 export default class Game extends Vue {
   public selectedCards: number[] = [];
-  public position: number  = 0;
+  public position  = 0;
   public targetPlayer = '';
   public positionPopShow  = false;
 
@@ -32,11 +32,11 @@ export default class Game extends Vue {
     }
   }
 
-  get canShowCards() {
+  get canShowCards(): boolean {
     return this.selectedCards.length > 0;
   }
 
-  get isGameOver() {
+  get isGameOver(): boolean {
     return this.gameType === GameInfoType.gameOver;
   }
 
@@ -44,7 +44,7 @@ export default class Game extends Vue {
    * 是否爆炸了的倒霉玩家
    * @param userId 用户id
    */
-  isBoomPlayer(userId) {
+  isBoomPlayer(userId: string): boolean {
     return userId === this.someoneBoom;
   }
 
@@ -52,7 +52,7 @@ export default class Game extends Vue {
    * 是否当前出牌玩家
    * @param userId 用户id
    */
-  isCurrentPlayer(userId) {
+  isCurrentPlayer(userId: string): boolean {
     return userId === this.currentPlayer;
   }
 
@@ -60,7 +60,7 @@ export default class Game extends Vue {
    * 卡牌 class
    * @param index
    */
-  cardClass(index) {
+  cardClass(index: number): string {
     return `card ${this.isSelected(index) ? 'selected' : ''}`
   }
 
@@ -68,14 +68,14 @@ export default class Game extends Vue {
    * 卡牌被选中了
    * @param index 卡牌序号
    */
-  isSelected(index) {
+  isSelected(index: number): boolean {
     return this.selectedCards.indexOf(index) !== -1;
   }
 
   /**
    * 摸牌
    */
-  touchCard() {
+  touchCard(): void {
     const data: IGamePlay = {
       id: this.gameId,
       type: PlayInfoType.touch,
@@ -89,7 +89,7 @@ export default class Game extends Vue {
    * @param type 卡牌类型
    * @param index 卡牌序号
    */
-  selectCard(type: number, index: number) {
+  selectCard(type: number, index: number): void {
     if (this.waitingDefuse && type !== CardType.defuse) {
       // TODO: 改为toast 吧
       console.log('你要选拆解啊！！！别选其他牌');
@@ -120,14 +120,14 @@ export default class Game extends Vue {
   /**
    * 清空选中牌组
    */
-  clearSelectedCards() {
+  clearSelectedCards(): void {
     this.selectedCards = [];
   }
 
   /**
    * 想出牌
    */
-  wantShowCard() {
+  wantShowCard(): void {
     if (!this.canShowCards) {
       return;
     }
@@ -169,7 +169,7 @@ export default class Game extends Vue {
   /**
    * 出牌吧
    */
-  showCards() {
+  showCards(): void {
     const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
     const playType = this.isBoomPlayer(this.user.userId) ? PlayInfoType.soul : PlayInfoType.show;
     const data: IGamePlay = {
@@ -188,36 +188,36 @@ export default class Game extends Vue {
     this.position = 0;
   }
 
-  setBoomPosition() {
+  setBoomPosition(): void {
     this.hidePositionPop();
     this.showCards();
   }
 
-  showPositionPop() {
+  showPositionPop(): void {
     this.positionPopShow = true;
   }
 
-  hidePositionPop() {
+  hidePositionPop(): void {
     this.positionPopShow = false;
   }
 
-  getNickName(userId) {
+  getNickName(userId: string): string {
     const player = this.roomPlayerList.find(p => p.userId === userId);
     return player?.nickName || '';
   }
 
-  getCardName(type) {
+  getCardName(type: number): string {
     return cardMap[type]?.name || '未知卡牌';
   }
 
-  getCardDesc(type) {
+  getCardDesc(type: number): string {
     return cardMap[type]?.desc || '未知卡牌详情';
   }
 
   /**
    * 退出游戏
    */
-  async quitGame() {
+  async quitGame(): Promise<void> {
     console.log('>>>>> 退出游戏');
     await this.$socketServer.disconnect();
     this.$router.push(`/match`);

@@ -4,7 +4,7 @@
  */
 export function sleep(delay = 1000) {
   return new Promise(resolve => {
-    let timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       clearTimeout(timer);
       resolve();
     }, delay);

@@ -1,4 +1,4 @@
-import { Vue, Component, Emit } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
@@ -11,13 +11,13 @@ const userAcount = mockUserAccounts[Math.floor(Math.random() * mockUserAccounts.
 export default class Home extends Vue {
   account: string = userAcount;
 
-  userId: string = '';
+  userId = '';
 
-  nickName: string = '';
+  nickName = '';
 
-  avatar: string = '';
+  avatar = '';
 
-  showLoginTab: boolean = true;
+  showLoginTab = true;
 
   @State(state => state.origin) origin;
 

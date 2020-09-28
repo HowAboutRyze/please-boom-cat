@@ -3,10 +3,10 @@ import Condition from '../condition';
 import * as shortid from 'shortid';
 import { PlainObject } from 'egg';
 
-export default class DB {
+export default abstract class DB {
   public instance: any;
   public name: string;
-  constructor(name: string = 'game.json') {
+  constructor(name = 'game.json') {
     this.name = name;
   }
 
@@ -14,27 +14,15 @@ export default class DB {
     return shortid.generate();
   }
 
-  public get(collectionName: string) {
-    return null;
-  }
+  public abstract get(collectionName: string): void;
 
-  public query(collectionName: string, json: PlainObject) {
-    return null;
-  }
+  public abstract query(collectionName: string, json: PlainObject): void;
 
-  public add(collectionName: string, json: PlainObject) {
-    return null;
-  }
+  public abstract add(collectionName: string, json: PlainObject): void;
 
-  public update(collectionName: string, where: PlainObject, json: PlainObject) {
-    return null;
-  }
+  public abstract update(collectionName: string, where: PlainObject, json: PlainObject): void;
 
-  public delete(collectionName: string, field: any) {
-    return null;
-  }
+  public abstract delete(collectionName: string, field: any): void;
 
-  public getPager(collectionName: string, condition: Condition): any {
-    return null;
-  }
+  public abstract getPager(collectionName: string, condition: Condition): void;
 }

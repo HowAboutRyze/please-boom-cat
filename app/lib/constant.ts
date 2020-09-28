@@ -32,7 +32,7 @@ export enum CardType {
 export const cardMap = {
   [CardType.boom]: {
     name: '爆炸猫',
-    initNum(n) {
+    initNum(n: number): number {
       return n - 1;
     },
     desc: 'boom，爆炸啦！立即展示此牌',

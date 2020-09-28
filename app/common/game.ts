@@ -42,19 +42,19 @@ export default class Game {
   }
 
   // 牌组剩余数量
-  get total() {
+  get total(): number {
     return this.deck.length;
   }
 
   // 存活的玩家
-  get survivePlayers() {
+  get survivePlayers(): IGamePlayer[] {
     return this.playerList.filter(p => !p.isOver);
   }
 
   /**
    * 初始化游戏
    */
-  public initGame() {
+  public initGame(): void {
     const playerNum = this.playerList.length;
     // for (let i = 0; i <= CardType.beardcat; i++) {
     for (let i = 0; i <= CardType.shuffle; i++) { // FIXME: 临时把牌减少用于开发
@@ -96,14 +96,14 @@ export default class Game {
   /**
    * 切洗牌堆
    */
-  public randomDeck() {
+  public randomDeck(): void {
     this.deck = _.shuffle(this.deck);
   }
 
   /**
    * 摸牌
    */
-  public touchCard() {
+  public touchCard(): number {
     return this.deck.shift();
   }
 
@@ -111,14 +111,14 @@ export default class Game {
    * 通过 userId 找到玩家
    * @param userId
    */
-  public getPlayerById(userId: string) {
+  public getPlayerById(userId: string): IGamePlayer {
     return this.playerList.find(p => p.userId === userId);
   }
 
   /**
    * 轮到下一个玩家
    */
-  public nextPlayerTurn() {
+  public nextPlayerTurn(): void {
     const survivePlayers = this.survivePlayers;
     const currIndex = survivePlayers.findIndex(p => p.userId === this.currentPlayer);
     if (currIndex === -1) {
@@ -135,7 +135,7 @@ export default class Game {
    * 发送游戏信息
    * @param info
    */
-  public sendGameInfo(info: Partial<IGameInfo> = {}) {
+  public sendGameInfo(info: Partial<IGameInfo> = {}): void {
     const { type = GameInfoType.system, msg, origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     this.playerList.forEach(player => {
@@ -167,7 +167,7 @@ export default class Game {
    * 处理玩家游戏信息
    * @param data 游戏数据
    */
-  public gamePlayHandle(data: IGamePlay) {
+  public gamePlayHandle(data: IGamePlay): void {
     const { type } = data;
     if (type === PlayInfoType.touch) {
       this.playerTouchCard(data);
@@ -184,7 +184,7 @@ export default class Game {
    * 玩家摸牌
    * @param data
    */
-  public playerTouchCard(data: IGamePlay) {
+  public playerTouchCard(data: IGamePlay): void {
     console.log('>>>>> 摸牌来了');
     const { origin } = data;
     const card = this.touchCard();
@@ -215,7 +215,7 @@ export default class Game {
    * 玩家出牌
    * @param data
    */
-  public playerShowCard(data: IGamePlay) {
+  public playerShowCard(data: IGamePlay): void {
     const { origin, cards, position } = data;
     if (cards.length === 0) {
       // TODO: 报错啊，都没牌，出什么？
@@ -245,7 +245,7 @@ export default class Game {
    * 爆炸了的灵魂放炸弹猫
    * @param data
    */
-  public soulSetBoomPosition(data: IGamePlay) {
+  public soulSetBoomPosition(data: IGamePlay): void {
     const { origin, position } = data;
     this.deck.splice(position, 0, CardType.boom);
     this.nextPlayerTurn();
@@ -259,7 +259,7 @@ export default class Game {
    * @param userId
    * @param cards 添加的卡牌们
    */
-  public playerAddCard(userId: string, cards: CardType[] = []) {
+  public playerAddCard(userId: string, cards: CardType[] = []): boolean {
     const player = this.getPlayerById(userId);
     if (player) {
       player.cards.push(...cards);
@@ -275,11 +275,10 @@ export default class Game {
    * @param userId
    * @param cards
    */
-  public playerRemoveCard(userId: string, cards: CardType[] = []) {
+  public playerRemoveCard(userId: string, cards: CardType[] = []): boolean {
     const player = this.getPlayerById(userId);
     if (player) {
       const targetCards = [...cards];
-      // @ts-ignore
       const resCards = player.cards.reduce((group, currCard) => {
         if (targetCards.includes(currCard)) {
           targetCards.shift();

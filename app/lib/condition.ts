@@ -7,8 +7,8 @@ export default class Condition {
   public pageSize: number;
   public where: any = {};
   public like: any = {};
-  public orderByField: string = 'createTime';
-  public orderBy: string = 'desc';
+  public orderByField = 'createTime';
+  public orderBy = 'desc';
 
   constructor() {
     this.pageIndex = 1;

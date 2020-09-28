@@ -20,7 +20,7 @@ class GameServer {
   public addGame(game) {
     const newGame = new Game(game, this.config);
     const { id } = newGame;
-    let gameInfo = this.getGameById(id);
+    const gameInfo = this.getGameById(id);
     if (gameInfo) {
       delete this.gameHash[id];
     }

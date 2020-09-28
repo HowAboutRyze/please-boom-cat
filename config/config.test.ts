@@ -1,7 +1,5 @@
 
-import { Application, EggAppConfig } from 'egg';
-
-export default (appInfo: EggAppConfig) => {
+export default () => {
   const exports: any = {};
 
   return exports;

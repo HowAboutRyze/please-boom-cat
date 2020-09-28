@@ -1,42 +1,49 @@
 <template>
   <div class="home-page">
     <h1>爆炸猫啊</h1>
-    <div class="tab" @click="changeTab">
-      {{tab}}
+    <div
+      class="tab"
+      @click="changeTab"
+    >
+      {{ tab }}
     </div>
     <div v-if="showLoginTab">
       <div class="form login-info">
         <input
-          placeholder="请输入用户账号"
           v-model="account"
-        />
+          placeholder="请输入用户账号"
+        >
       </div>
       <button
         type="button"
         style="width: 100%;margin-bottom: 18px"
         @click="login"
-      >登录</button>
+      >
+        登录
+      </button>
     </div>
     <div v-else>
       <div class="form register-info">
         <input
-          placeholder="请输入用户账号"
           v-model="userId"
-        />
+          placeholder="请输入用户账号"
+        >
         <input
-          placeholder="请输入昵称"
           v-model="nickName"
-        />
+          placeholder="请输入昵称"
+        >
         <input
-          placeholder="请输入头像连接"
           v-model="avatar"
-        />
+          placeholder="请输入头像连接"
+        >
       </div>
       <button
         type="button"
         style="width: 100%;margin-bottom: 18px"
         @click="register"
-      >注册</button>
+      >
+        注册
+      </button>
     </div>
   </div>
 </template>

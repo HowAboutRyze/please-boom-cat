@@ -10,7 +10,7 @@ import { USER_ID } from '@lib/constant';
 
 Vue.use(VueRouter);
 
-export default function createRouter() {
+export default function createRouter(): VueRouter {
   const router = new VueRouter({
     mode: 'history',
     base: '/',

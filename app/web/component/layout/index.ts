@@ -13,11 +13,11 @@ export default class Layout extends Vue {
 
   isNode: boolean = EASY_ENV_IS_NODE;
 
-  get socketIoScript() {
+  get socketIoScript(): string {
     return '<script src="/public/asset/js/socket.io.slim.js"></script>';
   }
 
-  created() {
+  created(): void {
     console.log('>>EASY_ENV_IS_NODE create', EASY_ENV_IS_NODE);
   }
 }
