@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY } from '../../../app/lib/constant';
-import { IGamePlay, IGameInfo, GameInfoType } from '../../model/game';
+import { GamePlay, GameInfo, GameInfoType } from '../../model/game';
 
 export class Socket {
   public store: any;
@@ -12,7 +12,7 @@ export class Socket {
     this.socket = null;
   }
 
-  public connect(userInfo) {
+  public connect(userInfo): void {
     if (!EASY_ENV_IS_NODE && (window as any).io) {
       const socket = (window as any).io?.('/', {
         query: {
@@ -31,7 +31,7 @@ export class Socket {
         });
 
         // 游戏消息
-        socket.on(SOCKET_GAMER_INFO, async (data: IGameInfo) => {
+        socket.on(SOCKET_GAMER_INFO, async (data: GameInfo) => {
           console.log('>>>>> 游戏消息：', data);
           // TODO: 判断服务端发送过来的 data.type 进行游戏操作
           const { type } = data;
@@ -77,15 +77,15 @@ export class Socket {
     }
   }
 
-  public async startGame() {
+  public async startGame(): Promise<void> {
     await this.socket?.emit(SOCKET_START_GAMER);
   }
 
-  public async sendPlayData(data: IGamePlay) {
+  public async sendPlayData(data: GamePlay): Promise<void> {
     await this.socket?.emit(SOCKET_GAMER_PLAY, data);
   }
 
-  public async disconnect() {
+  public async disconnect(): Promise<void> {
     await this.socket?.disconnect();
     this.store.dispatch('quitRoom');
   }

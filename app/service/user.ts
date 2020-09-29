@@ -12,7 +12,7 @@ export default class ArticeService extends Service {
     this.colllection = new Colllection(ctx.db, 'user');
   }
 
-  public async saveUser(data: any) {
+  public async saveUser(data: any): Promise<any> {
     const user: User = deserialize(User, data);
     if (user.id) {
       return this.colllection.update({ id: user.id }, user);
@@ -22,7 +22,7 @@ export default class ArticeService extends Service {
     return user;
   }
 
-  public async query(json: any) {
+  public async query(json: any): Promise<any> {
     return this.colllection.query(json);
   }
 

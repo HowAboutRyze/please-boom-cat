@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as util from 'util';
 import { Context } from 'egg';
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default () => {
   const skipExt = [ '.png', '.jpeg', '.jpg', '.ico', '.gif' ];
   return async function access(ctx: Context, next: any) {

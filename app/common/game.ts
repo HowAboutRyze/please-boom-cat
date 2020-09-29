@@ -1,19 +1,24 @@
 import { SOCKET_GAMER_INFO, CardType, cardMap } from '../lib/constant';
-import { IGameInfo, GameInfoType, IGamePlay, PlayInfoType } from '../model/game';
+import { GameInfo, GameInfoType, GamePlay, PlayInfoType, SocketServerConfig } from '../model/game';
 import { uuidv4 } from '../lib/utils';
 import * as _ from 'lodash';
 
-export interface IGamePlayer {
+export interface GamePlayer {
   userId: string;
   cards: number[];
   isOver: boolean;
   user: any;
 }
 
-export default class Game {
-  public gameInfo: any;
+export interface GameData {
+  roomId: string;
+  playerList: GamePlayer[];
+}
 
-  public config: any;
+export default class Game {
+  public gameData: GameData;
+
+  public config: SocketServerConfig;
 
   public id: string;
 
@@ -25,18 +30,18 @@ export default class Game {
   // 额外牌组，初始化的时候存炸弹
   public extDeck: number[];
 
-  public playerList: IGamePlayer[];
+  public playerList: GamePlayer[];
 
   public currentPlayer: string;
 
-  constructor(gameInfo, config) {
-    this.gameInfo = gameInfo;
+  constructor(gameData: GameData, config: SocketServerConfig) {
+    this.gameData = gameData;
     this.config = config;
     this.id = uuidv4();
-    this.roomId = gameInfo.roomId;
+    this.roomId = gameData.roomId;
     this.deck = [];
     this.extDeck = [];
-    this.playerList = gameInfo.playerList;
+    this.playerList = gameData.playerList;
 
     this.initGame();
   }
@@ -47,7 +52,7 @@ export default class Game {
   }
 
   // 存活的玩家
-  get survivePlayers(): IGamePlayer[] {
+  get survivePlayers(): GamePlayer[] {
     return this.playerList.filter(p => !p.isOver);
   }
 
@@ -111,7 +116,7 @@ export default class Game {
    * 通过 userId 找到玩家
    * @param userId
    */
-  public getPlayerById(userId: string): IGamePlayer {
+  public getPlayerById(userId: string): GamePlayer {
     return this.playerList.find(p => p.userId === userId);
   }
 
@@ -135,7 +140,7 @@ export default class Game {
    * 发送游戏信息
    * @param info
    */
-  public sendGameInfo(info: Partial<IGameInfo> = {}): void {
+  public sendGameInfo(info: Partial<GameInfo> = {}): void {
     const { type = GameInfoType.system, msg, origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     this.playerList.forEach(player => {
@@ -147,7 +152,7 @@ export default class Game {
         }
         return { ...p };
       });
-      const data: IGameInfo = {
+      const data: GameInfo = {
         id: this.id,
         msg,
         type,
@@ -167,7 +172,7 @@ export default class Game {
    * 处理玩家游戏信息
    * @param data 游戏数据
    */
-  public gamePlayHandle(data: IGamePlay): void {
+  public gamePlayHandle(data: GamePlay): void {
     const { type } = data;
     if (type === PlayInfoType.touch) {
       this.playerTouchCard(data);
@@ -184,7 +189,7 @@ export default class Game {
    * 玩家摸牌
    * @param data
    */
-  public playerTouchCard(data: IGamePlay): void {
+  public playerTouchCard(data: GamePlay): void {
     console.log('>>>>> 摸牌来了');
     const { origin } = data;
     const card = this.touchCard();
@@ -215,7 +220,7 @@ export default class Game {
    * 玩家出牌
    * @param data
    */
-  public playerShowCard(data: IGamePlay): void {
+  public playerShowCard(data: GamePlay): void {
     const { origin, cards, position } = data;
     if (cards.length === 0) {
       // TODO: 报错啊，都没牌，出什么？
@@ -245,7 +250,7 @@ export default class Game {
    * 爆炸了的灵魂放炸弹猫
    * @param data
    */
-  public soulSetBoomPosition(data: IGamePlay): void {
+  public soulSetBoomPosition(data: GamePlay): void {
     const { origin, position } = data;
     this.deck.splice(position, 0, CardType.boom);
     this.nextPlayerTurn();

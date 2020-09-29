@@ -4,10 +4,10 @@ import {
   SET_PLAYER,
   SET_GAME_POP,
 } from './type';
-import { GameInfoType, IGameInfo } from '../../../../../../model/game';
+import { GameInfoType, GameInfo } from '../../../../../../model/game';
 
 import RootState from '../../state';
-import GameState, { IGamePop } from './state';
+import GameState, { GamePop } from './state';
 import { sleep } from '@lib/utils';
 
 
@@ -30,14 +30,14 @@ export default class GameModule implements Module<GameState, RootState> {
   };
 
   actions: ActionTree<GameState, RootState> = {
-    async showGamePop({ commit }, data: IGameInfo & IGamePop) {
+    async showGamePop({ commit }, data: GameInfo & GamePop) {
       commit(SET_GAME_POP, { showPop: true, ...data });
       await sleep(2500);
       commit(SET_GAME_POP, { showPop: false });
       console.log('>>> 关闭了弹窗');
       commit(SET_GAME_INFO, data);
     },
-    async playerBoom({ dispatch, rootState }, data: IGameInfo) {
+    async playerBoom({ dispatch, rootState }, data: GameInfo) {
       // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);

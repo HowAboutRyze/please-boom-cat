@@ -1,4 +1,4 @@
-export interface IPlayer {
+export interface Player {
   userId: string;
   cards: number[];
   total: number;
@@ -15,7 +15,7 @@ export enum GameInfoType {
 }
 
 // 服务端下发游戏消息
-export interface IGameInfo {
+export interface GameInfo {
   id: string; // 游戏 id
   msg?: string; // 额外消息
   type: GameInfoType; // 游戏消息类型
@@ -23,7 +23,7 @@ export interface IGameInfo {
   origin?: string; // 事件发起者
   target?: string; // 事件目标
   cards?: number[]; // 出的牌
-  playerList: IPlayer[];
+  playerList: Player[];
   currentPlayer: string;
 }
 
@@ -34,11 +34,16 @@ export enum PlayInfoType {
 }
 
 // 客户端用户提交游戏消息
-export interface IGamePlay {
+export interface GamePlay {
   id: string; // 游戏 id
   type: PlayInfoType; // 游戏消息类型
   origin: string; // 事件发起者
   target?: string; // 事件目标玩家
   cards?: number[]; // 出的牌
   position?: number; // 放爆炸牌的位置
+}
+
+export interface SocketServerConfig {
+  initCardNum: number;
+  roomSize: number;
 }

@@ -1,7 +1,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
-import { IGamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
+import { GamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
 
 @Component
 export default class Game extends Vue {
@@ -76,7 +76,7 @@ export default class Game extends Vue {
    * 摸牌
    */
   touchCard(): void {
-    const data: IGamePlay = {
+    const data: GamePlay = {
       id: this.gameId,
       type: PlayInfoType.touch,
       origin: this.user.userId,
@@ -172,7 +172,7 @@ export default class Game extends Vue {
   showCards(): void {
     const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
     const playType = this.isBoomPlayer(this.user.userId) ? PlayInfoType.soul : PlayInfoType.show;
-    const data: IGamePlay = {
+    const data: GamePlay = {
       id: this.gameId,
       type: playType,
       origin: this.user.userId,

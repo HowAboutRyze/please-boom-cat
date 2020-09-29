@@ -1,6 +1,6 @@
 'use strict';
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import RootState from './state';
 import User from './modules/user';
 import Room from './modules/room';
@@ -9,7 +9,7 @@ import Socket from '@lib/socket';
 
 Vue.use(Vuex);
 
-export default function createStore(initState: any = {}) {
+export default function createStore(initState: any = {}): Store<RootState> {
   const { title, url, origin, locale, csrf, user } = initState;
   const state = { title, url, origin, locale, csrf };
   const store = new Vuex.Store<RootState>({

@@ -21,37 +21,37 @@ export default class Match extends Vue {
   }
 
   // 2人就可以开始游戏啦
-  get canStart() {
+  get canStart(): boolean {
     return this.playerList.length >= 2;
   }
 
   // 开始游戏按钮 class
-  get startClass() {
+  get startClass(): string {
     return `start-btn ${this.canStart ? 'active' : ''}`;
   }
 
-  async joinRoom() {
+  joinRoom(): void {
     this.$socketServer.connect(this.user);
   }
 
-  async quitRoom() {
+  async quitRoom(): Promise<void> {
     console.log('>>>>> 退出匹配');
     await this.$socketServer.disconnect();
   }
 
   // 开始游戏，房主才有开始游戏按钮
-  async startGame() {
+  async startGame(): Promise<void> {
     if (this.canStart) {
       console.log('开始游戏啊');
       await this.$socketServer.startGame();
     }
   }
 
-  isMater(id) {
+  isMater(id: string): boolean {
     return id === this.masterId;
   }
 
-  async mounted() {
+  async mounted(): Promise<void> {
     // 先拿用户信息
     if (!this.user.userId) {
       const userId = _session.get(USER_ID);
@@ -59,7 +59,7 @@ export default class Match extends Vue {
     }
   }
 
-  updated() {
+  updated(): void {
     console.log('>>>> update', this.roomId);
   }
 }

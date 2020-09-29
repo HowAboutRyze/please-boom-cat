@@ -1,14 +1,15 @@
-import Game from './game';
+import Game, { GameData } from './game';
+import { SocketServerConfig } from '../model/game';
 
 interface GameHash {
   [key: string]: Game;
 }
 
 class GameServer {
-  public config: any;
+  public config: SocketServerConfig;
   public gameHash: GameHash = {};
 
-  constructor(config) {
+  constructor(config: SocketServerConfig) {
     this.config = config;
   }
 
@@ -17,7 +18,7 @@ class GameServer {
    * @param game 游戏信息
    * @return new game
    */
-  public addGame(game) {
+  public addGame(game: GameData): Game {
     const newGame = new Game(game, this.config);
     const { id } = newGame;
     const gameInfo = this.getGameById(id);
@@ -33,7 +34,7 @@ class GameServer {
    * 移除游戏实例
    * @param id
    */
-  public removeGame(id) {
+  public removeGame(id: string): void {
     delete this.gameHash[id];
     console.log('>>>>> 移除游戏', this.gameHash);
   }
@@ -42,7 +43,7 @@ class GameServer {
    * 获取游戏实例
    * @param id
    */
-  public getGameById(id) {
+  public getGameById(id: string): Game {
     return this.gameHash[id];
   }
 }

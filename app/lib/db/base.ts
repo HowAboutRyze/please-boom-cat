@@ -10,7 +10,7 @@ export default abstract class DB {
     this.name = name;
   }
 
-  public getUniqueId() {
+  public getUniqueId(): string {
     return shortid.generate();
   }
 

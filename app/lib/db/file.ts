@@ -14,35 +14,35 @@ export default class FileDB extends BaseDB {
     this.create();
   }
 
-  public create() {
+  public create(): void {
     this.instance.defaults({ user: [] }).write();
   }
 
-  public get(collectionName: string) {
+  public get(collectionName: string): any {
     return this.instance.get(collectionName);
   }
 
-  public query(collectionName: string, json: PlainObject) {
+  public query(collectionName: string, json: PlainObject): any {
     return this.get(collectionName)
       .find(json)
       .write();
   }
 
-  public add(collectionName: string, json: PlainObject) {
+  public add(collectionName: string, json: PlainObject): any {
     return this.get(collectionName)
       .push(json)
       .write();
   }
 
-  public update(collectionName: string, where: PlainObject, json: PlainObject) {
+  public update(collectionName: string, where: PlainObject, json: PlainObject): any {
     return this.get(collectionName).find(where).assign(json).write();
   }
 
-  public delete(collectionName: string, json: PlainObject) {
+  public delete(collectionName: string, json: PlainObject): any {
     return this.get(collectionName).remove(json).write();
   }
 
-  public getPager(collectionName: string, condition: Condition) {
+  public getPager(collectionName: string, condition: Condition): any {
     const {
       where,
       like,

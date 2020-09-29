@@ -5,7 +5,7 @@ export interface User {
   nickName: string;
 }
 
-export interface IRoomInfo {
+export interface RoomInfo {
   id: string;
   masterId: string;
   playerList: User[];

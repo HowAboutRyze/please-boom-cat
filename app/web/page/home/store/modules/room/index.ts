@@ -4,12 +4,12 @@ import {
 } from './type';
 
 import RootState from '../../state';
-import { IRoomInfo } from '../../../../../../model/room';
+import { RoomInfo } from '../../../../../../model/room';
 
-export default class RoomModule implements Module<Partial<IRoomInfo>, RootState> {
-  state: Partial<IRoomInfo>;
+export default class RoomModule implements Module<Partial<RoomInfo>, RootState> {
+  state: Partial<RoomInfo>;
 
-  actions: ActionTree<Partial<IRoomInfo>, RootState> = {
+  actions: ActionTree<Partial<RoomInfo>, RootState> = {
     saveRoom({ commit }, data) {
       commit(SET_ROOM_INFO, data);
     },
@@ -18,7 +18,7 @@ export default class RoomModule implements Module<Partial<IRoomInfo>, RootState>
     },
   };
 
-  mutations: MutationTree<Partial<IRoomInfo>> = {
+  mutations: MutationTree<Partial<RoomInfo>> = {
     [SET_ROOM_INFO](state, data) {
       console.log('>>> store commit ', data);
       state.id = data.id;

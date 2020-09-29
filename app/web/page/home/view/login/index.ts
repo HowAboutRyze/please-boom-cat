@@ -27,18 +27,18 @@ export default class Home extends Vue {
 
   @Action('saveUser') saveUser;
 
-  get tab() {
+  get tab(): '注册' | '登录' {
     return this.showLoginTab ? '注册' : '登录';
   }
 
-  async login() {
+  async login(): Promise<void> {
     await this.getUser({ id: this.account });
     _session.set(USER_ID, this.account);
     console.log('>>>>>login:', this.user, this.$socket);
     this.$router.push(`/match`);
   }
 
-  async register() {
+  async register(): Promise<void> {
     const { userId, nickName, avatar } = this;
     await this.saveUser({
       userId,

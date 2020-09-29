@@ -1,12 +1,12 @@
-import { IGameInfo } from '../../../../../../model/game';
+import { GameInfo } from '../../../../../../model/game';
 
-export default interface GameState extends IGameInfo {
+export default interface GameState extends GameInfo {
   showPop: boolean;
   popTitle: string;
   popText: string;
 }
 
-export interface IGamePop {
+export interface GamePop {
   popTitle: string;
   popText: string;
 }

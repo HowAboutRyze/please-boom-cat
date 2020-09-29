@@ -2,9 +2,9 @@ import { PlainObject } from 'egg';
 import UserServer from './user';
 import RoomServer from './room';
 import GameServer from './gameServer';
-import { IGamePlayer } from './game';
+import { GamePlayer } from './game';
 import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY } from '../lib/constant';
-import { IGamePlay } from '../model/game';
+import { GamePlay } from '../model/game';
 
 export default class SocketServer {
   public app: any;
@@ -27,7 +27,7 @@ export default class SocketServer {
    * @param socket 用户 websocket 实例
    * @param userInfo 用户信息
    */
-  public onSocketConnect(socket, userInfo) {
+  public onSocketConnect(socket, userInfo): void {
     const user = this.userServer.addUser({ ...userInfo, socket });
     const room = this.roomServer.findJoinableRoom();
     user.roomId = room.id;
@@ -41,7 +41,7 @@ export default class SocketServer {
    * 用户断开连接
    * @param socket 用户 websocket 实例
    */
-  public onSocketDisconnect(socket) {
+  public onSocketDisconnect(socket): void {
     // TODO: 断开连接就移除用户，那如果是游戏中，用户重连怎么办？
 
     const user = this.userServer.getUserBySocket(socket.id);
@@ -65,7 +65,7 @@ export default class SocketServer {
    * 添加 socket 事件监听
    * @param socket
    */
-  public addSocketListener(socket) {
+  public addSocketListener(socket): void {
     // 开始游戏
     socket.on(SOCKET_START_GAMER, () => {
       const user = this.userServer.getUserBySocket(socket.id);
@@ -74,7 +74,7 @@ export default class SocketServer {
         return;
       }
 
-      const playerList: IGamePlayer[] = room.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false, user: p }));
+      const playerList: GamePlayer[] = room.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false, user: p }));
       const game = this.gameServer.addGame({ roomId: user.roomId, playerList });
 
       // 房间绑定游戏id
@@ -85,7 +85,7 @@ export default class SocketServer {
     });
 
     // 游戏中，玩家发送消息过来了
-    socket.on(SOCKET_GAMER_PLAY, (data: IGamePlay) => {
+    socket.on(SOCKET_GAMER_PLAY, (data: GamePlay) => {
       console.log('玩家在干嘛？', data);
       if (!data.id) {
         return;
