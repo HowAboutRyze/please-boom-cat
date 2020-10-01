@@ -1,6 +1,6 @@
 import { SOCKET_GAMER_INFO, CardType, cardMap } from '../lib/constant';
 import { GameInfo, GameInfoType, GamePlay, PlayInfoType, SocketServerConfig } from '../model/game';
-import { uuidv4 } from '../lib/utils';
+import { uuidv4, randomInt } from '../lib/utils';
 import * as _ from 'lodash';
 
 export interface GamePlayer {
@@ -33,6 +33,8 @@ export default class Game {
   public playerList: GamePlayer[];
 
   public currentPlayer: string;
+
+  private timer: any;
 
   constructor(gameData: GameData, config: SocketServerConfig) {
     this.gameData = gameData;
@@ -242,6 +244,19 @@ export default class Game {
       this.deck.splice(position, 0, CardType.boom);
       this.nextPlayerTurn();
       this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
+    } else if (card === CardType.skip) {
+      // 跳过
+      // 1. 先通知其他人，如果有人有否决牌，等 5s 确认
+      // 2. 没人有否决牌，等待 1.5 ~ 2.5s，到下一家
+
+      this.sendGameInfo({ type: GameInfoType.play, origin, cards });
+
+      const delayTime = randomInt(1500, 3000);
+      this.timer = setTimeout(() => {
+        clearTimeout(this.timer);
+        this.nextPlayerTurn();
+        this.sendGameInfo({ type: GameInfoType.next, origin });
+      }, delayTime);
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
   }

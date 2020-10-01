@@ -9,3 +9,12 @@ export function uuidv4(): string {
       return v.toString(16);
   });
 }
+
+/**
+ * 随机整数
+ * @param minNum 最小
+ * @param maxNum 最大
+ */
+export function randomInt(minNum: number, maxNum: number): number {
+  return Math.floor(Math.random() * (maxNum - minNum + 1) + minNum);
+}
