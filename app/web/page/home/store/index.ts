@@ -12,7 +12,7 @@ Vue.use(Vuex);
 export default function createStore(initState: any = {}): Store<RootState> {
   const { title, url, origin, locale, csrf, user } = initState;
   const state = { title, url, origin, locale, csrf };
-  const store = new Vuex.Store<RootState>({
+  const store = new Vuex.Store<any>({
     state,
     modules: {
       user: new User(user),

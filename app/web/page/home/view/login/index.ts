@@ -50,7 +50,7 @@ export default class Home extends Vue {
     this.$router.push(`/match`);
   }
 
-  changeTab() {
+  changeTab(): void {
     this.showLoginTab = !this.showLoginTab;
   }
 }

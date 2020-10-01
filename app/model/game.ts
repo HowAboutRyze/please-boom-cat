@@ -47,3 +47,8 @@ export interface SocketServerConfig {
   initCardNum: number;
   roomSize: number;
 }
+
+export interface Socekt {
+  id: string;
+  [key: string]: any;
+}

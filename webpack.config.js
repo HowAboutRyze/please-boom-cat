@@ -13,7 +13,8 @@ module.exports = {
       '@store': resolve('app/web/page/home/store'),
       '@router': resolve('app/web/page/home/router'),
       '@view': resolve('app/web/page/home/view'),
-      '@lib': resolve('app/web/lib')
+      '@lib': resolve('app/web/lib'),
+      '@typings': resolve('app/web/typings'),
     }
   },
   module:{

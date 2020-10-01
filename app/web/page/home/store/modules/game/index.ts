@@ -41,19 +41,19 @@ export default class GameModule implements Module<GameState, RootState> {
       // FIXME: 如何优雅的从 vuex 里通过 userId 去获取这个 store.state.room.playerList[index].nickName 呢？
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
-      const nickName = player.nickName;
+      const nickName = player?.nickName || '';
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
     },
     async waitDefuse({ dispatch, rootState }, data) {
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
-      const nickName = player.nickName;
+      const nickName = player?.nickName || '';
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 抽到爆炸猫了！！` });
     },
     async gameOver({ dispatch, rootState }, data) {
       const { origin } = data;
       const player = rootState.room.playerList.find(p => p.userId === origin);
-      const nickName = player.nickName;
+      const nickName = player?.nickName || '';
       await dispatch('showGamePop', { ...data, popTitle: 'Congratulation', popText: `玩家 ${nickName} 爆炸了！！` });
     },
     removeCards({ commit, state, rootState }, data: number[]) {

@@ -28,7 +28,7 @@ export default class RoomModule implements Module<Partial<RoomInfo>, RootState> 
     },
   };
 
-  constructor(initState) {
+  constructor(initState: Partial<RoomInfo>) {
     this.state = { ...initState };
   }
 }

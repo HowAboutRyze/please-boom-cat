@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import { sync } from 'vuex-router-sync';
+import { NormalObject } from '@typings/gameTypes';
 
 export default class App {
-  config: any;
-  constructor(config) {
+  config: NormalObject;
+  constructor(config: NormalObject) {
     this.config = config;
   }
 
@@ -14,7 +15,7 @@ export default class App {
     return this.client();
   }
 
-  create(initState) {
+  create(initState: NormalObject): NormalObject {
     const { entry, createStore, createRouter } = this.config;
     const store = createStore(initState);
     const router = createRouter();
@@ -45,7 +46,7 @@ export default class App {
     );
   }
 
-  client() {
+  client(): Vue {
     const vm = this.create(window.__INITIAL_STATE__);
     vm.router.afterEach(() => {
       this.fetch(vm);
@@ -56,7 +57,7 @@ export default class App {
   }
 
   server() {
-    return context => {
+    return (context): Promise<Vue> => {
       const vm = this.create(context.state);
       const { store, router } = vm;
       router.push(context.state.url);

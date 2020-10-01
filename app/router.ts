@@ -1,7 +1,7 @@
 
 import { Application } from 'egg';
 
-export default (application: Application) => {
+export default (application: Application): void => {
   const { router, controller } = application;
 
   // 用户信息

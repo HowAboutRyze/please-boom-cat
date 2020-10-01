@@ -1,5 +1,6 @@
 import { PlainObject } from 'egg';
-import { SocketServerConfig } from '../model/game';
+import { SocketServerConfig, Socekt } from '../model/game';
+import { UserData } from '../model/user';
 
 interface UserHash {
   [key: string]: User;
@@ -12,7 +13,7 @@ export class User {
   public avatar: string;
   public nickName: string;
   public roomId?: string;
-  constructor({ socket, userId = '', avatar = '', nickName = '' }) {
+  constructor({ socket, userId = '', avatar = '', nickName = '' }: Partial<UserData>) {
     this.socket = socket;
     this.userId = userId;
     this.socketId = socket.id || '';
@@ -35,7 +36,7 @@ class UserServer {
    * @param user 用户信息
    * @return user
    */
-  public addUser(user): User {
+  public addUser(user: Partial<UserData>): User {
     const newUser = new User(user);
     const { socketId } = newUser;
     const userInfo = this.getUserBySocket(socketId);
@@ -56,7 +57,7 @@ class UserServer {
    * 移除用户
    * @param socket 用户 websocket 实例
    */
-  public removeUser(socket): void {
+  public removeUser(socket: Socekt): void {
     const socketId = socket.id;
     const index = this.userList.findIndex(u => u.socketId === socketId);
     if (index !== -1) {

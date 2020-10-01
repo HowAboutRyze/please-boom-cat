@@ -2,6 +2,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
 import { GamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
+import RootState from '@store/state';
 
 @Component
 export default class Game extends Vue {
@@ -10,19 +11,19 @@ export default class Game extends Vue {
   public targetPlayer = '';
   public positionPopShow  = false;
 
-  @State(state => state.user.user) user;
-  @State(state => state.game.id) gameId;
-  @State(state => state.game.type) gameType;
-  @State(state => state.game.currentPlayer) currentPlayer;
-  @State(state => state.game.remain) remain;
-  @State(state => state.game.showPop) showPop;
-  @State(state => state.game.popTitle) popTitle;
-  @State(state => state.game.popText) popText;
-  @State(state => state.room.playerList) roomPlayerList;
-  @Getter('otherPlayers') otherPlayers: any;
-  @Getter('selfGameInfo') selfGameInfo: any;
-  @Getter('waitingDefuse') waitingDefuse: any;
-  @Getter('someoneBoom') someoneBoom: any;
+  @State((state: RootState) => state.user.user) user;
+  @State((state: RootState) => state.game.id) gameId;
+  @State((state: RootState) => state.game.type) gameType;
+  @State((state: RootState) => state.game.currentPlayer) currentPlayer;
+  @State((state: RootState) => state.game.remain) remain;
+  @State((state: RootState) => state.game.showPop) showPop;
+  @State((state: RootState) => state.game.popTitle) popTitle;
+  @State((state: RootState) => state.game.popText) popText;
+  @State((state: RootState) => state.room.playerList) roomPlayerList;
+  @Getter('otherPlayers') otherPlayers;
+  @Getter('selfGameInfo') selfGameInfo;
+  @Getter('waitingDefuse') waitingDefuse;
+  @Getter('someoneBoom') someoneBoom;
   @Action('removeCards') removeCards;
 
   @Watch('someoneBoom')

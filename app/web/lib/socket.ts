@@ -1,18 +1,20 @@
 import Vue from 'vue';
+import { Store } from 'vuex';
 import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY } from '../../../app/lib/constant';
 import { GamePlay, GameInfo, GameInfoType } from '../../model/game';
+import User from '../../model/user';
 
 export class Socket {
-  public store: any;
+  public store: Store<any>;
 
   public socket: any;
 
-  constructor(store) {
+  constructor(store: Store<any>) {
     this.store = store;
     this.socket = null;
   }
 
-  public connect(userInfo): void {
+  public connect(userInfo: User): void {
     if (!EASY_ENV_IS_NODE && (window as any).io) {
       const socket = (window as any).io?.('/', {
         query: {

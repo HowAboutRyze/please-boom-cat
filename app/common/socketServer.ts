@@ -1,19 +1,20 @@
-import { PlainObject } from 'egg';
+import { PlainObject, Application } from 'egg';
 import UserServer from './user';
 import RoomServer from './room';
 import GameServer from './gameServer';
 import { GamePlayer } from './game';
 import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY } from '../lib/constant';
-import { GamePlay } from '../model/game';
+import { GamePlay, Socekt } from '../model/game';
+import { UserData } from '../model/user';
 
 export default class SocketServer {
-  public app: any;
+  public app: Application;
   public config: PlainObject;
   public roomServer: RoomServer;
   public userServer: UserServer;
   public gameServer: GameServer;
 
-  constructor(app) {
+  constructor(app: Application) {
     this.app = app;
     // 先占个位
     this.config = app.config.socketServer;
@@ -27,7 +28,7 @@ export default class SocketServer {
    * @param socket 用户 websocket 实例
    * @param userInfo 用户信息
    */
-  public onSocketConnect(socket, userInfo): void {
+  public onSocketConnect(socket: Socekt, userInfo: UserData): void {
     const user = this.userServer.addUser({ ...userInfo, socket });
     const room = this.roomServer.findJoinableRoom();
     user.roomId = room.id;
@@ -41,7 +42,7 @@ export default class SocketServer {
    * 用户断开连接
    * @param socket 用户 websocket 实例
    */
-  public onSocketDisconnect(socket): void {
+  public onSocketDisconnect(socket: Socekt): void {
     // TODO: 断开连接就移除用户，那如果是游戏中，用户重连怎么办？
 
     const user = this.userServer.getUserBySocket(socket.id);
@@ -65,7 +66,7 @@ export default class SocketServer {
    * 添加 socket 事件监听
    * @param socket
    */
-  public addSocketListener(socket): void {
+  public addSocketListener(socket: Socekt): void {
     // 开始游戏
     socket.on(SOCKET_START_GAMER, () => {
       const user = this.userServer.getUserBySocket(socket.id);

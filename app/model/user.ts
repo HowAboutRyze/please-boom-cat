@@ -24,3 +24,10 @@ export default class User {
     this.createTime = Date.now();
   }
 }
+
+export interface UserData {
+  socket?: any;
+  userId: string;
+  avatar: string;
+  nickName: string;
+}
