@@ -14,6 +14,7 @@ export default class Game extends Vue {
   @State((state: RootState) => state.user.user) user;
   @State((state: RootState) => state.game.id) gameId;
   @State((state: RootState) => state.game.type) gameType;
+  @State((state: RootState) => state.game.origin) gameOrigin;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
   @State((state: RootState) => state.game.remain) remain;
   @State((state: RootState) => state.game.showPop) showPop;
@@ -142,8 +143,16 @@ export default class Game extends Vue {
     // TODO: 否决, 选一名玩家
     // TODO: 需要有玩家正在执行某种行为, 并且只能指定该玩家
     if (cardType === CardType.nope) {
-      console.log('>>> 否决');
-      // 选玩家
+      console.log('>>> 否决', this.gameType, this.gameOrigin, this.user.userId);
+      if (this.gameOrigin === this.user.userId) {
+        console.error('>>> 否决失败，不能否决自己');
+        this.selectedCards = [];
+      } else if (this.gameType === GameInfoType.play) {
+        // 正在出牌，可否决
+        this.showCards();
+      } else {
+        console.error('>>> 否决出错！！！想想为什么');
+      }
       return;
     }
     // TODO: 攻击, 选一名玩家

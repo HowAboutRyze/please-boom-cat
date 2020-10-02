@@ -3,6 +3,11 @@ import { GameInfo, GameInfoType, GamePlay, PlayInfoType, SocketServerConfig } fr
 import { uuidv4, randomInt } from '../lib/utils';
 import * as _ from 'lodash';
 
+interface SkillStore {
+  canUse: boolean; // 能使用，仅否决可改
+  skill: () => void; // 卡牌技能
+}
+
 export interface GamePlayer {
   userId: string;
   cards: number[];
@@ -34,7 +39,14 @@ export default class Game {
 
   public currentPlayer: string;
 
-  private timer: any;
+  // 等待否决
+  private waitNopeTimer: any;
+
+  // 技能存储
+  private skillStore: SkillStore | null;
+
+  // 拥有否决的用户
+  private playersHaveNope: string[]; // TODO: 用于记录拥有否决的人，后续拒绝否决的人就从这里删掉，数组为空的时候（拥有否决的人都拒绝使用否决时），直接执行 skillStore 里的技能
 
   constructor(gameData: GameData, config: SocketServerConfig) {
     this.gameData = gameData;
@@ -44,6 +56,7 @@ export default class Game {
     this.deck = [];
     this.extDeck = [];
     this.playerList = gameData.playerList;
+    this.playersHaveNope = [];
 
     this.initGame();
   }
@@ -64,7 +77,7 @@ export default class Game {
   public initGame(): void {
     const playerNum = this.playerList.length;
     // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.shuffle; i++) { // FIXME: 临时把牌减少用于开发
+    for (let i = 0; i <= CardType.nope; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -143,7 +156,7 @@ export default class Game {
    * @param info
    */
   public sendGameInfo(info: Partial<GameInfo> = {}): void {
-    const { type = GameInfoType.system, msg, origin, target, cards = [] } = info;
+    const { type = GameInfoType.system, msg = '', origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     this.playerList.forEach(player => {
       const socket = player.user.socket;
@@ -230,6 +243,8 @@ export default class Game {
       return;
     }
 
+    // 初始化数据
+    this.playersHaveNope = this.getPlayersHaveNope(origin);
     // FIXME: 先删掉玩家的牌没问题吧？
     this.playerRemoveCard(origin, cards);
     const card = cards[0];
@@ -239,6 +254,8 @@ export default class Game {
       return;
     }
 
+    // TODO: 出了牌之后，是不是应该有一个锁，在等待否决期间其他牌都不能出，只能出否决？
+
     if (card === CardType.defuse) {
       // 插一张爆炸猫
       this.deck.splice(position, 0, CardType.boom);
@@ -246,17 +263,15 @@ export default class Game {
       this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
     } else if (card === CardType.skip) {
       // 跳过
-      // 1. 先通知其他人，如果有人有否决牌，等 5s 确认
-      // 2. 没人有否决牌，等待 1.5 ~ 2.5s，到下一家
-
-      this.sendGameInfo({ type: GameInfoType.play, origin, cards });
-
-      const delayTime = randomInt(1500, 3000);
-      this.timer = setTimeout(() => {
-        clearTimeout(this.timer);
+      this.releaseSkill(data, () => {
         this.nextPlayerTurn();
         this.sendGameInfo({ type: GameInfoType.next, origin });
-      }, delayTime);
+      });
+    } else if (card === CardType.nope) {
+      // 否决
+      clearTimeout(this.waitNopeTimer);
+      this.skillStore.canUse = !this.skillStore.canUse;
+      this.releaseSkill(data, null);
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
   }
@@ -312,5 +327,49 @@ export default class Game {
       // TODO: 报错啊！！！！没找到这个用户
       return false;
     }
+  }
+
+  /**
+   * 释放卡牌技能
+   * @param data 数据
+   * @param skill 技能
+   */
+  public releaseSkill(data: GamePlay, skill: () => void): void {
+    const { origin, cards } = data;
+    // 通知其他人出牌了
+    this.sendGameInfo({ type: GameInfoType.play, origin, cards });
+
+    // 保存上一张卡牌技能（不保存否决）
+    if (cards.length !== 1 || cards[0] !== CardType.nope) {
+      this.skillStore = { canUse: true, skill };
+    }
+
+    // 1. 如果有人有否决牌，等 5s 确认
+    // 2. 没人有否决牌，等待 1.5 ~ 2.5s，到下一家
+    const delayTime = this.playersHaveNope.length > 0 ? 5000 : randomInt(1500, 3000);
+    console.log('>>> 释放技能', this.playersHaveNope);
+    this.waitNopeTimer = setTimeout(() => {
+      clearTimeout(this.waitNopeTimer);
+      // 如果最后
+      if (this.skillStore?.canUse) {
+        this.skillStore.skill();
+        this.skillStore = null;
+      }
+    }, delayTime);
+
+  }
+
+  /**
+   * 获取拥有否决牌的玩家
+   * @param userId 当前玩家
+   */
+  public getPlayersHaveNope(userId: string): string[] {
+    const players = [];
+    this.playerList.forEach(player => {
+      if (player.userId !== userId && player.cards.includes(CardType.nope)) {
+        players.push(player.userId);
+      }
+    });
+    return players;
   }
 }

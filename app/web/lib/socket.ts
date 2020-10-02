@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { Store } from 'vuex';
-import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY } from '../../../app/lib/constant';
+import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY, CardType } from '../../../app/lib/constant';
 import { GamePlay, GameInfo, GameInfoType } from '../../model/game';
 import User from '../../model/user';
 
@@ -48,7 +48,8 @@ export class Socket {
             }
             case GameInfoType.play: {
               // TODO: 玩家出牌
-              // this.store.dispatch('', data);
+              this.store.dispatch('saveGame', data);
+              console.log('>>> 出牌', data.cards && data.cards.length > 0 && CardType[data.cards[0]]);
               break;
             }
             case GameInfoType.boom: {
