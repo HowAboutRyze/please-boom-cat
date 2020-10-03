@@ -31,6 +31,7 @@ export enum PlayInfoType {
   touch, // 摸牌
   show, // 出牌
   soul, // 灵魂放炸弹猫
+  refuse, // 拒绝否决
 }
 
 // 客户端用户提交游戏消息

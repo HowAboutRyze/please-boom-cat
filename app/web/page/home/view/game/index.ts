@@ -15,9 +15,11 @@ export default class Game extends Vue {
   @State((state: RootState) => state.game.id) gameId;
   @State((state: RootState) => state.game.type) gameType;
   @State((state: RootState) => state.game.origin) gameOrigin;
+  @State((state: RootState) => state.game.cards) gameCards;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
   @State((state: RootState) => state.game.remain) remain;
   @State((state: RootState) => state.game.showPop) showPop;
+  @State((state: RootState) => state.game.nopePopShow) nopePopShow;
   @State((state: RootState) => state.game.popTitle) popTitle;
   @State((state: RootState) => state.game.popText) popText;
   @State((state: RootState) => state.room.playerList) roomPlayerList;
@@ -26,6 +28,7 @@ export default class Game extends Vue {
   @Getter('waitingDefuse') waitingDefuse;
   @Getter('someoneBoom') someoneBoom;
   @Action('removeCards') removeCards;
+  @Action('triggerNopePop') triggerNopePop;
 
   @Watch('someoneBoom')
   private watchBoom(val) {
@@ -42,6 +45,11 @@ export default class Game extends Vue {
     return this.gameType === GameInfoType.gameOver;
   }
 
+  // 已出的牌
+  get showedCard(): string {
+    return this.gameCards && this.gameCards.length > 0 && cardMap[this.gameCards[0]].name || '';
+  }
+
   /**
    * 是否爆炸了的倒霉玩家
    * @param userId 用户id
@@ -56,6 +64,14 @@ export default class Game extends Vue {
    */
   isCurrentPlayer(userId: string): boolean {
     return userId === this.currentPlayer;
+  }
+
+  /**
+   * 事件源玩家
+   * @param userId 用户id
+   */
+  isOrigin(userId: string): boolean {
+    return userId === this.gameOrigin;
   }
 
   /**
@@ -209,6 +225,29 @@ export default class Game extends Vue {
 
   hidePositionPop(): void {
     this.positionPopShow = false;
+  }
+
+  popShowNope(): void {
+    const index = this.selfGameInfo.cards.findIndex(c => c === CardType.nope);
+    if (index === -1) {
+      this.triggerNopePop(false);
+      return;
+    }
+    this.selectedCards = [];
+    this.selectedCards.push(index);
+    this.showCards();
+    this.triggerNopePop(false);
+  }
+
+  popRefuseNope(): void {
+    const data: GamePlay = {
+      id: this.gameId,
+      type: PlayInfoType.refuse,
+      origin: this.user.userId,
+    }
+    this.$socketServer.sendPlayData(data);
+    console.log('>>>>>>>>发送jujue');
+    this.triggerNopePop(false);
   }
 
   getNickName(userId: string): string {

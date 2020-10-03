@@ -195,6 +195,8 @@ export default class Game {
       this.playerShowCard(data);
     } else if (type === PlayInfoType.soul) {
       this.soulSetBoomPosition(data);
+    } else if (type === PlayInfoType.refuse) {
+      this.refuseNope(data);
     } else {
       // TODO: 报错！！！没有对应的类型 type
     }
@@ -371,5 +373,20 @@ export default class Game {
       }
     });
     return players;
+  }
+
+  public refuseNope(data: GamePlay): void  {
+    const { origin } = data;
+    const index = this.playersHaveNope.findIndex(p => p === origin);
+    if (index === -1) {
+      console.log('>>> 拒绝否决失败,你拒绝过,或者没有否决');
+      return;
+    }
+    this.playersHaveNope.splice(index, 1);
+    if (this.playersHaveNope.length === 0 && this.skillStore?.canUse) {
+      console.log('>>>释放技能<<<<<');
+      this.skillStore.skill();
+      this.skillStore = null;
+    }
   }
 }

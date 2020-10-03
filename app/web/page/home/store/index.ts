@@ -32,6 +32,7 @@ export default function createStore(initState: any = {}): Store<RootState> {
         showPop: false,
         popTitle: '',
         popText: '',
+        nopePopShow: false,
       }),
     }
   });

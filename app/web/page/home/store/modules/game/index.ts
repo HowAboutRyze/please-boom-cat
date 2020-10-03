@@ -3,12 +3,14 @@ import {
   SET_GAME_INFO,
   SET_PLAYER,
   SET_GAME_POP,
+  SET_NOPE_POP,
 } from './type';
 import { GameInfoType, GameInfo } from '../../../../../../model/game';
 
 import RootState from '../../state';
 import GameState, { GamePop } from './state';
 import { sleep } from '@lib/utils';
+import { CardType } from '../../../../../../lib/constant';
 
 
 export default class GameModule implements Module<GameState, RootState> {
@@ -76,9 +78,21 @@ export default class GameModule implements Module<GameState, RootState> {
       const total = player.total - removeNum;
       commit(SET_PLAYER, { index: playerIndex, player: { ...player, cards, total } });
     },
-    saveGame({ commit }, data) {
+    saveGame({ commit, dispatch, getters, rootState }, data) {
       commit(SET_GAME_INFO, data);
+      const { type, origin } = data;
+      console.log('==== state', getters.selfGameInfo, type === GameInfoType.play, origin !== rootState.user.user.userId);
+      const hasNope = getters.selfGameInfo.cards.includes(CardType.nope);
+      // 如果是别的玩家出牌,且有否决,可以否决
+      if (type === GameInfoType.play && origin !== rootState.user.user.userId && hasNope) {
+        dispatch('triggerNopePop', true);
+      } else {
+        dispatch('triggerNopePop', false);
+      }
     },
+    triggerNopePop({ commit }, data: boolean) {
+      commit(SET_NOPE_POP, data);
+    }
   };
 
   mutations: MutationTree<GameState> = {
@@ -111,6 +125,10 @@ export default class GameModule implements Module<GameState, RootState> {
       state.showPop = data.showPop;
       state.popTitle = data.popTitle || '';
       state.popText = data.popText || '';
+    },
+    [SET_NOPE_POP](state, data) {
+      console.log('>>> store commit ', data);
+      state.nopePopShow = data;
     },
   };
 

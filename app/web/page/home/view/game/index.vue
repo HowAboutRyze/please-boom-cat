@@ -11,6 +11,7 @@
       <li
         v-for="(player) in otherPlayers"
         :key="player.userId"
+        :class="isOrigin(player.userId) && showedCard ? 'origin-player' : ''"
       >
         <p>
           {{ getNickName(player.userId) }}
@@ -24,13 +25,21 @@
 
     <!-- 自己的游戏面板 -->
     <div>
-      <p>
-        {{ user.nickName }}
-        <span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
-        <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
-        <span v-if="selfGameInfo.isOver">（尸体）</span>
-      </p>
-      <p>手牌数：{{ selfGameInfo.total }}</p>
+      <div class="game-panel">
+        <div>
+          <p>
+            {{ user.nickName }}
+            <span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
+            <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
+            <span v-if="selfGameInfo.isOver">（尸体）</span>
+          </p>
+          <p>手牌数：{{ selfGameInfo.total }}</p>
+        </div>
+        <div>
+          <p>已出的牌</p>
+          <p>{{ showedCard }}</p>
+        </div>
+      </div>
       <div>
         <button
           v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse"
@@ -60,6 +69,7 @@
 
     <!-- 弹窗们 -->
     <div :class="`game-pop ${showPop ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 游戏信息提示弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
         <h1>{{ popTitle }}</h1>
@@ -67,6 +77,7 @@
       </div>
     </div>
     <div :class="`position-pop ${positionPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 放牌弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
         <h3>请选择爆炸猫的位置</h3>
@@ -82,6 +93,21 @@
         <button @click="setBoomPosition">
           放好了
         </button>
+      </div>
+    </div>
+    <div :class="`nope-pop bottom-pop ${nopePopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 游戏信息提示弹窗 -->
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h3>是否要出否决(5秒考虑)</h3>
+        <div class="btn-group">
+          <button @click="popShowNope">
+            出
+          </button>
+          <button @click="popRefuseNope">
+            不出
+          </button>
+        </div>
       </div>
     </div>
     <div
@@ -105,6 +131,8 @@
     margin 6px 10px
     border-radius 3px
     background yellow
+    &.origin-player
+      background skyblue
 .card
   padding 4px
   margin 10px
@@ -112,9 +140,14 @@
   border-radius 3px
   &.selected
     background pink
-.normal-pop
+.game-panel
   display flex
-  flex-direction column
+  > div
+    margin 4px
+    border 1px solid #58bc58
+.normal-pop
+  box-sizing border-box
+  display flex
   align-items center
   justify-content center
   position fixed
@@ -124,6 +157,8 @@
   left 0
   background-color rgba(0,0,0,.5)
   animation: 1s hiddenPop 1;
+  &.bottom-pop
+    align-items flex-end
   .pop-content
     display flex
     flex-direction column
@@ -132,6 +167,9 @@
     background-color white
 .normal-pop-hidden
   display none
+.nope-pop
+  .btn-group
+    display flex
 
 // 游戏结束啦
 .game-over
