@@ -195,7 +195,11 @@ export default class Game extends Vue {
       return;
     }
     if (cardType === CardType.defuse) {
-      console.log('>>> 拆解');
+      console.log('>>> 拆解', this.gameType);
+      if (this.gameType !== GameInfoType.waitDefuse) {
+        console.log('>>> 瞎胡闹，你没爆炸呢，不能拆解');
+        return;
+      }
       this.showPositionPop();
       return;
     }
