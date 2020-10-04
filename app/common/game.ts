@@ -50,6 +50,9 @@ export default class Game {
   // 拥有否决的用户
   private playersHaveNope: string[];
 
+  // 玩家被攻击中
+  private attacking: boolean;
+
   constructor(gameData: GameData, config: SocketServerConfig) {
     this.gameData = gameData;
     this.config = config;
@@ -59,6 +62,7 @@ export default class Game {
     this.extDeck = [];
     this.playerList = gameData.playerList;
     this.waitingNope = false;
+    this.attacking = false;
     this.playersHaveNope = [];
 
     this.initGame();
@@ -143,6 +147,11 @@ export default class Game {
    * 轮到下一个玩家
    */
   public nextPlayerTurn(): void {
+    if (this.attacking) {
+      // 被攻击中，则不到下一个玩家
+      this.attacking = false;
+      return;
+    }
     const survivePlayers = this.survivePlayers;
     const currIndex = survivePlayers.findIndex(p => p.userId === this.currentPlayer);
     if (currIndex === -1) {
@@ -291,10 +300,19 @@ export default class Game {
         // 通知解锁否决
         this.sendGameInfo({ type: GameInfoType.system, origin });
       });
+    } else if (card === CardType.attack) {
+      // 攻击
+      this.waitReleaseSkill(data, () => {
+        // 玩家被攻击时出攻击牌，立即解除被攻击状态
+        this.attacking = false;
+        // 到下一个玩家，并增加攻击状态
+        this.nextPlayerTurn();
+        this.attacking = true;
+        this.sendGameInfo({ type: GameInfoType.next, origin });
+      });
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
     // 先知,给看顶部三张牌
-    // 攻击,加一个攻击flag
     // 帮助,加一个帮助游戏信息 type
     // 对子,给抽一个顺序,但是服务端处理时拿随机牌
     // 三张,指定人,然后指定牌的选择弹窗

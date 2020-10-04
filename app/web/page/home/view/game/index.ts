@@ -188,12 +188,6 @@ export default class Game extends Vue {
       console.log('>>>> 出对子啊', this.selectedCards);
       return;
     }
-    // TODO: 攻击, 选一名玩家
-    if (cardType === CardType.attack) {
-      console.log('>>> 攻击');
-      // 选玩家
-      return;
-    }
     // TODO: 帮助, 选一名玩家
     if (cardType === CardType.favor) {
       console.log('>>> 帮助');
