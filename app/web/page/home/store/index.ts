@@ -25,6 +25,7 @@ export default function createStore(initState: any = {}): Store<RootState> {
         origin: null,
         target: null,
         cards: [],
+        waitingNope: false,
         playerList: [],
         currentPlayer: '',
 

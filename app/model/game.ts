@@ -9,6 +9,7 @@ export enum GameInfoType {
   system, // 系统消息
   next, // 下一个
   play, // 出牌
+  skillFail, // 释放技能失败（被否决了）
   boom, // 爆炸
   waitDefuse, // 等待拆解
   gameOver, // 游戏结束
@@ -23,6 +24,7 @@ export interface GameInfo {
   origin?: string; // 事件发起者
   target?: string; // 事件目标
   cards?: number[]; // 出的牌
+  waitingNope: boolean; // 等待否决中
   playerList: Player[];
   currentPlayer: string;
 }

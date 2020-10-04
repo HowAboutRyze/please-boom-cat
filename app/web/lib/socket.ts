@@ -52,6 +52,12 @@ export class Socket {
               console.log('>>> 出牌', data.cards && data.cards.length > 0 && CardType[data.cards[0]]);
               break;
             }
+            case GameInfoType.skillFail: {
+              // 释放技能失败（被否决了）
+              console.log('>>>> socket监听到释放技能失败');
+              this.store.dispatch('saveGame', data);
+              break;
+            }
             case GameInfoType.boom: {
               // 玩家爆炸，开始插爆炸牌
               this.store.dispatch('playerBoom', data);

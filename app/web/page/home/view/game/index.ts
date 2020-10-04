@@ -16,6 +16,7 @@ export default class Game extends Vue {
   @State((state: RootState) => state.game.type) gameType;
   @State((state: RootState) => state.game.origin) gameOrigin;
   @State((state: RootState) => state.game.cards) gameCards;
+  @State((state: RootState) => state.game.waitingNope) waitingNope;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
   @State((state: RootState) => state.game.remain) remain;
   @State((state: RootState) => state.game.showPop) showPop;
@@ -149,18 +150,19 @@ export default class Game extends Vue {
     if (!this.canShowCards) {
       return;
     }
-    if (this.selectedCards.length > 1) {
-      // TODO: 哇塞，出对子或者多张牌，需要选目标
-      console.log('>>>> 出对子啊', this.selectedCards);
-      return;
-    }
     const index = this.selectedCards[0];
     const cardType = this.selfGameInfo.cards[index];
-    // TODO: 否决, 选一名玩家
-    // TODO: 需要有玩家正在执行某种行为, 并且只能指定该玩家
-    if (cardType === CardType.nope) {
+
+    // 等待否决中
+    if (this.waitingNope) {
+      if (cardType !== CardType.nope || this.selectedCards.length > 1) {
+        // TODO: 做成toast
+        console.warn('>>> 出牌失败，只能出一张否决');
+        return;
+      }
       console.log('>>> 否决', this.gameType, this.gameOrigin, this.user.userId);
       if (this.gameOrigin === this.user.userId) {
+        // TODO: 做成toast
         console.error('>>> 否决失败，不能否决自己');
         this.selectedCards = [];
       } else if (this.gameType === GameInfoType.play) {
@@ -169,6 +171,21 @@ export default class Game extends Vue {
       } else {
         console.error('>>> 否决出错！！！想想为什么');
       }
+      return;
+    }
+
+    // 不是自己的回合不能出牌
+    if (!this.isCurrentPlayer(this.user.userId)) {
+      // TODO: 做成toast
+      console.warn('>>> 出牌失败，没到你出牌');
+      return;
+    }
+
+    // 其他牌了
+
+    if (this.selectedCards.length > 1) {
+      // TODO: 哇塞，出对子或者多张牌，需要选目标
+      console.log('>>>> 出对子啊', this.selectedCards);
       return;
     }
     // TODO: 攻击, 选一名玩家

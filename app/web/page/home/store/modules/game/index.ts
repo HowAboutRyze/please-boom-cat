@@ -100,7 +100,7 @@ export default class GameModule implements Module<GameState, RootState> {
       console.log('>>> store commit ', data);
       const res: GameState = { ...state, ...data };
       const { id, msg, type, remain, origin, target,
-        cards, playerList, currentPlayer } = res;
+        cards, waitingNope, playerList, currentPlayer } = res;
 
       // TODO: 后面改成 toast 吧
       msg && console.log(msg);
@@ -112,6 +112,7 @@ export default class GameModule implements Module<GameState, RootState> {
       state.origin = origin;
       state.target = target;
       state.cards = cards || [];
+      state.waitingNope = waitingNope;
       state.playerList = playerList || [];
       state.currentPlayer = currentPlayer;
     },

@@ -39,14 +39,16 @@ export default class Game {
 
   public currentPlayer: string;
 
-  // 等待否决
+  public waitingNope: boolean;
+
+  // 等待否决 timeout
   private waitNopeTimer: any;
 
   // 技能存储
   private skillStore: SkillStore | null;
 
   // 拥有否决的用户
-  private playersHaveNope: string[]; // TODO: 用于记录拥有否决的人，后续拒绝否决的人就从这里删掉，数组为空的时候（拥有否决的人都拒绝使用否决时），直接执行 skillStore 里的技能
+  private playersHaveNope: string[];
 
   constructor(gameData: GameData, config: SocketServerConfig) {
     this.gameData = gameData;
@@ -56,6 +58,7 @@ export default class Game {
     this.deck = [];
     this.extDeck = [];
     this.playerList = gameData.playerList;
+    this.waitingNope = false;
     this.playersHaveNope = [];
 
     this.initGame();
@@ -118,6 +121,7 @@ export default class Game {
    */
   public randomDeck(): void {
     this.deck = _.shuffle(this.deck);
+    console.log('>>>> 洗牌后', this.deck);
   }
 
   /**
@@ -175,6 +179,7 @@ export default class Game {
         origin,
         target,
         cards,
+        waitingNope: this.waitingNope,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,
       };
@@ -257,25 +262,42 @@ export default class Game {
     }
 
     // TODO: 出了牌之后，是不是应该有一个锁，在等待否决期间其他牌都不能出，只能出否决？
-
+    this.waitingNope = true;
     if (card === CardType.defuse) {
+      // 拆解
+      this.waitingNope = false; // 关闭否决锁
       // 插一张爆炸猫
       this.deck.splice(position, 0, CardType.boom);
       this.nextPlayerTurn();
       this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
     } else if (card === CardType.skip) {
       // 跳过
-      this.releaseSkill(data, () => {
+      this.waitReleaseSkill(data, () => {
         this.nextPlayerTurn();
         this.sendGameInfo({ type: GameInfoType.next, origin });
       });
     } else if (card === CardType.nope) {
       // 否决
       clearTimeout(this.waitNopeTimer);
+      if (!this.skillStore) {
+        return;
+      }
       this.skillStore.canUse = !this.skillStore.canUse;
-      this.releaseSkill(data, null);
+      this.waitReleaseSkill(data, null);
+    } else if (card === CardType.shuffle) {
+      // 切洗
+      this.waitReleaseSkill(data, () => {
+        this.randomDeck();
+        // 通知解锁否决
+        this.sendGameInfo({ type: GameInfoType.system, origin });
+      });
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
+    // 先知,给看顶部三张牌
+    // 攻击,加一个攻击flag
+    // 帮助,加一个帮助游戏信息 type
+    // 对子,给抽一个顺序,但是服务端处理时拿随机牌
+    // 三张,指定人,然后指定牌的选择弹窗
   }
 
   /**
@@ -332,11 +354,11 @@ export default class Game {
   }
 
   /**
-   * 释放卡牌技能
+   * 等待释放卡牌技能
    * @param data 数据
    * @param skill 技能
    */
-  public releaseSkill(data: GamePlay, skill: () => void): void {
+  public waitReleaseSkill(data: GamePlay, skill: () => void): void {
     const { origin, cards } = data;
     // 通知其他人出牌了
     this.sendGameInfo({ type: GameInfoType.play, origin, cards });
@@ -351,14 +373,27 @@ export default class Game {
     const delayTime = this.playersHaveNope.length > 0 ? 5000 : randomInt(1500, 3000);
     console.log('>>> 释放技能', this.playersHaveNope);
     this.waitNopeTimer = setTimeout(() => {
-      clearTimeout(this.waitNopeTimer);
-      // 如果最后
-      if (this.skillStore?.canUse) {
-        this.skillStore.skill();
-        this.skillStore = null;
-      }
+      this.startReleaseSkill(origin);
     }, delayTime);
 
+  }
+
+  /**
+   * 开始释放技能
+   */
+  public startReleaseSkill(origin: string): void {
+    clearTimeout(this.waitNopeTimer);
+    // 关闭等待否决
+    this.waitingNope = false;
+    console.log('>>> 能不能释放技能：', this.skillStore?.canUse);
+    // 最后能释放技能
+    if (this.skillStore?.canUse) {
+      this.skillStore.skill();
+      this.skillStore = null;
+    } else {
+      // 最后不能释放技能，通知大家解锁
+      this.sendGameInfo({ type: GameInfoType.skillFail, origin });
+    }
   }
 
   /**
@@ -375,6 +410,11 @@ export default class Game {
     return players;
   }
 
+  /**
+   * 拒绝否决
+   * @param data 游戏信息
+   * 从拥有否决的玩家集合中移除拒绝否决的玩家，所有人拒绝否决，则执行技能
+   */
   public refuseNope(data: GamePlay): void  {
     const { origin } = data;
     const index = this.playersHaveNope.findIndex(p => p === origin);
@@ -384,9 +424,8 @@ export default class Game {
     }
     this.playersHaveNope.splice(index, 1);
     if (this.playersHaveNope.length === 0 && this.skillStore?.canUse) {
-      console.log('>>>释放技能<<<<<');
-      this.skillStore.skill();
-      this.skillStore = null;
+      console.log('>>>所有人拒绝否决，释放技能<<<<<');
+      this.startReleaseSkill(origin);
     }
   }
 }
