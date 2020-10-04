@@ -110,6 +110,23 @@
         </div>
       </div>
     </div>
+    <div :class="`predict-pop ${predictPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 预言卡牌弹窗 -->
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h3>预言看到的小猫们</h3>
+        <div>
+          <div
+            v-for="(card, index) in predictCards"
+            :key="card + '-' + index"
+            :class="cardClass(index)"
+          >
+            <span>{{ getCardName(card) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div
       v-if="isGameOver"
       class="game-over"

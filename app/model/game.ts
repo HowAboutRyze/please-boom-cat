@@ -10,6 +10,7 @@ export enum GameInfoType {
   next, // 下一个
   play, // 出牌
   skillFail, // 释放技能失败（被否决了）
+  predict, // 预言中
   boom, // 爆炸
   waitDefuse, // 等待拆解
   gameOver, // 游戏结束
@@ -27,6 +28,7 @@ export interface GameInfo {
   waitingNope: boolean; // 等待否决中
   playerList: Player[];
   currentPlayer: string;
+  predictCards: number[]; // 预言卡牌
 }
 
 export enum PlayInfoType {

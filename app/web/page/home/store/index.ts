@@ -28,12 +28,14 @@ export default function createStore(initState: any = {}): Store<RootState> {
         waitingNope: false,
         playerList: [],
         currentPlayer: '',
+        predictCards: [],
 
         // 弹窗
         showPop: false,
         popTitle: '',
         popText: '',
         nopePopShow: false,
+        predictPopShow: false,
       }),
     }
   });

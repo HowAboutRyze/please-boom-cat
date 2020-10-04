@@ -18,9 +18,11 @@ export default class Game extends Vue {
   @State((state: RootState) => state.game.cards) gameCards;
   @State((state: RootState) => state.game.waitingNope) waitingNope;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
+  @State((state: RootState) => state.game.predictCards) predictCards;
   @State((state: RootState) => state.game.remain) remain;
   @State((state: RootState) => state.game.showPop) showPop;
   @State((state: RootState) => state.game.nopePopShow) nopePopShow;
+  @State((state: RootState) => state.game.predictPopShow) predictPopShow;
   @State((state: RootState) => state.game.popTitle) popTitle;
   @State((state: RootState) => state.game.popText) popText;
   @State((state: RootState) => state.room.playerList) roomPlayerList;

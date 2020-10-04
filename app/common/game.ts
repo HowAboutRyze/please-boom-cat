@@ -84,7 +84,7 @@ export default class Game {
   public initGame(): void {
     const playerNum = this.playerList.length;
     // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.nope; i++) { // FIXME: 临时把牌减少用于开发
+    for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -171,6 +171,7 @@ export default class Game {
   public sendGameInfo(info: Partial<GameInfo> = {}): void {
     const { type = GameInfoType.system, msg = '', origin, target, cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
+    const isPredict = type === GameInfoType.predict;
     this.playerList.forEach(player => {
       const socket = player.user.socket;
 
@@ -180,6 +181,8 @@ export default class Game {
         }
         return { ...p };
       });
+      // 预言中会给他前三张牌
+      const predictCards = isPredict && player.userId === origin ? this.deck.slice(0, 3) : [];
       const data: GameInfo = {
         id: this.id,
         msg,
@@ -191,6 +194,7 @@ export default class Game {
         waitingNope: this.waitingNope,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,
+        predictCards: predictCards,
       };
       socket.emit(SOCKET_GAMER_INFO, data);
     });
@@ -310,9 +314,13 @@ export default class Game {
         this.attacking = true;
         this.sendGameInfo({ type: GameInfoType.next, origin });
       });
+    } else if (card === CardType.future) {
+      // 先知
+      this.waitReleaseSkill(data, () => {
+        this.sendGameInfo({ type: GameInfoType.predict, origin });
+      });
     }
     // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
-    // 先知,给看顶部三张牌
     // 帮助,加一个帮助游戏信息 type
     // 对子,给抽一个顺序,但是服务端处理时拿随机牌
     // 三张,指定人,然后指定牌的选择弹窗

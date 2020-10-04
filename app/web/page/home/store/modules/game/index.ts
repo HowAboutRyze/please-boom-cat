@@ -4,6 +4,7 @@ import {
   SET_PLAYER,
   SET_GAME_POP,
   SET_NOPE_POP,
+  SET_PREDICT_POP,
 } from './type';
 import { GameInfoType, GameInfo } from '../../../../../../model/game';
 
@@ -78,29 +79,42 @@ export default class GameModule implements Module<GameState, RootState> {
       const total = player.total - removeNum;
       commit(SET_PLAYER, { index: playerIndex, player: { ...player, cards, total } });
     },
-    saveGame({ commit, dispatch, getters, rootState }, data) {
+    async saveGame({ commit, dispatch, getters, rootState }, data) {
       commit(SET_GAME_INFO, data);
-      const { type, origin } = data;
+      const { type, origin, predictCards } = data;
       console.log('==== state', getters.selfGameInfo, type === GameInfoType.play, origin !== rootState.user.user.userId);
       const hasNope = getters.selfGameInfo.cards.includes(CardType.nope);
       // 如果是别的玩家出牌,且有否决,可以否决
       if (type === GameInfoType.play && origin !== rootState.user.user.userId && hasNope) {
         dispatch('triggerNopePop', true);
+
       } else {
         dispatch('triggerNopePop', false);
+      }
+
+      // 如果预言了牌，展开预言弹窗
+      if (predictCards.length > 0) {
+        dispatch('triggerPredictPop', true);
+        await sleep(4000);
+        dispatch('triggerPredictPop', false);
+      } else {
+        dispatch('triggerPredictPop', false);
       }
     },
     triggerNopePop({ commit }, data: boolean) {
       commit(SET_NOPE_POP, data);
-    }
+    },
+    triggerPredictPop({ commit }, data: boolean) {
+      commit(SET_PREDICT_POP, data);
+    },
   };
 
   mutations: MutationTree<GameState> = {
     [SET_GAME_INFO](state, data) {
       console.log('>>> store commit ', data);
       const res: GameState = { ...state, ...data };
-      const { id, msg, type, remain, origin, target,
-        cards, waitingNope, playerList, currentPlayer } = res;
+      const { id, msg, type, remain, origin, target, cards,
+        waitingNope, playerList, currentPlayer, predictCards } = res;
 
       // TODO: 后面改成 toast 吧
       msg && console.log(msg);
@@ -115,6 +129,7 @@ export default class GameModule implements Module<GameState, RootState> {
       state.waitingNope = waitingNope;
       state.playerList = playerList || [];
       state.currentPlayer = currentPlayer;
+      state.predictCards = predictCards;
     },
     [SET_PLAYER](state, data) {
       console.log('>>> store commit ', data);
@@ -130,6 +145,10 @@ export default class GameModule implements Module<GameState, RootState> {
     [SET_NOPE_POP](state, data) {
       console.log('>>> store commit ', data);
       state.nopePopShow = data;
+    },
+    [SET_PREDICT_POP](state, data) {
+      console.log('>>> store commit ', data);
+      state.predictPopShow = data;
     },
   };
 
