@@ -97,6 +97,10 @@ export default class Game extends Vue {
    * 摸牌
    */
   touchCard(): void {
+    if (this.waitingNope) {
+      console.log('>>>> 摸牌失败，等待否决中');
+      return;
+    }
     const data: GamePlay = {
       id: this.gameId,
       type: PlayInfoType.touch,

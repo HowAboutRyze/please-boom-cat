@@ -84,8 +84,9 @@ export default class GameModule implements Module<GameState, RootState> {
       const { type, origin, predictCards } = data;
       console.log('==== state', getters.selfGameInfo, type === GameInfoType.play, origin !== rootState.user.user.userId);
       const hasNope = getters.selfGameInfo.cards.includes(CardType.nope);
+      const isOver = getters.selfGameInfo.isOver;
       // 如果是别的玩家出牌,且有否决,可以否决
-      if (type === GameInfoType.play && origin !== rootState.user.user.userId && hasNope) {
+      if (type === GameInfoType.play && origin !== rootState.user.user.userId && hasNope && !isOver) {
         dispatch('triggerNopePop', true);
 
       } else {
