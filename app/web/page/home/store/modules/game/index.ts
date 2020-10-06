@@ -27,8 +27,13 @@ export default class GameModule implements Module<GameState, RootState> {
     waitingDefuse(state) {
       return state.type === GameInfoType.waitDefuse;
     },
+    // 玩家爆炸了
     someoneBoom(state) {
       return state.type === GameInfoType.boom ? state.origin : '';
+    },
+    // 玩家被帮助指定了
+    someoneFavor(state) {
+      return state.type === GameInfoType.favoring ? state.target : '';
     },
   };
 

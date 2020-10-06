@@ -10,11 +10,14 @@ export default class Game extends Vue {
   public position  = 0;
   public targetPlayer = '';
   public positionPopShow  = false;
+  public targetPopShow  = false;
+  public favoringCard = false;
 
   @State((state: RootState) => state.user.user) user;
   @State((state: RootState) => state.game.id) gameId;
   @State((state: RootState) => state.game.type) gameType;
   @State((state: RootState) => state.game.origin) gameOrigin;
+  @State((state: RootState) => state.game.target) gameTarget;
   @State((state: RootState) => state.game.cards) gameCards;
   @State((state: RootState) => state.game.waitingNope) waitingNope;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
@@ -30,6 +33,7 @@ export default class Game extends Vue {
   @Getter('selfGameInfo') selfGameInfo;
   @Getter('waitingDefuse') waitingDefuse;
   @Getter('someoneBoom') someoneBoom;
+  @Getter('someoneFavor') someoneFavor;
   @Action('removeCards') removeCards;
   @Action('triggerNopePop') triggerNopePop;
 
@@ -37,6 +41,15 @@ export default class Game extends Vue {
   private watchBoom(val) {
     if (val && val === this.user.userId) {
       this.showPositionPop();
+    }
+  }
+
+  @Watch('someoneFavor')
+  private watchFavor(val) {
+    if (val && val === this.user.userId) {
+      this.favoringCard = true;
+    } else {
+      this.favoringCard = false;
     }
   }
 
@@ -75,6 +88,22 @@ export default class Game extends Vue {
    */
   isOrigin(userId: string): boolean {
     return userId === this.gameOrigin;
+  }
+
+  /**
+   * 事件目标玩家
+   * @param userId 用户id
+   */
+  isTarget(userId: string): boolean {
+    return this.gameTarget && userId === this.gameTarget;
+  }
+
+  /**
+   * 选中的事件目标
+   * @param userId 玩家id
+   */
+  isTargetPlayer(userId: string): boolean {
+    return userId === this.targetPlayer;
   }
 
   /**
@@ -194,10 +223,10 @@ export default class Game extends Vue {
       console.log('>>>> 出对子啊', this.selectedCards);
       return;
     }
-    // TODO: 帮助, 选一名玩家
     if (cardType === CardType.favor) {
       console.log('>>> 帮助');
       // 选玩家
+      this.showTargetPop();
       return;
     }
     if (cardType === CardType.defuse) {
@@ -269,6 +298,58 @@ export default class Game extends Vue {
     this.$socketServer.sendPlayData(data);
     console.log('>>>>>>>>发送jujue');
     this.triggerNopePop(false);
+  }
+
+  // 帮助别人一张卡
+  favorCard(): void {
+    // 一张
+    const selectCardTypes = this.selectedCards.map(index => this.selfGameInfo.cards[index]);
+    if (selectCardTypes.length === 0) {
+      console.log('>>>> 请选择一张牌');
+      return;
+    }
+    const selectCardType = selectCardTypes[0];
+    const data: GamePlay = {
+      id: this.gameId,
+      type: PlayInfoType.favor,
+      origin: this.user.userId,
+      target: this.gameOrigin,
+      cards: [selectCardType],
+    }
+    this.$socketServer.sendPlayData(data);
+
+    this.removeCards([selectCardType]);
+
+    this.clearSelectedCards();
+  }
+
+  setTarget(): void {
+    this.hideTargetPop();
+    this.showCards();
+  }
+
+  /**
+   * 选择一个玩家
+   * @param userId 玩家id
+   */
+  selectTarget(userId: string): void {
+    // TODO: 一个bug，挂了的玩家不应该能被选择
+    this.targetPlayer = userId;
+  }
+
+  /**
+   * 清空选择玩家
+   */
+  cleartargetPlayer(): void {
+    this.targetPlayer = '';
+  }
+
+  showTargetPop(): void {
+    this.targetPopShow = true;
+  }
+
+  hideTargetPop(): void {
+    this.targetPopShow = false;
   }
 
   getNickName(userId: string): string {

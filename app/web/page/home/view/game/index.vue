@@ -20,6 +20,12 @@
           <span v-if="player.isOver">（尸体）</span>
         </p>
         <p>手牌数：{{ player.total }}</p>
+        <p
+          v-show="isTarget(player.userId)"
+          style="color: red;"
+        >
+          《目标玩家》
+        </p>
       </li>
     </ul>
 
@@ -34,6 +40,12 @@
             <span v-if="selfGameInfo.isOver">（尸体）</span>
           </p>
           <p>手牌数：{{ selfGameInfo.total }}</p>
+          <p
+            v-show="isTarget(user.userId)"
+            style="color: red;"
+          >
+            《目标玩家》
+          </p>
         </div>
         <div>
           <p>已出的牌</p>
@@ -48,10 +60,16 @@
           摸牌
         </button>
         <button
-          v-show="canShowCards && !selfGameInfo.isOver"
+          v-show="canShowCards && !selfGameInfo.isOver && !favoringCard"
           @click="wantShowCard"
         >
           出牌
+        </button>
+        <button
+          v-show="favoringCard && !selfGameInfo.isOver"
+          @click="favorCard"
+        >
+          帮助一张牌
         </button>
       </div>
       <div>
@@ -126,6 +144,30 @@
         </div>
       </div>
     </div>
+    <div :class="`target-pop ${targetPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 选择目标弹窗 -->
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h3>请选择目标</h3>
+        <div>
+          <div
+            v-for="(player) in otherPlayers"
+            :key="player.userId"
+            :class="isTargetPlayer(player.userId) ? 'target-player' : ''"
+            @click="selectTarget(player.userId)"
+          >
+            <p>{{ getNickName(player.userId) }}</p>
+            <p>手牌数：{{ player.total }}</p>
+          </div>
+        </div>
+        <button
+          style="margin: 0 auto;"
+          @click="setTarget"
+        >
+          确认
+        </button>
+      </div>
+    </div>
 
     <div
       v-if="isGameOver"
@@ -181,12 +223,20 @@
     flex-direction column
     align-items center
     justify-content center
+    padding 20px
     background-color white
 .normal-pop-hidden
   display none
 .nope-pop
   .btn-group
     display flex
+
+.target-pop
+  .pop-content > div > div
+    margin 5px
+    border 1px solid skyblue
+.target-player
+  background skyblue
 
 // 游戏结束啦
 .game-over

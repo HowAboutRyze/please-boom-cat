@@ -169,7 +169,7 @@ export default class Game {
    * @param info
    */
   public sendGameInfo(info: Partial<GameInfo> = {}): void {
-    const { type = GameInfoType.system, msg = '', origin, target, cards = [] } = info;
+    const { type = GameInfoType.system, msg = '', origin, target = '', cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
     const isPredict = type === GameInfoType.predict;
     this.playerList.forEach(player => {
@@ -215,6 +215,8 @@ export default class Game {
       this.soulSetBoomPosition(data);
     } else if (type === PlayInfoType.refuse) {
       this.refuseNope(data);
+    } else if (type === PlayInfoType.favor) {
+      this.favorCard(data);
     } else {
       // TODO: 报错！！！没有对应的类型 type
     }
@@ -256,7 +258,7 @@ export default class Game {
    * @param data
    */
   public playerShowCard(data: GamePlay): void {
-    const { origin, cards, position } = data;
+    const { origin, target, cards, position } = data;
     if (cards.length === 0) {
       // TODO: 报错啊，都没牌，出什么？
       console.error('没牌出啊？');
@@ -270,6 +272,8 @@ export default class Game {
     const card = cards[0];
     if (cards.length > 1) {
       // TODO: 这是两张牌以上的组合啊，太强了
+      // 对子,给抽一个顺序,但是服务端处理时拿随机牌
+      // 三张,指定人,然后指定牌的选择弹窗
       console.log('>>>> 两种牌组合，还没写呢');
       return;
     }
@@ -319,11 +323,14 @@ export default class Game {
       this.waitReleaseSkill(data, () => {
         this.sendGameInfo({ type: GameInfoType.predict, origin });
       });
+    } else if (card === CardType.favor) {
+      // 帮助
+      this.waitReleaseSkill(data, () => {
+        this.sendGameInfo({ type: GameInfoType.favoring, origin, target });
+      });
+    } else {
+      this.sendGameInfo({ type: GameInfoType.play, origin });
     }
-    // TODO: else if 剩下的那一堆卡牌类型处理一下，谢谢
-    // 帮助,加一个帮助游戏信息 type
-    // 对子,给抽一个顺序,但是服务端处理时拿随机牌
-    // 三张,指定人,然后指定牌的选择弹窗
   }
 
   /**
@@ -385,9 +392,9 @@ export default class Game {
    * @param skill 技能
    */
   public waitReleaseSkill(data: GamePlay, skill: () => void): void {
-    const { origin, cards } = data;
+    const { origin, target, cards } = data;
     // 通知其他人出牌了
-    this.sendGameInfo({ type: GameInfoType.play, origin, cards });
+    this.sendGameInfo({ type: GameInfoType.play, origin, target, cards });
 
     // 保存上一张卡牌技能（不保存否决）
     if (cards.length !== 1 || cards[0] !== CardType.nope) {
@@ -453,5 +460,19 @@ export default class Game {
       console.log('>>>所有人拒绝否决，释放技能<<<<<');
       this.startReleaseSkill(origin);
     }
+  }
+
+  /**
+   * 帮助
+   * @param data 游戏信息
+   */
+  public favorCard(data: GamePlay): void {
+    const { origin, target, cards } = data;
+    if (cards.length === 0) {
+      return;
+    }
+    this.playerRemoveCard(origin, cards);
+    this.playerAddCard(target, cards);
+    this.sendGameInfo({ type: GameInfoType.system, origin: target });
   }
 }

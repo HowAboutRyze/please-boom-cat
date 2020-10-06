@@ -11,6 +11,7 @@ export enum GameInfoType {
   play, // 出牌
   skillFail, // 释放技能失败（被否决了）
   predict, // 预言中
+  favoring, // 帮助
   boom, // 爆炸
   waitDefuse, // 等待拆解
   gameOver, // 游戏结束
@@ -36,6 +37,7 @@ export enum PlayInfoType {
   show, // 出牌
   soul, // 灵魂放炸弹猫
   refuse, // 拒绝否决
+  favor, // 帮助
 }
 
 // 客户端用户提交游戏消息
