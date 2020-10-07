@@ -12,7 +12,10 @@ export default class Game extends Vue {
   public winner = '';
   public positionPopShow  = false;
   public targetPopShow  = false;
+  public wishPopShow  = false;
   public favoringCard = false;
+  public wishfulCard: number | null = null;
+  public allCards = Object.keys(cardMap);
 
   @State((state: RootState) => state.user.user) user;
   @State((state: RootState) => state.game.id) gameId;
@@ -122,6 +125,14 @@ export default class Game extends Vue {
    */
   isTargetPlayer(userId: string): boolean {
     return userId === this.targetPlayer;
+  }
+
+  /**
+   * 是想要的牌
+   * @param card
+   */
+  isWishfulCard(card: number): boolean {
+    return card === this.wishfulCard;
   }
 
   /**
@@ -237,11 +248,9 @@ export default class Game extends Vue {
     // 其他牌了
 
     if (this.selectedCards.length > 1) {
-      // TODO: 哇塞，出对子或者多张牌，需要选目标
-      console.log('>>>> 出对子啊', this.selectedCards);
-      if (this.selectedCards.length === 2) {
-        this.showTargetPop();
-      }
+      // 出对子或者多张牌，选目标
+      console.log('>>>> 出对子或者三张牌啊', this.selectedCards);
+      this.showTargetPop();
       return;
     }
     if (cardType === CardType.favor) {
@@ -277,6 +286,9 @@ export default class Game extends Vue {
       cards: selectCardTypes,
       position: this.position,
     }
+    if (this.wishfulCard) {
+      data.wishfulCard = Number(this.wishfulCard);
+    }
     this.$socketServer.sendPlayData(data);
 
     this.removeCards(selectCardTypes);
@@ -296,6 +308,14 @@ export default class Game extends Vue {
 
   hidePositionPop(): void {
     this.positionPopShow = false;
+  }
+
+  showWishPop(): void {
+    this.wishPopShow = true;
+  }
+
+  hideWishPop(): void {
+    this.wishPopShow = false;
   }
 
   popShowNope(): void {
@@ -346,7 +366,18 @@ export default class Game extends Vue {
 
   setTarget(): void {
     this.hideTargetPop();
+    if (this.selectedCards.length > 2) {
+      // 出三张牌
+      this.showWishPop();
+    } else {
+      this.showCards();
+    }
+  }
+
+  setWishfulCard(): void {
+    this.hideWishPop();
     this.showCards();
+    this.wishfulCard = null;
   }
 
   /**
@@ -359,6 +390,14 @@ export default class Game extends Vue {
       return;
     }
     this.targetPlayer = userId;
+  }
+
+  /**
+   * 选择想要的牌
+   * @param card
+   */
+  selectWishfulCard(card: number): void {
+    this.wishfulCard = card;
   }
 
   /**

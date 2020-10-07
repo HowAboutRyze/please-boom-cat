@@ -83,8 +83,8 @@ export default class Game {
    */
   public initGame(): void {
     const playerNum = this.playerList.length;
-    // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
+    for (let i = 0; i <= CardType.beardcat; i++) {
+    // for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -243,6 +243,9 @@ export default class Game {
         this.sendGameInfo({ type: GameInfoType.gameOver, origin });
       } else {
         // 玩家凉凉，开始插爆炸牌
+        if (this.attacking) {
+          this.attacking = false;
+        }
         this.sendGameInfo({ type: GameInfoType.boom, origin });
       }
     } else {
@@ -258,7 +261,7 @@ export default class Game {
    * @param data
    */
   public playerShowCard(data: GamePlay): void {
-    const { origin, target, cards, position } = data;
+    const { origin, target, cards, position, wishfulCard } = data;
     if (cards.length === 0) {
       // TODO: 报错啊，都没牌，出什么？
       console.error('没牌出啊？');
@@ -271,20 +274,25 @@ export default class Game {
     this.playerRemoveCard(origin, cards);
     const card = cards[0];
     if (cards.length > 1) {
-      // TODO: 这是两张牌以上的组合啊，太强了
-      // 对子,给抽一个顺序,但是服务端处理时拿随机牌
-      // 三张,指定人,然后指定牌的选择弹窗
       if (cards.length === 2) {
+        // 对子
         console.log('>>>> 出对子，偷一张卡');
         this.waitReleaseSkill(data, () => {
           this.stealCard(origin, target);
+          this.sendGameInfo({ type: GameInfoType.system, origin });
+        });
+      } else if (cards.length > 2) {
+        // 三张，指定要玩家一张卡，没有就没有咯
+        console.log('>>>> 出三张，指定要一张卡');
+        this.waitReleaseSkill(data, () => {
+          this.robCard(origin, target, wishfulCard);
           this.sendGameInfo({ type: GameInfoType.system, origin });
         });
       }
       return;
     }
 
-    // TODO: 出了牌之后，是不是应该有一个锁，在等待否决期间其他牌都不能出，只能出否决？
+    // 否决锁，在等待否决期间其他牌都不能出，只能出否决
     this.waitingNope = true;
     if (card === CardType.defuse) {
       // 拆解
@@ -406,6 +414,29 @@ export default class Game {
         console.log('>>>> 偷卡技能对手没有卡啊');
       } else {
         const cardIndex = randomInt(0, maxIndex);
+        const cards = targetPlayer.cards.splice(cardIndex, 1);
+        originPlayer.cards.push(...cards);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 抢牌
+   * @param origin 抢牌人
+   * @param target 被抢牌人
+   * @param card 要抢的牌
+   */
+  public robCard(origin: string, target: string, card: number): boolean {
+    const originPlayer = this.getPlayerById(origin);
+    const targetPlayer = this.getPlayerById(target);
+    if (originPlayer && targetPlayer) {
+      const cardIndex = targetPlayer.cards.indexOf(card);
+      if (cardIndex === -1) {
+        console.log('>>>> 三张牌指定的对手没有指定的卡');
+      } else {
         const cards = targetPlayer.cards.splice(cardIndex, 1);
         originPlayer.cards.push(...cards);
       }

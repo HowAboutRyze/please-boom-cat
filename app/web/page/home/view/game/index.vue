@@ -49,7 +49,9 @@
         </div>
         <div>
           <p>正在出的牌</p>
-          <p>{{ showedCard }}</p>
+          <p style="color: red;font-weight: bolder;">
+            {{ showedCard }}
+          </p>
         </div>
       </div>
       <div>
@@ -79,7 +81,7 @@
           :class="cardClass(index)"
           @click="selectCard(card, index)"
         >
-          <span>{{ getCardName(card) }}</span>
+          <span style="font-weight: bolder;">{{ getCardName(card) }}</span>
           <span>[{{ getCardDesc(card) }}]</span>
         </div>
       </div>
@@ -166,6 +168,29 @@
         <button
           style="margin: 0 auto;"
           @click="setTarget"
+        >
+          确认
+        </button>
+      </div>
+    </div>
+    <div :class="`wish-pop ${wishPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+      <!-- 选择想要的牌弹窗 -->
+      <!-- TODO: 后面弹窗做成个组件 -->
+      <div class="pop-content">
+        <h3>请选择想要的牌</h3>
+        <div>
+          <div
+            v-for="(card) in allCards"
+            :key="card"
+            :class="isWishfulCard(card) ? 'target-player' : ''"
+            @click="selectWishfulCard(card)"
+          >
+            {{ getCardName(card) }}
+          </div>
+        </div>
+        <button
+          style="margin: 0 auto;"
+          @click="setWishfulCard"
         >
           确认
         </button>

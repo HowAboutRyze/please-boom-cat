@@ -48,6 +48,7 @@ export interface GamePlay {
   target?: string; // 事件目标玩家
   cards?: number[]; // 出的牌
   position?: number; // 放爆炸牌的位置
+  wishfulCard?: number; // 三张牌，抢劫指定的卡
 }
 
 export interface SocketServerConfig {
