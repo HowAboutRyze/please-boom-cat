@@ -9,6 +9,7 @@ export default class Game extends Vue {
   public selectedCards: number[] = [];
   public position  = 0;
   public targetPlayer = '';
+  public winner = '';
   public positionPopShow  = false;
   public targetPopShow  = false;
   public favoringCard = false;
@@ -50,6 +51,14 @@ export default class Game extends Vue {
       this.favoringCard = true;
     } else {
       this.favoringCard = false;
+    }
+  }
+
+  @Watch('isGameOver')
+  private watchGameOver(val) {
+    if (val && val === true) {
+      // 游戏结束，记录获胜玩家
+      this.winner = this.getNickName(this.currentPlayer);
     }
   }
 

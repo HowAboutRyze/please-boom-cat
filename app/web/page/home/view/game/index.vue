@@ -174,7 +174,7 @@
       class="game-over"
     >
       <h1>游戏结束</h1>
-      <p>恭喜 {{ getNickName(currentPlayer) }} 获胜！！</p>
+      <p>恭喜 {{ winner }} 获胜！！</p>
       <button @click="quitGame">
         离开游戏
       </button>
