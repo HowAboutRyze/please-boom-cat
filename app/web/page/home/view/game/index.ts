@@ -341,8 +341,11 @@ export default class Game extends Vue {
    * 选择一个玩家
    * @param userId 玩家id
    */
-  selectTarget(userId: string): void {
-    // TODO: 一个bug，挂了的玩家不应该能被选择
+  selectTarget(userId: string, isOver: boolean): void {
+    if (isOver) {
+      console.log('>>>> 都提示你不能选尸体咯');
+      return;
+    }
     this.targetPlayer = userId;
   }
 

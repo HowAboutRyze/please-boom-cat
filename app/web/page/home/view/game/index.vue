@@ -154,9 +154,12 @@
             v-for="(player) in otherPlayers"
             :key="player.userId"
             :class="isTargetPlayer(player.userId) ? 'target-player' : ''"
-            @click="selectTarget(player.userId)"
+            @click="selectTarget(player.userId, player.isOver)"
           >
             <p>{{ getNickName(player.userId) }}</p>
+            <p v-if="player.isOver">
+              （不能选择尸体）
+            </p>
             <p>手牌数：{{ player.total }}</p>
           </div>
         </div>
