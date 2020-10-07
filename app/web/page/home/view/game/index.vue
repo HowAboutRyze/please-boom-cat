@@ -56,7 +56,7 @@
       </div>
       <div>
         <button
-          v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse"
+          v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse && !waitingNope"
           @click="touchCard"
         >
           摸牌
