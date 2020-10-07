@@ -72,7 +72,16 @@ export default class Game extends Vue {
 
   // 已出的牌
   get showedCard(): string {
-    return this.gameCards && this.gameCards.length > 0 && cardMap[this.gameCards[0]].name || '';
+    if (this.gameCards && this.gameCards.length > 0) {
+      const name = cardMap[this.gameCards[0]].name;
+      if (this.gameCards.length === 2) {
+        return `对子：${name}`;
+      } else if (this.gameCards.length > 2) {
+        return `三张：${name}`;
+      }
+      return name;
+    }
+    return '';
   }
 
   /**
@@ -230,6 +239,9 @@ export default class Game extends Vue {
     if (this.selectedCards.length > 1) {
       // TODO: 哇塞，出对子或者多张牌，需要选目标
       console.log('>>>> 出对子啊', this.selectedCards);
+      if (this.selectedCards.length === 2) {
+        this.showTargetPop();
+      }
       return;
     }
     if (cardType === CardType.favor) {

@@ -274,7 +274,13 @@ export default class Game {
       // TODO: 这是两张牌以上的组合啊，太强了
       // 对子,给抽一个顺序,但是服务端处理时拿随机牌
       // 三张,指定人,然后指定牌的选择弹窗
-      console.log('>>>> 两种牌组合，还没写呢');
+      if (cards.length === 2) {
+        console.log('>>>> 出对子，偷一张卡');
+        this.waitReleaseSkill(data, () => {
+          this.stealCard(origin, target);
+          this.sendGameInfo({ type: GameInfoType.system, origin });
+        });
+      }
       return;
     }
 
@@ -382,6 +388,29 @@ export default class Game {
       return true;
     } else {
       // TODO: 报错啊！！！！没找到这个用户
+      return false;
+    }
+  }
+
+  /**
+   * 偷一张卡
+   * @param origin 偷卡人
+   * @param target 被偷卡人
+   */
+  public stealCard(origin: string, target: string): boolean {
+    const originPlayer = this.getPlayerById(origin);
+    const targetPlayer = this.getPlayerById(target);
+    if (originPlayer && targetPlayer) {
+      const maxIndex = targetPlayer.cards.length - 1;
+      if (maxIndex === -1) {
+        console.log('>>>> 偷卡技能对手没有卡啊');
+      } else {
+        const cardIndex = randomInt(0, maxIndex);
+        const cards = targetPlayer.cards.splice(cardIndex, 1);
+        originPlayer.cards.push(...cards);
+      }
+      return true;
+    } else {
       return false;
     }
   }

@@ -48,7 +48,7 @@
           </p>
         </div>
         <div>
-          <p>已出的牌</p>
+          <p>正在出的牌</p>
           <p>{{ showedCard }}</p>
         </div>
       </div>
