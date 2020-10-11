@@ -114,6 +114,21 @@ export default class GameModule implements Module<GameState, RootState> {
     triggerPredictPop({ commit }, data: boolean) {
       commit(SET_PREDICT_POP, data);
     },
+    quitGame({ commit }) {
+      commit(SET_GAME_INFO, {
+        id: '',
+        msg: '',
+        type: null,
+        remain: 0,
+        origin: null,
+        target: null,
+        cards: [],
+        waitingNope: false,
+        playerList: [],
+        currentPlayer: '',
+        predictCards: [],
+      });
+    },
   };
 
   mutations: MutationTree<GameState> = {

@@ -4,7 +4,7 @@ import RoomServer from './room';
 import GameServer from './gameServer';
 import { GamePlayer } from './game';
 import { User as TypeUser } from './user';
-import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY, SOCKET_JOIN_ROOM, SOCKET_RECONNECT } from '../lib/constant';
+import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY, SOCKET_JOIN_ROOM, SOCKET_DISCONNECT, SOCKET_RECONNECT } from '../lib/constant';
 import { GamePlay, PlayerStatus, GameInfoType, Socekt } from '../model/game';
 import { ReconnectMsg } from '../model/room';
 import { UserData } from '../model/user';
@@ -41,6 +41,10 @@ export default class SocketServer {
    */
   public onSocketDisconnect(socket: Socekt): void {
     const user = this.userServer.getUserBySocket(socket.id);
+    if (!user) {
+      // 用户主动断开的话，就直接移除了
+      return;
+    }
     // 从房间里移除用户咯
     if (user.roomId) {
       const room = this.roomServer.getRoomById(user.roomId);
@@ -82,7 +86,7 @@ export default class SocketServer {
     socket.on(SOCKET_START_GAMER, () => {
       const user = this.userServer.getUserBySocket(socket.id);
       const room = this.roomServer.getRoomById(user.roomId);
-      if (room.gameId) {
+      if (!user || !room || room.gameId) {
         return;
       }
 
@@ -113,6 +117,38 @@ export default class SocketServer {
       game.gamePlayHandle(data);
     });
 
+    socket.on(SOCKET_DISCONNECT, () => {
+      console.log('>>>>> 用户主动断开连接');
+      const user = this.userServer.getUserBySocket(socket.id);
+      // 从房间里移除用户咯
+      if (user && user.roomId) {
+        const room = this.roomServer.getRoomById(user.roomId);
+        if (room.hasStarted && room.gameId) {
+          const game = this.gameServer.getGameById(room.gameId);
+          const player = game.getPlayerById(user.userId);
+          game.nextPlayerTurn();
+          player.status = PlayerStatus.leave;
+          // 如果只有一个玩家了，游戏结束
+          if (game.survivePlayers.length <= 1) {
+            game.sendGameInfo({ type: GameInfoType.gameOver, origin: user.userId });
+          } else {
+            game.sendGameInfo({ type: GameInfoType.statusChange });
+          }
+        }
+        room.removePlayerBySocket(user);
+        if (room.isEmpty) {
+          // 人去房空，顺便把游戏也销毁了吧
+          if (room.gameId) {
+            this.gameServer.removeGame(room.gameId);
+          }
+          this.roomServer.removeRoom(room.id);
+        }
+        room.broadcast();
+        this.userServer.removeUser(socket);
+      }
+      socket.disconnect(true);
+    });
+
     socket.on(SOCKET_JOIN_ROOM, () => {
       console.log('>>>>> 加入房间');
       const user = this.userServer.getUserBySocket(socket.id);
@@ -123,6 +159,9 @@ export default class SocketServer {
       console.log('>>> 重连', socket.id, data);
       const { roomId } = data;
       const user = this.userServer.getUserBySocket(socket.id);
+      if (!user) {
+        return;
+      }
       console.log('>>> 重连找用户', user);
       const room = this.roomServer.getRoomById(roomId);
       // 没有房间重新进入

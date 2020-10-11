@@ -5,6 +5,7 @@ import {
   GameInfo,
   GameInfoType,
   GamePlay,
+  PlayerStatus,
   PlayInfoType,
   SocketServerConfig,
 } from '../model/game';
@@ -80,7 +81,7 @@ export default class Game {
 
   // 存活的玩家
   get survivePlayers(): GamePlayer[] {
-    return this.playerList.filter(p => !p.isOver);
+    return this.playerList.filter(p => !p.isOver && p.status !== PlayerStatus.leave);
   }
 
   /**
@@ -162,7 +163,8 @@ export default class Game {
     if (currIndex === -1) {
       return;
     }
-    if (currIndex === survivePlayers.length - 1) {
+    if (currIndex === survivePlayers.length - 1 || survivePlayers.length === 1) {
+      // 如果是最后一个，或者幸存者只有一个了，那下一个只有他咯
       this.currentPlayer = survivePlayers[0].userId;
     } else {
       this.currentPlayer = survivePlayers[currIndex + 1].userId;
@@ -179,6 +181,10 @@ export default class Game {
     const isPredict = type === GameInfoType.predict;
     this.playerList.forEach(player => {
       const socket = player.user.socket;
+      if (player.status === PlayerStatus.leave) {
+        // 主动离开房间的就不再发消息了
+        return;
+      }
 
       const formatPlayerList = normalList.map(p => {
         if (p.userId === player.userId) {

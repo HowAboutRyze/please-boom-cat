@@ -1,6 +1,15 @@
 import Vue from 'vue';
 import { Store } from 'vuex';
-import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_JOIN_ROOM, SOCKET_RECONNECT, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY, CardType } from '../../../app/lib/constant';
+import {
+  SOCKET_ROOM_BROADCAST,
+  SOCKET_START_GAMER,
+  SOCKET_JOIN_ROOM,
+  SOCKET_RECONNECT,
+  SOCKET_GAMER_INFO,
+  SOCKET_GAMER_PLAY,
+  SOCKET_DISCONNECT,
+  CardType,
+} from '../../../app/lib/constant';
 import { GamePlay, GameInfo, GameInfoType } from '../../model/game';
 import { ReconnectMsg } from '../../model/room';
 import User from '../../model/user';
@@ -35,6 +44,10 @@ export class Socket {
         socket.on(SOCKET_ROOM_BROADCAST, data => {
           console.log('>>>>> 房间消息：', data);
           this.store.dispatch('saveRoom', data);
+        });
+
+        socket.on('disconnect', () => {
+          console.log('>>> 断开连接');
         });
 
         // 游戏消息
@@ -121,8 +134,10 @@ export class Socket {
   }
 
   public async disconnect(): Promise<void> {
-    await this.socket?.disconnect();
+    await this.socket?.emit(SOCKET_DISCONNECT);
+    // 清空房间和游戏数据
     this.store.dispatch('quitRoom');
+    this.store.dispatch('quitGame');
   }
 }
 

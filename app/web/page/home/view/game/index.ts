@@ -144,6 +144,14 @@ export default class Game extends Vue {
   }
 
   /**
+   * 掉线文案
+   * @param status 玩家状态
+   */
+  offlineText(status: PlayerStatus): string {
+    return status === PlayerStatus.offline ? '（掉线了）' : '（已退出房间）';
+  }
+
+  /**
    * 卡牌 class
    * @param index
    */
