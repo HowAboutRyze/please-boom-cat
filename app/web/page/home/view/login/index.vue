@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1>爆炸猫啊</h1>
+    <h1>爆炸猫啊1</h1>
     <div
       class="tab"
       @click="changeTab"
@@ -38,8 +38,7 @@
         >
       </div>
       <button
-        type="button"
-        style="width: 100%;margin-bottom: 18px"
+        type="info"
         @click="register"
       >
         注册

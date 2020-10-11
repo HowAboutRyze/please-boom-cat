@@ -2,7 +2,6 @@ import { Vue, Component } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
-
 // 假数据，先顶上
 const mockUserAccounts = ['123', '234', '345', '456', '456'];
 const userAcount = mockUserAccounts[Math.floor(Math.random() * mockUserAccounts.length)];

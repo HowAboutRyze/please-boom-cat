@@ -33,7 +33,12 @@ module.exports = {
       copy: [{
         from: 'app/web/asset',
         to: 'asset'
-      }]
-    }
+      }],
+    },
+    // ['import', {
+    //   libraryName: 'vant',
+    //   libraryDirectory: 'es',
+    //   style: true
+    // }, 'vant']
   ]
 };
