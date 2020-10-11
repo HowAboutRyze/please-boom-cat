@@ -18,6 +18,7 @@
           <span v-show="isCurrentPlayer(player.userId)">(出牌玩家{{ waitingDefuse ? '，等待拆解' : '' }})</span>
           <span v-if="isBoomPlayer(player.userId)">~爆炸了~</span>
           <span v-if="player.isOver">（尸体）</span>
+          <span v-if="isOffline(player.status)">（掉线了）</span>
         </p>
         <p>手牌数：{{ player.total }}</p>
         <p

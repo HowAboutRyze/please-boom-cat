@@ -46,6 +46,8 @@ class Room {
    * @param player 玩家
    */
   public addPlayer(player: TypeUser) {
+    // 先移除房间里的自己
+    this.removePlayerByUserId(player);
     if (this.isEmpty) {
       this.masterId = player.userId;
     }
@@ -54,10 +56,26 @@ class Room {
   }
 
   /**
-   * 移除玩家
+   * 通过socketId移除玩家
    * @param player 玩家
    */
-  public removePlayer(player: TypeUser) {
+  public removePlayerBySocket(player: TypeUser) {
+    const index = this.playerList.findIndex(u => u.socketId === player.socketId);
+    if (index !== -1) {
+      this.playerList.splice(index, 1);
+      // 如果房主被移除了
+      // TODO: 什么场景呢？掉线？哦哦，房主退出匹配也是
+      if (this.masterId === player.userId && !this.isEmpty) {
+        this.masterId = this.playerList[0].userId;
+      }
+    }
+  }
+
+  /**
+   * 通过userId移除玩家
+   * @param player 玩家
+   */
+  public removePlayerByUserId(player: TypeUser) {
     const index = this.playerList.findIndex(u => u.userId === player.userId);
     if (index !== -1) {
       this.playerList.splice(index, 1);

@@ -1,8 +1,18 @@
-export interface Player {
+export interface BasePlayer {
   userId: string;
   cards: number[];
-  total: number;
   isOver: boolean;
+  status: PlayerStatus;
+}
+
+export interface Player extends BasePlayer {
+  total: number;
+}
+
+export enum PlayerStatus {
+  online, // 在线
+  offline, // 掉线
+  leave, // 离开
 }
 
 export enum GameInfoType {
@@ -15,6 +25,7 @@ export enum GameInfoType {
   boom, // 爆炸
   waitDefuse, // 等待拆解
   gameOver, // 游戏结束
+  statusChange, // 玩家状态变更
 }
 
 // 服务端下发游戏消息

@@ -6,6 +6,8 @@
 // 房间广播
 export const SOCKET_ROOM_BROADCAST = 'SOCKET_ROOM_BROADCAST';
 export const SOCKET_START_GAMER = 'SOCKET_START_GAMER';
+export const SOCKET_JOIN_ROOM = 'SOCKET_JOIN_ROOM';
+export const SOCKET_RECONNECT = 'SOCKET_RECONNECT';
 
 /**
  * 游戏相关资料

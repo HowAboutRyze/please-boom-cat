@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import { Store } from 'vuex';
-import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY, CardType } from '../../../app/lib/constant';
+import { SOCKET_ROOM_BROADCAST, SOCKET_START_GAMER, SOCKET_JOIN_ROOM, SOCKET_RECONNECT, SOCKET_GAMER_INFO, SOCKET_GAMER_PLAY, CardType } from '../../../app/lib/constant';
 import { GamePlay, GameInfo, GameInfoType } from '../../model/game';
+import { ReconnectMsg } from '../../model/room';
 import User from '../../model/user';
+import { SET_PLAYER_LIST } from '@store/modules/game/type';
 
 export class Socket {
   public store: Store<any>;
@@ -25,6 +27,9 @@ export class Socket {
       });
       socket.on('connect', () => {
         console.log('#connect');
+        if (!this.store.state.room.id) {
+          this.socket.emit(SOCKET_JOIN_ROOM);
+        }
 
         // 房间广播
         socket.on(SOCKET_ROOM_BROADCAST, data => {
@@ -75,6 +80,12 @@ export class Socket {
               this.store.dispatch('waitDefuse', data);
               break;
             }
+            case GameInfoType.statusChange: {
+              // 等待玩家拆解
+              console.log('>>>> 玩家状态变更', data);
+              this.store.commit(SET_PLAYER_LIST, data.playerList);
+              break;
+            }
             case GameInfoType.gameOver: {
               // 游戏结束了
               this.store.dispatch('gameOver', data);
@@ -85,6 +96,15 @@ export class Socket {
             }
           }
         });
+      });
+
+      socket.on('reconnect', data => {
+        console.log('reconnect', data);
+        const msg: ReconnectMsg = {
+          userId: this.store.state.user.user.userId,
+          roomId: this.store.state.room.id,
+        };
+        this.socket.emit(SOCKET_RECONNECT, msg);
       });
 
       this.socket = socket;

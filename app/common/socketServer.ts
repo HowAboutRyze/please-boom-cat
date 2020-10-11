@@ -3,8 +3,10 @@ import UserServer from './user';
 import RoomServer from './room';
 import GameServer from './gameServer';
 import { GamePlayer } from './game';
-import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY } from '../lib/constant';
-import { GamePlay, Socekt } from '../model/game';
+import { User as TypeUser } from './user';
+import { SOCKET_START_GAMER, SOCKET_GAMER_PLAY, SOCKET_JOIN_ROOM, SOCKET_RECONNECT } from '../lib/constant';
+import { GamePlay, PlayerStatus, GameInfoType, Socekt } from '../model/game';
+import { ReconnectMsg } from '../model/room';
 import { UserData } from '../model/user';
 
 export default class SocketServer {
@@ -29,12 +31,7 @@ export default class SocketServer {
    * @param userInfo 用户信息
    */
   public onSocketConnect(socket: Socekt, userInfo: UserData): void {
-    const user = this.userServer.addUser({ ...userInfo, socket });
-    const room = this.roomServer.findJoinableRoom();
-    user.roomId = room.id;
-    room.addPlayer(user);
-    room.broadcast();
-
+    this.userServer.addUser({ ...userInfo, socket });
     this.addSocketListener(socket);
   }
 
@@ -43,22 +40,36 @@ export default class SocketServer {
    * @param socket 用户 websocket 实例
    */
   public onSocketDisconnect(socket: Socekt): void {
-    // TODO: 断开连接就移除用户，那如果是游戏中，用户重连怎么办？
-
     const user = this.userServer.getUserBySocket(socket.id);
     // 从房间里移除用户咯
     if (user.roomId) {
       const room = this.roomServer.getRoomById(user.roomId);
-      room.removePlayer(user);
-      if (room.isEmpty) {
-        // 人去房空，顺便把游戏也销毁了吧
-        if (room.gameId) {
-          this.gameServer.removeGame(room.gameId);
+      console.log('>>>> 用户断开连接', socket.id, user.userId);
+      // 游戏开始就只改玩家状态，没开始就从房间移除
+      if (room.hasStarted && room.gameId) {
+        // 如果游戏已经开始，更改玩家状态为掉线
+        console.log('>>> 游戏已经开始，用户断开连接', user.userId);
+        const game = this.gameServer.getGameById(room.gameId);
+        const player = game.getPlayerById(user.userId);
+        if (player.user.socketId === socket.id) {
+          // 重连之后，服务器有可能先收到重连消息再收到掉线消息，所以得判断 socketId 是否相等再做操作
+          player.status = PlayerStatus.offline;
+          game.sendGameInfo({ type: GameInfoType.statusChange });
         }
-        this.roomServer.removeRoom(room.id);
+      } else {
+        // 没开始游戏，直接退出房间
+        room.removePlayerBySocket(user);
+        if (room.isEmpty) {
+          // 人去房空，顺便把游戏也销毁了吧
+          if (room.gameId) {
+            this.gameServer.removeGame(room.gameId);
+          }
+          this.roomServer.removeRoom(room.id);
+        }
+        room.broadcast();
       }
-      room.broadcast();
     }
+    // 将用户缓存清掉
     this.userServer.removeUser(socket);
   }
 
@@ -75,7 +86,13 @@ export default class SocketServer {
         return;
       }
 
-      const playerList: GamePlayer[] = room.playerList.map(p => ({ userId: p.userId, cards: [], isOver: false, user: p }));
+      const playerList: GamePlayer[] = room.playerList.map(p => ({
+        userId: p.userId,
+        cards: [],
+        isOver: false,
+        status: PlayerStatus.online,
+        user: p,
+      }));
       const game = this.gameServer.addGame({ roomId: user.roomId, playerList });
 
       // 房间绑定游戏id
@@ -94,6 +111,58 @@ export default class SocketServer {
 
       const game = this.gameServer.getGameById(data.id);
       game.gamePlayHandle(data);
-    })
+    });
+
+    socket.on(SOCKET_JOIN_ROOM, () => {
+      console.log('>>>>> 加入房间');
+      const user = this.userServer.getUserBySocket(socket.id);
+      this.userJoinNewRoom(user);
+    });
+
+    socket.on(SOCKET_RECONNECT, (data: ReconnectMsg) => {
+      console.log('>>> 重连', socket.id, data);
+      const { roomId } = data;
+      const user = this.userServer.getUserBySocket(socket.id);
+      console.log('>>> 重连找用户', user);
+      const room = this.roomServer.getRoomById(roomId);
+      // 没有房间重新进入
+      if (!room) {
+        this.userJoinNewRoom(user);
+        return;
+      }
+      // 房间没有开始游戏，加入房间
+      if (!room.gameId) {
+        user.roomId = roomId;
+        room.addPlayer(user);
+        room.broadcast();
+        return;
+      }
+      // 已开始游戏
+      console.log('>>>> 重连，已开始游戏');
+      const game = this.gameServer.getGameById(room.gameId);
+      const gamePlayer = game.getPlayerById(user.userId);
+      // 游戏中没有该玩家，让他进入新房间
+      if (!gamePlayer) {
+        this.userJoinNewRoom(user);
+        return;
+      }
+      // 更改游戏中玩家状态
+      user.roomId = roomId;
+      gamePlayer.status = PlayerStatus.online;
+      gamePlayer.user = user;
+      room.updatePlayer(user);
+      game.sendGameInfo({ type: GameInfoType.statusChange });
+    });
+  }
+
+  /**
+   * 玩家加入新房间
+   * @param user 玩家
+   */
+  public userJoinNewRoom(user: TypeUser): void {
+    const room = this.roomServer.findJoinableRoom();
+    user.roomId = room.id;
+    room.addPlayer(user);
+    room.broadcast();
   }
 }

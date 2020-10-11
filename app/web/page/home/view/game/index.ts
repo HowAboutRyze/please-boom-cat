@@ -1,7 +1,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
-import { GamePlay, PlayInfoType, GameInfoType } from '../../../../../model/game';
+import { GamePlay, PlayerStatus, PlayInfoType, GameInfoType } from '../../../../../model/game';
 import RootState from '@store/state';
 
 @Component
@@ -133,6 +133,14 @@ export default class Game extends Vue {
    */
   isWishfulCard(card: number): boolean {
     return card === this.wishfulCard;
+  }
+
+  /**
+   * 是否掉线
+   * @param status 玩家状态
+   */
+  isOffline(status: PlayerStatus): boolean {
+    return status !== PlayerStatus.online;
   }
 
   /**

@@ -1,5 +1,13 @@
 import { SOCKET_GAMER_INFO, CardType, cardMap } from '../lib/constant';
-import { GameInfo, GameInfoType, GamePlay, PlayInfoType, SocketServerConfig } from '../model/game';
+import { User as TypeUser } from './user';
+import {
+  BasePlayer,
+  GameInfo,
+  GameInfoType,
+  GamePlay,
+  PlayInfoType,
+  SocketServerConfig,
+} from '../model/game';
 import { uuidv4, randomInt } from '../lib/utils';
 import * as _ from 'lodash';
 
@@ -8,11 +16,8 @@ interface SkillStore {
   skill: () => void; // 卡牌技能
 }
 
-export interface GamePlayer {
-  userId: string;
-  cards: number[];
-  isOver: boolean;
-  user: any;
+export interface GamePlayer extends BasePlayer {
+  user: TypeUser;
 }
 
 export interface GameData {
@@ -170,7 +175,7 @@ export default class Game {
    */
   public sendGameInfo(info: Partial<GameInfo> = {}): void {
     const { type = GameInfoType.system, msg = '', origin, target = '', cards = [] } = info;
-    const normalList = this.playerList.map(({ userId, cards, isOver }) => ({ userId, total: cards.length, cards: [], isOver }));
+    const normalList = this.playerList.map(({ userId, cards, isOver, status }) => ({ userId, total: cards.length, cards: [], isOver, status }));
     const isPredict = type === GameInfoType.predict;
     this.playerList.forEach(player => {
       const socket = player.user.socket;

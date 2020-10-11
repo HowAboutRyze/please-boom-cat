@@ -1,5 +1,5 @@
 import { PlainObject } from 'egg';
-import { SocketServerConfig, Socekt } from '../model/game';
+import { SocketServerConfig, PlayerStatus, Socekt } from '../model/game';
 import { UserData } from '../model/user';
 
 interface UserHash {
@@ -12,6 +12,7 @@ export class User {
   public socketId: string;
   public avatar: string;
   public nickName: string;
+  public status: PlayerStatus;
   public roomId?: string;
   constructor({ socket, userId = '', avatar = '', nickName = '' }: Partial<UserData>) {
     this.socket = socket;
@@ -19,6 +20,7 @@ export class User {
     this.socketId = socket.id || '';
     this.avatar = avatar;
     this.nickName = nickName;
+    this.status = PlayerStatus.online;
   }
 }
 

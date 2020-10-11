@@ -11,3 +11,8 @@ export interface RoomInfo {
   playerList: User[];
   hasStarted: boolean;
 }
+
+export interface ReconnectMsg {
+  userId: string;
+  roomId: string;
+}

@@ -5,6 +5,7 @@ import {
   SET_GAME_POP,
   SET_NOPE_POP,
   SET_PREDICT_POP,
+  SET_PLAYER_LIST,
 } from './type';
 import { GameInfoType, GameInfo } from '../../../../../../model/game';
 
@@ -138,23 +139,27 @@ export default class GameModule implements Module<GameState, RootState> {
       state.predictCards = predictCards;
     },
     [SET_PLAYER](state, data) {
-      console.log('>>> store commit ', data);
+      console.log('>>> store commit [SET_PLAYER]', data);
       const { index, player } = data;
       state.playerList.splice(index, 1, player);
     },
     [SET_GAME_POP](state, data) {
-      console.log('>>> store commit ', data);
+      console.log('>>> store commit [SET_GAME_POP]', data);
       state.showPop = data.showPop;
       state.popTitle = data.popTitle || '';
       state.popText = data.popText || '';
     },
     [SET_NOPE_POP](state, data) {
-      console.log('>>> store commit ', data);
+      console.log('>>> store commit [SET_NOPE_POP]', data);
       state.nopePopShow = data;
     },
     [SET_PREDICT_POP](state, data) {
-      console.log('>>> store commit ', data);
+      console.log('>>> store commit [SET_PREDICT_POP]', data);
       state.predictPopShow = data;
+    },
+    [SET_PLAYER_LIST](state, data) {
+      console.log('>>> store commit [SET_PLAYER_LIST]', data);
+      state.playerList = data;
     },
   };
 
