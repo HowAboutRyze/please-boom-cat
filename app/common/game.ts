@@ -33,6 +33,8 @@ export default class Game {
 
   public id: string;
 
+  public end = false;
+
   public roomId: string;
 
   // 牌组，只放卡牌类型就行了
@@ -176,9 +178,21 @@ export default class Game {
    * @param info
    */
   public sendGameInfo(info: Partial<GameInfo> = {}): void {
+    // 如果游戏结束了，就不再发送消息了
+    if (this.end) {
+      return;
+    }
+
     const { type = GameInfoType.system, msg = '', origin, target = '', cards = [] } = info;
     const normalList = this.playerList.map(({ userId, cards, isOver, status }) => ({ userId, total: cards.length, cards: [], isOver, status }));
     const isPredict = type === GameInfoType.predict;
+
+    if (type === GameInfoType.gameOver) {
+      // 游戏结束消息
+      this.end = true;
+      this.currentPlayer = this.survivePlayers[0].userId;
+    }
+
     this.playerList.forEach(player => {
       const socket = player.user.socket;
       if (player.status === PlayerStatus.leave) {

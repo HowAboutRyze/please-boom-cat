@@ -126,7 +126,10 @@ export default class SocketServer {
         if (room.hasStarted && room.gameId) {
           const game = this.gameServer.getGameById(room.gameId);
           const player = game.getPlayerById(user.userId);
-          game.nextPlayerTurn();
+          if (game.currentPlayer === user.userId) {
+            // 如果当前出牌玩家是这个离开房间的人，就换下一个玩家出牌
+            game.nextPlayerTurn();
+          }
           player.status = PlayerStatus.leave;
           // 如果只有一个玩家了，游戏结束
           if (game.survivePlayers.length <= 1) {
