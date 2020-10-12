@@ -49,7 +49,7 @@ export default class FileDB extends BaseDB {
       pageIndex,
       pageSize,
       orderByField,
-      orderBy
+      orderBy,
     } = condition;
     const start = (pageIndex - 1) * pageSize;
     const end = pageIndex * pageSize;

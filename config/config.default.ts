@@ -6,11 +6,11 @@ export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>;
 
   config.siteFile = {
-    '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/web/asset/images/favicon.ico'))
+    '/favicon.ico': fs.readFileSync(path.join(appInfo.baseDir, 'app/web/asset/images/favicon.ico')),
   };
 
   config.view = {
-    cache: false
+    cache: false,
   };
 
   config.vuessr = {
@@ -22,19 +22,19 @@ export default (appInfo: EggAppInfo) => {
 
   config.logger = {
     consoleLevel: 'DEBUG',
-    dir: path.join(appInfo.baseDir, 'logs')
+    dir: path.join(appInfo.baseDir, 'logs'),
   };
 
   config.static = {
     prefix: '/public/',
-    dir: path.join(appInfo.baseDir, 'public')
+    dir: path.join(appInfo.baseDir, 'public'),
   };
 
   config.keys = '123456';
 
   config.middleware = [
     'access',
-    'global'
+    'global',
   ];
 
   const bizConfig = {
@@ -44,14 +44,14 @@ export default (appInfo: EggAppInfo) => {
         '/': {
           connectionMiddleware: ['connection'],
           packetMiddleware: [],
-        }
+        },
       },
     },
     // socket server 的配置
     socketServer: {
       initCardNum: 5, // 初始手牌数量
       roomSize: 7, // 房间最多人数
-    }
+    },
   };
 
   return {

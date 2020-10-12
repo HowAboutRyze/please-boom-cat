@@ -28,9 +28,9 @@ export default function createRouter(): VueRouter {
         component: Game,
       },
       {
-        path: '*', component: () => import('../view/notfound/index.vue')
+        path: '*', component: () => import('../view/notfound/index.vue'),
       },
-    ]
+    ],
   });
   router.beforeEach((to, from, next) => {
     if (!EASY_ENV_IS_NODE) {

@@ -37,7 +37,7 @@ export default function createStore(initState: any = {}): Store<RootState> {
         nopePopShow: false,
         predictPopShow: false,
       }),
-    }
+    },
   });
 
   // 挂载 socketServer

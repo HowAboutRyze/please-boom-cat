@@ -37,7 +37,7 @@ export default class UserModule implements Module<UserState, RootState> {
   constructor(initState: Partial<UserState>) {
     this.state = {
       user: {},
-      ...initState
+      ...initState,
     };
   }
 }

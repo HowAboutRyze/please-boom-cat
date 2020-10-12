@@ -3,8 +3,8 @@ import Index from './index.vue';
 @Component({
   name: 'Layout',
   components: {
-    Index
-  }
+    Index,
+  },
 })
 export default class Layout extends Vue {
   @Prop({ type: String, default: 'Please Boom' }) title?: string;

@@ -2,7 +2,7 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es6: true
+    es6: true,
   },
   extends: [
     'plugin:vue/recommended', // 这里也可以启用其他规则，如默认的 vue/essential
@@ -15,7 +15,7 @@ module.exports = {
     ecmaFeatures: {
       modules: true,
     },
-    parser: '@typescript-eslint/parser' // 解析 .ts 文件
+    parser: '@typescript-eslint/parser', // 解析 .ts 文件
   },
   plugins: ['@typescript-eslint'],
   rules: {
@@ -24,7 +24,7 @@ module.exports = {
     // 优先使用 interface 而不是 type
     '@typescript-eslint/consistent-type-definitions': [
       "error",
-      "interface"
+      "interface",
     ],
     "no-spaced-func": 2, // 函数调用时 函数名与()之间不能有空格
     "no-trailing-spaces": 1, // 一行结束后面不要有空格
@@ -35,5 +35,6 @@ module.exports = {
     "comma-style": [2, "last"], // 逗号风格，换行时在行首还是行尾
     "default-case": 2, // 要求 switch 语句中有 default 分支
     "object-curly-spacing": [1, "always"], // 强制在花括号中使用一致的空格
-  }
-}
+    "comma-dangle": ["error", "always-multiline"], // 多行结尾逗号必须
+  },
+};

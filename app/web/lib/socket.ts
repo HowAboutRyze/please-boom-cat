@@ -32,7 +32,7 @@ export class Socket {
           now: Date.now(),
           ...userInfo,
         },
-        transports: ['websocket']
+        transports: ['websocket'],
       });
       socket.on('connect', () => {
         console.log('#connect');

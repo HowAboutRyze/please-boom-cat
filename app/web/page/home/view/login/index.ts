@@ -43,7 +43,7 @@ export default class Home extends Vue {
     await this.saveUser({
       userId,
       nickName,
-      avatar
+      avatar,
     });
     _session.set(USER_ID, this.userId);
     console.log('>>>>>>register', this.user);

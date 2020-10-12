@@ -17,5 +17,5 @@ export default {
       this[SocketServerSymbol] = new SocketServer(this as Application);
     }
     return this[SocketServerSymbol];
-  }
+  },
 };

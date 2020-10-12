@@ -4,7 +4,7 @@
 export const _local = {
   set(key: string, value: any): void {
     const data = {
-      value: value
+      value: value,
     }
     localStorage.setItem(key, JSON.stringify(data));
   },
@@ -20,13 +20,13 @@ export const _local = {
   },
   clear(): void {
     localStorage.clear();
-  }
+  },
 }
 
 export const _session = {
   set(key: string, value: any): void {
     const data = {
-      value: value
+      value: value,
     }
     sessionStorage.setItem(key, JSON.stringify(data));
   },
@@ -42,5 +42,5 @@ export const _session = {
   },
   clear(): void {
     sessionStorage.clear();
-  }
+  },
 };
