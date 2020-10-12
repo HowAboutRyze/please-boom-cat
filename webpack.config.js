@@ -3,7 +3,7 @@ const path = require('path');
 const resolve = filepath => path.resolve(__dirname, filepath);
 module.exports = {
   entry: {
-    'home/game': 'app/web/page/home/index.ts'
+    'home/game': 'app/web/page/home/index.ts',
   },
   resolve: {
     alias:{
@@ -15,7 +15,7 @@ module.exports = {
       '@view': resolve('app/web/page/home/view'),
       '@lib': resolve('app/web/lib'),
       '@typings': resolve('app/web/typings'),
-    }
+    },
   },
   module:{
     rules:[
@@ -23,17 +23,17 @@ module.exports = {
       { babel: false },
       {
         ts: {
-          exclude: []
-        }
-      }
-    ]
+          exclude: [],
+        },
+      },
+    ],
   },
   plugins: [
     {
       copy: [{
         from: 'app/web/asset',
-        to: 'asset'
-      }]
-    }
-  ]
+        to: 'asset',
+      }],
+    },
+  ],
 };

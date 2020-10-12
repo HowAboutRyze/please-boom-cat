@@ -11,8 +11,8 @@
     "tsc": "ets && tsc -p tsconfig.json",
     "clean": "ets clean",
     "kill": "easy kill",
-    "eslint": "eslint . --ext .ts",
-    "fix": "eslint --fix . --ext .ts",
+    "eslint": "eslint . --ext .ts,.js,.vue",
+    "fix": "eslint --fix . --ext .ts,.js,.vue",
     "ii": "npm install --registry https://registry.npm.taobao.org",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
