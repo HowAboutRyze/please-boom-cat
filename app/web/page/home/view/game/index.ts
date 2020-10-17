@@ -388,6 +388,7 @@ export default class Game extends Vue {
     } else {
       this.showCards();
     }
+    this.targetPlayer = '';
   }
 
   setWishfulCard(): void {

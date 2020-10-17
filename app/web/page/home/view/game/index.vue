@@ -15,7 +15,7 @@
       >
         <p>
           {{ getNickName(player.userId) }}
-          <span v-show="isCurrentPlayer(player.userId)">(出牌玩家{{ waitingDefuse ? '，等待拆解' : '' }})</span>
+          <span v-show="isCurrentPlayer(player.userId)">(当前回合玩家{{ waitingDefuse ? '，等待拆解' : '' }})</span>
           <span v-if="isBoomPlayer(player.userId)">~爆炸了~</span>
           <span v-if="player.isOver">（尸体）</span>
           <span v-if="isOffline(player.status)">{{ offlineText(player.status) }}</span>
@@ -36,7 +36,7 @@
         <div>
           <p>
             {{ user.nickName }}
-            <span v-show="isCurrentPlayer(user.userId)">(出牌玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
+            <span v-show="isCurrentPlayer(user.userId)">(当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
             <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
             <span v-if="selfGameInfo.isOver">（尸体）</span>
           </p>
@@ -49,8 +49,13 @@
           </p>
         </div>
         <div>
-          <p>正在出的牌</p>
-          <p style="color: red;font-weight: bolder;">
+          <p v-show="showedCard">
+            “{{ getNickName(gameOrigin) }}”出了：
+          </p>
+          <p
+            v-show="showedCard"
+            style="color: red;font-weight: bolder;"
+          >
             {{ showedCard }}
           </p>
         </div>
@@ -231,6 +236,7 @@
 .game-panel
   display flex
   > div
+    min-width 70px
     margin 4px
     border 1px solid #58bc58
 .normal-pop
