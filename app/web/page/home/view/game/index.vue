@@ -1,9 +1,17 @@
 <template>
   <div class="game-page">
-    <h1>爆炸猫啊</h1>
-    <button @click="quitGame">
-      退出游戏
-    </button>
+    <h1>
+      爆炸猫啊
+      <van-button
+        round
+        plain
+        type="warning"
+        class="quit-game"
+        @click="quitGame"
+      >
+        退出游戏
+      </van-button>
+    </h1>
     <h3>游戏已开始，牌堆剩余数量：{{ remain }}</h3>
 
     <!-- 别的玩家 -->
@@ -13,14 +21,17 @@
         :key="player.userId"
         :class="isOrigin(player.userId) && showedCard ? 'origin-player' : ''"
       >
+        <CmpUserInfo
+          :avatar="player.avatar"
+          :nick-name="player.nickName"
+        />
+        <p>手牌数：{{ player.total }}</p>
         <p>
-          {{ getNickName(player.userId) }}
           <span v-show="isCurrentPlayer(player.userId)">(当前回合玩家{{ waitingDefuse ? '，等待拆解' : '' }})</span>
           <span v-if="isBoomPlayer(player.userId)">~爆炸了~</span>
           <span v-if="player.isOver">（尸体）</span>
           <span v-if="isOffline(player.status)">{{ offlineText(player.status) }}</span>
         </p>
-        <p>手牌数：{{ player.total }}</p>
         <p
           v-show="isTarget(player.userId)"
           style="color: red;"
@@ -34,8 +45,11 @@
     <div>
       <div class="game-panel">
         <div>
+          <CmpUserInfo
+            :avatar="user.avatar"
+            :nick-name="user.nickName"
+          />
           <p>
-            {{ user.nickName }}
             <span v-show="isCurrentPlayer(user.userId)">(当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
             <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
             <span v-if="selfGameInfo.isOver">（尸体）</span>
@@ -164,7 +178,7 @@
             :class="isTargetPlayer(player.userId) ? 'target-player' : ''"
             @click="selectTarget(player.userId, player.isOver)"
           >
-            <p>{{ getNickName(player.userId) }}</p>
+            <p>{{ player.nickName }}</p>
             <p v-if="player.isOver">
               （不能选择尸体）
             </p>
@@ -209,15 +223,23 @@
     >
       <h1>游戏结束</h1>
       <p>恭喜 {{ winner }} 获胜！！</p>
-      <button @click="quitGame">
+      <van-button
+        round
+        plain
+        type="warning"
+        @click="quitGame"
+      >
         离开游戏
-      </button>
+      </van-button>
     </div>
   </div>
 </template>
 <style lang="stylus" scoped>
+.quit-game
+  float right
 .other-player
   display flex
+  margin-bottom 30px
   border 1px solid red
   li
     padding 4px

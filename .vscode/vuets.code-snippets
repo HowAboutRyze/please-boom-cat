@@ -41,7 +41,7 @@
 			"\t\t$2",
 			"\t</div>",
 			"</template>",
-			"<style scoped>",
+			"<style lang=\"stylus\" scoped>",
 			"$3",
 			"</style>",
 			"<script type=\"ts\"  src=\"./index.ts\"></script>",

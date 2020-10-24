@@ -1,5 +1,7 @@
 export interface BasePlayer {
   userId: string;
+  avatar: string;
+  nickName: string;
   cards: number[];
   isOver: boolean;
   status: PlayerStatus;

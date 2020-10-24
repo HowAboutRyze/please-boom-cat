@@ -184,7 +184,7 @@ export default class Game {
     }
 
     const { type = GameInfoType.system, msg = '', origin, target = '', cards = [] } = info;
-    const normalList = this.playerList.map(({ userId, cards, isOver, status }) => ({ userId, total: cards.length, cards: [], isOver, status }));
+    const normalList = this.playerList.map(({ userId, avatar, nickName, cards, isOver, status }) => ({ userId, avatar, nickName, total: cards.length, cards: [], isOver, status }));
     const isPredict = type === GameInfoType.predict;
 
     if (type === GameInfoType.gameOver) {

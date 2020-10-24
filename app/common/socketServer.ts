@@ -92,6 +92,8 @@ export default class SocketServer {
 
       const playerList: GamePlayer[] = room.playerList.map(p => ({
         userId: p.userId,
+        avatar: p.avatar,
+        nickName: p.nickName,
         cards: [],
         isOver: false,
         status: PlayerStatus.online,

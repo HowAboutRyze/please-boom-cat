@@ -2,9 +2,14 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
 import { GamePlay, PlayerStatus, PlayInfoType, GameInfoType } from '../../../../../model/game';
+import CmpUserInfo from '../../component/cmpUserInfo/index.vue';
 import RootState from '@store/state';
 
-@Component
+@Component({
+  components: {
+    CmpUserInfo,
+  },
+})
 export default class Game extends Vue {
   public selectedCards: number[] = [];
   public position  = 0;
