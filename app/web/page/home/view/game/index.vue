@@ -108,16 +108,14 @@
       </div>
     </div>
 
-    <div>
-      <div
+    <div class="card-list">
+      <CmpCard
         v-for="(card, index) in selfGameInfo.cards"
         :key="card + '-' + index"
-        :class="cardClass(index)"
-        @click="selectCard(card, index)"
-      >
-        <span style="font-weight: bolder;">{{ getCardName(card) }}</span>
-        <span>[{{ getCardDesc(card) }}]</span>
-      </div>
+        :card="card"
+        :is-selected="isSelected(index)"
+        @click.native="selectCard(card, index)"
+      />
     </div>
 
     <!-- 弹窗们 -->
@@ -280,22 +278,21 @@
     background yellow
     &.origin-player
       background skyblue
-.card
-  padding 4px
-  margin 10px
-  border 1px solid skyblue
-  border-radius 3px
-  &.selected
-    background pink
+.card-list
+  display flex
+  flex-wrap wrap
+  .cmp-card
+    margin-right -35px
+    margin-bottom 5px
 .game-desk
-  height 140px
+  height 120px
   margin-bottom 10px
   border 1px solid pink
 .card-desk-empty
   padding 0
   /deep/ .van-empty__image
-    width 100px
-    height 100px
+    width 80px
+    height 80px
 .game-panel
   display flex
   height 120px

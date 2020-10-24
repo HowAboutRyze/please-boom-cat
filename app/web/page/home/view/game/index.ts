@@ -3,11 +3,13 @@ import { State, Getter, Action } from 'vuex-class';
 import { cardMap, CardType } from '../../../../../lib/constant';
 import { GamePlay, PlayerStatus, PlayInfoType, GameInfoType } from '../../../../../model/game';
 import CmpUserInfo from '../../component/cmpUserInfo/index.vue';
+import CmpCard from '../../component/cmpCard/index.vue';
 import RootState from '@store/state';
 
 @Component({
   components: {
     CmpUserInfo,
+    CmpCard,
   },
 })
 export default class Game extends Vue {
@@ -197,8 +199,11 @@ export default class Game extends Vue {
     if (this.waitingDefuse && type !== CardType.defuse) {
       // TODO: 改为toast 吧
       console.log('你要选拆解啊！！！别选其他牌');
+      this.$toast({ message: '自定义图标' });
       return;
     }
+
+    const cardMessage = `【${this.getCardName(type)}】${this.getCardDesc(type)}`;
 
     if (this.canShowCards) {
       const sIndex = this.selectedCards.indexOf(index);
@@ -215,9 +220,11 @@ export default class Game extends Vue {
       // 清空数组，放入卡牌
       this.clearSelectedCards();
       this.selectedCards.push(index);
+      this.$toast({ message: cardMessage });
     } else {
       // 没选过牌，选牌
       this.selectedCards.push(index);
+      this.$toast({ message: cardMessage });
     }
   }
 
