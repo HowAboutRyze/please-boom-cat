@@ -41,69 +41,82 @@
       </li>
     </ul>
 
+    <div class="game-desk">
+      <p v-show="showedCard">
+        “{{ getNickName(gameOrigin) }}”出了：
+      </p>
+      <p
+        v-show="showedCard"
+        style="color: red;font-weight: bolder;"
+      >
+        {{ showedCard }}
+      </p>
+      <van-empty
+        v-show="!showedCard"
+        class="card-desk-empty"
+        description="出牌区"
+      />
+    </div>
+
     <!-- 自己的游戏面板 -->
-    <div>
-      <div class="game-panel">
-        <div>
-          <CmpUserInfo
-            :avatar="user.avatar"
-            :nick-name="user.nickName"
-          />
-          <p>
-            <span v-show="isCurrentPlayer(user.userId)">(当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
-            <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
-            <span v-if="selfGameInfo.isOver">（尸体）</span>
-          </p>
-          <p>手牌数：{{ selfGameInfo.total }}</p>
-          <p
-            v-show="isTarget(user.userId)"
-            style="color: red;"
-          >
-            《目标玩家》
-          </p>
-        </div>
-        <div>
-          <p v-show="showedCard">
-            “{{ getNickName(gameOrigin) }}”出了：
-          </p>
-          <p
-            v-show="showedCard"
-            style="color: red;font-weight: bolder;"
-          >
-            {{ showedCard }}
-          </p>
-        </div>
-      </div>
+    <div class="game-panel">
       <div>
-        <button
+        <van-button
           v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse && !waitingNope"
+          round
+          type="info"
           @click="touchCard"
         >
           摸牌
-        </button>
-        <button
+        </van-button>
+      </div>
+      <div>
+        <CmpUserInfo
+          :avatar="user.avatar"
+          :nick-name="user.nickName"
+        />
+        <p>手牌数：{{ selfGameInfo.total }}</p>
+        <p>
+          <span v-show="isCurrentPlayer(user.userId)">(当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
+          <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
+          <span v-if="selfGameInfo.isOver">（尸体）</span>
+        </p>
+        <p
+          v-show="isTarget(user.userId)"
+          style="color: red;"
+        >
+          《目标玩家》
+        </p>
+      </div>
+      <div>
+        <van-button
           v-show="canShowCards && !selfGameInfo.isOver && !favoringCard"
+          round
+          type="primary"
           @click="wantShowCard"
         >
           出牌
-        </button>
-        <button
+        </van-button>
+        <van-button
           v-show="favoringCard && !selfGameInfo.isOver"
+          round
+          type="primary"
           @click="favorCard"
         >
           帮助一张牌
-        </button>
+        </van-button>
       </div>
-      <div>
-        <div
-          v-for="(card, index) in selfGameInfo.cards"
-          :key="card + '-' + index"
-          :class="cardClass(index)"
-          @click="selectCard(card, index)"
-        >
-          <span style="font-weight: bolder;">{{ getCardName(card) }}</span>
-          <span>[{{ getCardDesc(card) }}]</span>
-        </div>
+    </div>
+
+    <div>
+      <div
+        v-for="(card, index) in selfGameInfo.cards"
+        :key="card + '-' + index"
+        :class="cardClass(index)"
+        @click="selectCard(card, index)"
+      >
+        <span style="font-weight: bolder;">{{ getCardName(card) }}</span>
+        <span>[{{ getCardDesc(card) }}]</span>
       </div>
     </div>
 
@@ -123,16 +136,19 @@
         <h3>请选择爆炸猫的位置</h3>
         <p>牌堆顶部为 0，牌堆底部为 {{ remain }}</p>
         <p>
-          <input
-            v-model.number="position"
-            type="number"
+          <van-stepper
+            v-model="position"
             min="0"
             :max="remain"
-          >
+          />
         </p>
-        <button @click="setBoomPosition">
+        <van-button
+          round
+          type="primary"
+          @click="setBoomPosition"
+        >
           放好了
-        </button>
+        </van-button>
       </div>
     </div>
     <div :class="`nope-pop bottom-pop ${nopePopShow ? 'normal-pop': 'normal-pop-hidden'}`">
@@ -141,12 +157,21 @@
       <div class="pop-content">
         <h3>是否要出否决(5秒考虑)</h3>
         <div class="btn-group">
-          <button @click="popShowNope">
+          <van-button
+            round
+            type="info"
+            style="margin-right: 10px;"
+            @click="popShowNope"
+          >
             出
-          </button>
-          <button @click="popRefuseNope">
+          </van-button>
+          <van-button
+            round
+            type="warning"
+            @click="popRefuseNope"
+          >
             不出
-          </button>
+          </van-button>
         </div>
       </div>
     </div>
@@ -178,19 +203,24 @@
             :class="isTargetPlayer(player.userId) ? 'target-player' : ''"
             @click="selectTarget(player.userId, player.isOver)"
           >
-            <p>{{ player.nickName }}</p>
+            <CmpUserInfo
+              :avatar="player.avatar"
+              :nick-name="player.nickName"
+            />
             <p v-if="player.isOver">
               （不能选择尸体）
             </p>
             <p>手牌数：{{ player.total }}</p>
           </div>
         </div>
-        <button
+        <van-button
+          round
+          type="primary"
           style="margin: 0 auto;"
           @click="setTarget"
         >
           确认
-        </button>
+        </van-button>
       </div>
     </div>
     <div :class="`wish-pop ${wishPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
@@ -198,7 +228,7 @@
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
         <h3>请选择想要的牌</h3>
-        <div>
+        <div class="wish-list">
           <div
             v-for="(card) in allCards"
             :key="card"
@@ -208,12 +238,14 @@
             {{ getCardName(card) }}
           </div>
         </div>
-        <button
+        <van-button
+          round
+          type="primary"
           style="margin: 0 auto;"
           @click="setWishfulCard"
         >
           确认
-        </button>
+        </van-button>
       </div>
     </div>
 
@@ -239,7 +271,7 @@
   float right
 .other-player
   display flex
-  margin-bottom 30px
+  margin-bottom 10px
   border 1px solid red
   li
     padding 4px
@@ -255,12 +287,26 @@
   border-radius 3px
   &.selected
     background pink
+.game-desk
+  height 140px
+  margin-bottom 10px
+  border 1px solid pink
+.card-desk-empty
+  padding 0
+  /deep/ .van-empty__image
+    width 100px
+    height 100px
 .game-panel
   display flex
+  height 120px
+  margin-bottom 10px
+  border 1px solid #58bc58
   > div
-    min-width 70px
-    margin 4px
-    border 1px solid #58bc58
+    flex 1
+    display flex
+    flex-direction column
+    align-items center
+    justify-content center
 .normal-pop
   box-sizing border-box
   display flex
@@ -284,16 +330,31 @@
     background-color white
 .normal-pop-hidden
   display none
+.position-pop
+  p
+    padding 10px
 .nope-pop
   .btn-group
     display flex
 
 .target-pop
-  .pop-content > div > div
-    margin 5px
-    border 1px solid skyblue
+  .pop-content > div
+    display flex
+    flex-wrap wrap
+    > div
+      margin 5px
+      border 1px solid skyblue
 .target-player
   background skyblue
+
+// 三张牌弹窗
+.wish-list
+  display flex
+  flex-wrap wrap
+  > div
+    padding 5px
+    margin 10px
+    border 1px solid #58bc58
 
 // 游戏结束啦
 .game-over

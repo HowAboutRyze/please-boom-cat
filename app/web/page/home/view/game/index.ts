@@ -12,7 +12,7 @@ import RootState from '@store/state';
 })
 export default class Game extends Vue {
   public selectedCards: number[] = [];
-  public position  = 0;
+  public position = 0;
   public targetPlayer = '';
   public winner = '';
   public positionPopShow  = false;
