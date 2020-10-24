@@ -1,55 +1,61 @@
 <template>
   <div class="match-page">
     <h1>爆炸猫啊</h1>
-    <div class="user-info">
-      <p>昵称：{{ user.nickName }}</p>
-      <img :src="user.avatar">
-    </div>
+    <van-card
+      v-show="!roomId"
+      :desc="getDesc(user.userId)"
+      :title="user.nickName"
+      :thumb="user.avatar"
+    />
     <div v-if="roomId">
       <h3>游戏房间</h3>
-      <ul>
-        <li
-          v-for="(player) in playerList"
-          :key="player.userId"
-        >
-          <strong v-if="isMater(player.userId)">《房主》</strong>
-          <span>{{ player.nickName }}</span>
-        </li>
-      </ul>
+      <van-card
+        v-for="(player) in playerList"
+        :key="player.userId"
+        :tag="isMater(player.userId) ? '房主' : ''"
+        :desc="getDesc(player.userId)"
+        :title="player.nickName"
+        :thumb="player.avatar"
+      />
       <p>匹配中<em>...</em></p>
-      <button
+      <van-button
         v-if="isMater(user.userId)"
-        :class="startClass"
+        round
+        block
+        type="info"
+        class="start-game"
+        :disabled="!canStart"
         @click="startGame"
       >
         开始游戏
-      </button>
-      <button
-        v-if="roomId"
+      </van-button>
+      <van-button
+        round
+        block
+        plain
+        type="warning"
         @click="quitRoom"
       >
         取消匹配
-      </button>
+      </van-button>
     </div>
-    <button
+    <van-button
       v-else
-      type="button"
-      style="width: 100%;margin-bottom: 18px"
+      round
+      block
+      type="info"
       @click="joinRoom"
     >
       开始匹配
-    </button>
+    </van-button>
   </div>
 </template>
 <style scoped>
-img {
-  max-height: 100px;
+h1 {
+  text-align: center;
 }
-.start-btn {
-  opacity: 0.5;
-}
-.start-btn.active {
-  opacity: 1;
+.start-game {
+  margin-bottom: 10px;
 }
 p > em {
   display: inline-block;

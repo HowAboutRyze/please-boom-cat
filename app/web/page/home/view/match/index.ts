@@ -25,9 +25,8 @@ export default class Match extends Vue {
     return this.playerList.length >= 2;
   }
 
-  // 开始游戏按钮 class
-  get startClass(): string {
-    return `start-btn ${this.canStart ? 'active' : ''}`;
+  getDesc(userId: string): string {
+    return userId === this.user.userId ? '你自己' : '';
   }
 
   joinRoom(): void {

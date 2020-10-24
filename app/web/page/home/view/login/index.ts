@@ -17,7 +17,7 @@ export default class Home extends Vue {
 
   avatar = '';
 
-  showLoginTab = true;
+  tab = 0;
 
   @State(state => state.origin) origin;
 
@@ -26,10 +26,6 @@ export default class Home extends Vue {
   @Action('getUser') getUser;
 
   @Action('saveUser') saveUser;
-
-  get tab(): '注册' | '登录' {
-    return this.showLoginTab ? '注册' : '登录';
-  }
 
   async login(): Promise<void> {
     await this.getUser({ id: this.account });
@@ -48,9 +44,5 @@ export default class Home extends Vue {
     _session.set(USER_ID, this.userId);
     console.log('>>>>>>register', this.user);
     this.$router.push(`/match`);
-  }
-
-  changeTab(): void {
-    this.showLoginTab = !this.showLoginTab;
   }
 }

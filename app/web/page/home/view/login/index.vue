@@ -1,61 +1,72 @@
 <template>
   <div class="home-page">
     <h1>爆炸猫啊</h1>
-    <div
-      class="tab"
-      @click="changeTab"
-    >
-      {{ tab }}
-    </div>
-    <div v-if="showLoginTab">
-      <div class="form login-info">
-        <input
-          v-model="account"
-          placeholder="请输入用户账号"
-        >
-      </div>
-      <button
-        type="button"
-        style="width: 100%;margin-bottom: 18px"
-        @click="login"
-      >
-        登录
-      </button>
-    </div>
-    <div v-else>
-      <div class="form register-info">
-        <input
-          v-model="userId"
-          placeholder="请输入用户账号"
-        >
-        <input
-          v-model="nickName"
-          placeholder="请输入昵称"
-        >
-        <input
-          v-model="avatar"
-          placeholder="请输入头像连接"
-        >
-      </div>
-      <button
-        type="button"
-        style="width: 100%;margin-bottom: 18px"
-        @click="register"
-      >
-        注册
-      </button>
-    </div>
+    <van-tabs v-model="tab">
+      <van-tab title="登录">
+        <van-form @submit="login">
+          <van-field
+            v-model="account"
+            name="用户账号"
+            label="用户账号"
+            placeholder="用户账号"
+            :rules="[{ required: true, message: '请输入用户账号' }]"
+          />
+          <div style="margin: 16px;">
+            <van-button
+              round
+              block
+              type="info"
+              native-type="submit"
+            >
+              登录
+            </van-button>
+          </div>
+        </van-form>
+      </van-tab>
+      <van-tab title="注册">
+        <van-form @submit="register">
+          <van-field
+            v-model="userId"
+            name="用户账号"
+            label="用户账号"
+            placeholder="用户账号"
+            :rules="[{ required: true, message: '请输入用户账号' }]"
+          />
+          <van-field
+            v-model="nickName"
+            name="昵称"
+            label="昵称"
+            placeholder="昵称"
+            :rules="[{ required: true, message: '请输入昵称' }]"
+          />
+          <van-field
+            v-model="avatar"
+            name="头像链接"
+            label="头像链接"
+            placeholder="头像链接"
+            :rules="[{ required: true, message: '请输头像链接' }]"
+          />
+          <div style="margin: 16px;">
+            <van-button
+              round
+              block
+              type="info"
+              native-type="submit"
+            >
+              登录
+            </van-button>
+          </div>
+        </van-form>
+      </van-tab>
+    </van-tabs>
   </div>
 </template>
 <style scoped>
-.tab {
-  margin-bottom: 10px;
-  padding: 2px 4px;
-  border-radius: 10px;
-  background-color: skyblue;
+h1 {
+  text-align: center;
 }
-.form {
-  margin-bottom: 10px;
+.tab {
+  margin: 0 0 10px 10px;
 }
 </style>
 <script type="ts"  src="./index.ts"></script>
