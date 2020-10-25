@@ -449,6 +449,11 @@ export default class Game extends Vue {
     return player?.nickName || '';
   }
 
+  getAvatar(userId: string): string {
+    const player = this.roomPlayerList.find(p => p.userId === userId);
+    return player?.avatar || '';
+  }
+
   getCardName(type: number): string {
     return cardMap[type]?.name || '未知卡牌';
   }

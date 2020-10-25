@@ -42,15 +42,21 @@
     </ul>
 
     <div class="game-desk">
-      <p v-show="showedCard">
-        “{{ getNickName(gameOrigin) }}”出了：
-      </p>
-      <p
+      <CmpUserInfo
         v-show="showedCard"
-        style="color: red;font-weight: bolder;"
-      >
-        {{ showedCard }}
+        :avatar="getAvatar(gameOrigin)"
+        :nick-name="getNickName(gameOrigin)"
+      />
+      <p v-show="showedCard">
+        =>
       </p>
+      <CmpCard
+        v-for="(card, index) in gameCards"
+        :key="card + '-' + index"
+        class="desk-card"
+        :card="card"
+        :is-selected="false"
+      />
       <van-empty
         v-show="!showedCard"
         class="card-desk-empty"
@@ -285,9 +291,15 @@
     margin-right -35px
     margin-bottom 5px
 .game-desk
+  display flex
+  align-items center
+  justify-content space-around
   height 120px
   margin-bottom 10px
   border 1px solid pink
+  .desk-card
+    width 65px
+    height 100px
 .card-desk-empty
   padding 0
   /deep/ .van-empty__image
