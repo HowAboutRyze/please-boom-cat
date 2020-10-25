@@ -42,11 +42,15 @@
     </ul>
 
     <div class="game-desk">
-      <CmpUserInfo
+      <div
         v-show="showedCard"
-        :avatar="getAvatar(gameOrigin)"
-        :nick-name="getNickName(gameOrigin)"
-      />
+        class="desk-user"
+      >
+        <CmpUserInfo
+          :avatar="getAvatar(gameOrigin)"
+          :nick-name="getNickName(gameOrigin)"
+        />
+      </div>
       <p v-show="showedCard">
         =>
       </p>
@@ -76,7 +80,7 @@
           摸牌
         </van-button>
       </div>
-      <div>
+      <div class="panel-user">
         <CmpUserInfo
           :avatar="user.avatar"
           :nick-name="user.nickName"
@@ -96,7 +100,7 @@
       </div>
       <div>
         <van-button
-          v-show="canShowCards && !selfGameInfo.isOver && !favoringCard"
+          v-show="canShowCards && !selfGameInfo.isOver && !favoringCard && !someoneFavor"
           round
           type="primary"
           @click="wantShowCard"
@@ -258,7 +262,13 @@
       class="game-over"
     >
       <h1>游戏结束</h1>
-      <p>恭喜 {{ winner }} 获胜！！</p>
+      <p>胜利玩家</p>
+      <div class="over-user">
+        <CmpUserInfo
+          :avatar="winnerAvatar"
+          :nick-name="winnerNickName"
+        />
+      </div>
       <van-button
         round
         plain
@@ -280,8 +290,8 @@
   li
     padding 4px
     margin 6px 10px
+    box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 #f30
     border-radius 3px
-    background yellow
     &.origin-player
       background skyblue
 .card-list
@@ -294,12 +304,16 @@
   display flex
   align-items center
   justify-content space-around
-  height 120px
+  height 140px
   margin-bottom 10px
   border 1px solid pink
   .desk-card
     width 65px
     height 100px
+  .desk-user
+    padding 4px
+    box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 pink
+    border-radius 3px
 .card-desk-empty
   padding 0
   /deep/ .van-empty__image
@@ -307,7 +321,8 @@
     height 80px
 .game-panel
   display flex
-  height 120px
+  align-items center
+  height 110px
   margin-bottom 10px
   border 1px solid #58bc58
   > div
@@ -316,6 +331,11 @@
     flex-direction column
     align-items center
     justify-content center
+  .panel-user
+    width 120px
+    height 100px
+    border-radius 5px
+    box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 #58bc58
 .normal-pop
   box-sizing border-box
   display flex
@@ -375,5 +395,13 @@
   padding 50px
   text-align center
   background-color white
+  > p
+    margin 10px
+  .over-user
+    width 70px
+    padding 10px 0
+    margin 0 auto 10px
+    border-radius 3px
+    box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 #58bc58
 </style>
 <script type="ts"  src="./index.ts"></script>

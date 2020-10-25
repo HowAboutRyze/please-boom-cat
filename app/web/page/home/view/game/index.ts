@@ -16,7 +16,8 @@ export default class Game extends Vue {
   public selectedCards: number[] = [];
   public position = 0;
   public targetPlayer = '';
-  public winner = '';
+  public winnerNickName = '';
+  public winnerAvatar = '';
   public positionPopShow  = false;
   public targetPopShow  = false;
   public wishPopShow  = false;
@@ -58,6 +59,7 @@ export default class Game extends Vue {
   @Watch('someoneFavor')
   private watchFavor(val) {
     if (val && val === this.user.userId) {
+      console.log('帮助中');
       this.favoringCard = true;
     } else {
       this.favoringCard = false;
@@ -68,7 +70,8 @@ export default class Game extends Vue {
   private watchGameOver(val) {
     if (val && val === true) {
       // 游戏结束，记录获胜玩家
-      this.winner = this.getNickName(this.currentPlayer);
+      this.winnerNickName = this.getNickName(this.currentPlayer);
+      this.winnerAvatar = this.getAvatar(this.currentPlayer);
     }
   }
 
@@ -196,10 +199,8 @@ export default class Game extends Vue {
    * @param index 卡牌序号
    */
   selectCard(type: number, index: number): void {
-    if (this.waitingDefuse && type !== CardType.defuse) {
-      // TODO: 改为toast 吧
-      console.log('你要选拆解啊！！！别选其他牌');
-      this.$toast({ message: '自定义图标' });
+    if (this.waitingDefuse && type !== CardType.defuse && this.isCurrentPlayer(this.user.userId)) {
+      this.$toast.fail('你只能出拆解');
       return;
     }
 
@@ -248,28 +249,25 @@ export default class Game extends Vue {
     // 等待否决中
     if (this.waitingNope) {
       if (cardType !== CardType.nope || this.selectedCards.length > 1) {
-        // TODO: 做成toast
-        console.warn('>>> 出牌失败，只能出一张否决');
+        this.$toast.fail('出牌失败，只能出一张否决');
         return;
       }
       console.log('>>> 否决', this.gameType, this.gameOrigin, this.user.userId);
       if (this.gameOrigin === this.user.userId) {
-        // TODO: 做成toast
-        console.error('>>> 否决失败，不能否决自己');
+        this.$toast.fail('否决失败，不能否决自己');
         this.selectedCards = [];
       } else if (this.gameType === GameInfoType.play) {
         // 正在出牌，可否决
         this.showCards();
       } else {
-        console.error('>>> 否决出错！！！想想为什么');
+        this.$toast.fail('否决出错！！！想想为什么');
       }
       return;
     }
 
     // 不是自己的回合不能出牌
     if (!this.isCurrentPlayer(this.user.userId)) {
-      // TODO: 做成toast
-      console.warn('>>> 出牌失败，没到你出牌');
+      this.$toast.fail('出牌失败，没到你出牌');
       return;
     }
 

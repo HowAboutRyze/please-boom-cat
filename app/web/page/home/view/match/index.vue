@@ -17,7 +17,9 @@
         :title="player.nickName"
         :thumb="player.avatar"
       />
-      <p>匹配中<em>...</em></p>
+      <p class="matching">
+        匹配中<em>...</em>
+      </p>
       <van-button
         v-if="isMater(user.userId)"
         round
@@ -56,6 +58,10 @@ h1 {
 }
 .start-game {
   margin-bottom: 10px;
+}
+.matching {
+  margin: 10px;
+  text-align: center;
 }
 p > em {
   display: inline-block;

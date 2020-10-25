@@ -3,8 +3,8 @@
     <p>{{ nickName }}</p>
     <van-image
       round
-      width="50px"
-      height="50px"
+      width="45px"
+      height="45px"
       :src="avatar"
     />
   </div>
@@ -17,7 +17,7 @@
   > p
     padding 0 10px
     font-size 12px
-    line-height 20px
+    line-height 16px
     color #fff
     border-radius 0.5rem
     background-color rgba(25,137,250,.8)

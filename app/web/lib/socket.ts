@@ -65,7 +65,6 @@ export class Socket {
               break;
             }
             case GameInfoType.play: {
-              // TODO: 玩家出牌
               this.store.dispatch('saveGame', data);
               console.log('>>> 出牌', data.cards && data.cards.length > 0 && CardType[data.cards[0]]);
               break;
