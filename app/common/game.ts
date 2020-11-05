@@ -325,7 +325,7 @@ export default class Game {
       // 插一张爆炸猫
       this.deck.splice(position, 0, CardType.boom);
       this.nextPlayerTurn();
-      this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹` });
+      this.sendGameInfo({ type: GameInfoType.next, origin, msg: `玩家 ${origin} 拆解了炸弹`, cards });
     } else if (card === CardType.skip) {
       // 跳过
       this.waitReleaseSkill(data, () => {

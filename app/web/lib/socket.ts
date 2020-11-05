@@ -53,7 +53,6 @@ export class Socket {
         // 游戏消息
         socket.on(SOCKET_GAMER_INFO, async (data: GameInfo) => {
           console.log('>>>>> 游戏消息：', data);
-          // TODO: 判断服务端发送过来的 data.type 进行游戏操作
           const { type } = data;
           switch (type) {
             case GameInfoType.system: {

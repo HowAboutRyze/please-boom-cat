@@ -1,6 +1,6 @@
 <template>
   <div class="game-page">
-    <h1>
+    <h1 class="title">
       爆炸猫啊
       <van-button
         round
@@ -12,7 +12,6 @@
         退出游戏
       </van-button>
     </h1>
-    <h3>游戏已开始，牌堆剩余数量：{{ remain }}</h3>
 
     <!-- 别的玩家 -->
     <ul class="other-player">
@@ -42,6 +41,9 @@
     </ul>
 
     <div class="game-desk">
+      <div class="desk-remain">
+        剩余牌数：<span>{{ remain }}</span>
+      </div>
       <div
         v-show="showedCard"
         class="desk-user"
@@ -188,14 +190,14 @@
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
         <h3>预言看到的小猫们</h3>
-        <div>
-          <div
+        <div class="predict-list">
+          <CmpCard
             v-for="(card, index) in predictCards"
             :key="card + '-' + index"
-            :class="cardClass(index)"
-          >
-            <span>{{ getCardName(card) }}</span>
-          </div>
+            class="predict-card"
+            :card="card"
+            :is-selected="false"
+          />
         </div>
       </div>
     </div>
@@ -281,13 +283,21 @@
   </div>
 </template>
 <style lang="stylus" scoped>
+.title
+  line-height 50px
 .quit-game
   float right
 .other-player
   display flex
+  justify-content space-around
+  flex-wrap wrap
   margin-bottom 10px
   border 1px solid red
   li
+    display flex
+    flex-direction column
+    align-items center
+    width 80px
     padding 4px
     margin 6px 10px
     box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 #f30
@@ -295,12 +305,15 @@
     &.origin-player
       background skyblue
 .card-list
+  box-sizing border-box
   display flex
   flex-wrap wrap
+  padding-right 35px
   .cmp-card
     margin-right -35px
     margin-bottom 5px
 .game-desk
+  position relative
   display flex
   align-items center
   justify-content space-around
@@ -314,6 +327,13 @@
     padding 4px
     box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 pink
     border-radius 3px
+  .desk-remain
+    position absolute
+    top 0
+    right 5px
+    span
+      font-weight bolder
+      color #f33
 .card-desk-empty
   padding 0
   /deep/ .van-empty__image
@@ -365,6 +385,12 @@
 .nope-pop
   .btn-group
     display flex
+
+.predict-list
+  padding-top 10px
+  padding-bottom 45px
+  .cmp-card
+    margin-bottom -45px
 
 .target-pop
   .pop-content > div
