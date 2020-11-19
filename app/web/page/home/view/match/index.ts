@@ -16,7 +16,7 @@ export default class Match extends Vue {
   @Watch('gameId')
   private watchGame(val) {
     if (val) {
-      this.$router.push(`/game`);
+      this.$router.push('/game');
     }
   }
 

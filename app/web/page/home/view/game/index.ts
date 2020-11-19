@@ -466,6 +466,6 @@ export default class Game extends Vue {
   async quitGame(): Promise<void> {
     console.log('>>>>> 退出游戏');
     await this.$socketServer.disconnect();
-    this.$router.push(`/match`);
+    this.$router.push('/match');
   }
 }

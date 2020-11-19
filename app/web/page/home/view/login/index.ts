@@ -31,7 +31,7 @@ export default class Home extends Vue {
     await this.getUser({ id: this.account });
     _session.set(USER_ID, this.account);
     console.log('>>>>>login:', this.user, this.$socket);
-    this.$router.push(`/match`);
+    this.$router.push('/match');
   }
 
   async register(): Promise<void> {
@@ -43,6 +43,10 @@ export default class Home extends Vue {
     });
     _session.set(USER_ID, this.userId);
     console.log('>>>>>>register', this.user);
-    this.$router.push(`/match`);
+    this.$router.push('/match');
+  }
+
+  gotoRule(): void {
+    this.$router.push('/rule');
   }
 }

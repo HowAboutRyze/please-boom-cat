@@ -1,6 +1,14 @@
 <template>
   <div class="home-page">
-    <h1>爆炸猫啊</h1>
+    <h1>
+      爆炸猫啊
+      <van-icon
+        name="question-o"
+        class="icon-rule"
+        color="#58bc58"
+        @click="gotoRule"
+      />
+    </h1>
     <van-tabs v-model="tab">
       <van-tab title="登录">
         <van-form @submit="login">
@@ -64,6 +72,10 @@
 <style scoped>
 h1 {
   text-align: center;
+}
+.icon-rule {
+  float: right;
+  margin-right: 10px;
 }
 .tab {
   margin: 0 0 10px 10px;

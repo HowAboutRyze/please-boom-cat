@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import Login from '../view/login/index.vue';
 import Match from '../view/match/index.vue';
 import Game from '../view/game/index.vue';
+import Rule from '../view/rule/index.vue';
 
 import { _session } from '@lib/storage';
 import { USER_ID } from '@lib/constant';
@@ -28,6 +29,10 @@ export default function createRouter(): VueRouter {
         component: Game,
       },
       {
+        path: '/rule',
+        component: Rule,
+      },
+      {
         path: '*', component: () => import('../view/notfound/index.vue'),
       },
     ],
@@ -35,7 +40,9 @@ export default function createRouter(): VueRouter {
   router.beforeEach((to, from, next) => {
     if (!EASY_ENV_IS_NODE) {
       const hasLogin = _session.get(USER_ID);
-      if (to.path !== '/' && !hasLogin) {
+      if (to.path === '/rule') {
+        next();
+      } else if (to.path !== '/' && !hasLogin) {
         // 未登录就登录咯
         next('/');
       } else if (to.path === '/' && hasLogin) {
