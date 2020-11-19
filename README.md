@@ -13,6 +13,8 @@ $ npm install
 $ npm run dev
 $ open http://localhost:7001
 ```
+> 如果`npm install`无法成功安装，可以使用淘宝镜像逐个安装 或使用`yarn`进行安装。  
+
 
 > 开发过程中多次启动应用，可能会导致 7001 端口进程未关闭，影响开发，可以使用 `npm run kill 7001` 干掉端口进程
 
