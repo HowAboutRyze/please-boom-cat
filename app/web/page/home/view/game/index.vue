@@ -18,7 +18,7 @@
       <li
         v-for="(player) in otherPlayers"
         :key="player.userId"
-        :class="isOrigin(player.userId) && showedCard ? 'origin-player' : ''"
+        :class="{ 'origin-player': isOrigin(player.userId) && showedCard }"
       >
         <CmpUserInfo
           :avatar="player.avatar"
@@ -131,7 +131,10 @@
     </div>
 
     <!-- 弹窗们 -->
-    <div :class="`game-pop ${showPop ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="game-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !showPop }"
+    >
       <!-- 游戏信息提示弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -139,7 +142,10 @@
         <p>{{ popText }}</p>
       </div>
     </div>
-    <div :class="`position-pop ${positionPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="position-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !positionPopShow }"
+    >
       <!-- 放牌弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -161,7 +167,10 @@
         </van-button>
       </div>
     </div>
-    <div :class="`nope-pop bottom-pop ${nopePopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="nope-pop bottom-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !nopePopShow }"
+    >
       <!-- 游戏信息提示弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -185,7 +194,10 @@
         </div>
       </div>
     </div>
-    <div :class="`predict-pop ${predictPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="predict-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !predictPopShow }"
+    >
       <!-- 预言卡牌弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -201,7 +213,10 @@
         </div>
       </div>
     </div>
-    <div :class="`target-pop ${targetPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="target-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !targetPopShow }"
+    >
       <!-- 选择目标弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -210,7 +225,7 @@
           <div
             v-for="(player) in otherPlayers"
             :key="player.userId"
-            :class="isTargetPlayer(player.userId) ? 'target-player' : ''"
+            :class="{ 'target-player': isTargetPlayer(player.userId) }"
             @click="selectTarget(player.userId, player.isOver)"
           >
             <CmpUserInfo
@@ -233,7 +248,10 @@
         </van-button>
       </div>
     </div>
-    <div :class="`wish-pop ${wishPopShow ? 'normal-pop': 'normal-pop-hidden'}`">
+    <div
+      class="wish-pop normal-pop"
+      :class="{ 'normal-pop-hidden': !wishPopShow }"
+    >
       <!-- 选择想要的牌弹窗 -->
       <!-- TODO: 后面弹窗做成个组件 -->
       <div class="pop-content">
@@ -242,7 +260,7 @@
           <div
             v-for="(card) in allCards"
             :key="card"
-            :class="isWishfulCard(card) ? 'target-player' : ''"
+            :class="{ 'target-player': isWishfulCard(card) }"
             @click="selectWishfulCard(card)"
           >
             {{ getCardName(card) }}
