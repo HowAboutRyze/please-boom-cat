@@ -308,7 +308,7 @@ export default class Game {
         });
       } else if (cards.length > 2) {
         // 三张，指定要玩家一张卡，没有就没有咯
-        console.log('>>>> 出三张，指定要一张卡');
+        console.log('>>>> 出三张，指定要一张卡', wishfulCard);
         this.waitReleaseSkill(data, () => {
           this.robCard(origin, target, wishfulCard);
           this.sendGameInfo({ type: GameInfoType.system, origin });

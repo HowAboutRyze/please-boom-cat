@@ -74,7 +74,7 @@
     <div class="game-panel">
       <div>
         <van-button
-          v-show="!canShowCards && isCurrentPlayer(user.userId) && !waitingDefuse && !waitingNope"
+          v-show="showTouch"
           round
           type="info"
           @click="touchCard"
@@ -326,10 +326,11 @@
   box-sizing border-box
   display flex
   flex-wrap wrap
+  padding-top 65px
   padding-right 35px
   .cmp-card
+    margin-top -65px
     margin-right -35px
-    margin-bottom 5px
 .game-desk
   position relative
   display flex

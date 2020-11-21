@@ -23,7 +23,7 @@ export default class Game extends Vue {
   public wishPopShow  = false;
   public favoringCard = false;
   public wishfulCard: number | null = null;
-  public allCards = Object.keys(cardMap);
+  public allCards = Object.keys(cardMap).slice(1);
 
   @State((state: RootState) => state.user.user) user;
   @State((state: RootState) => state.game.id) gameId;
@@ -95,6 +95,11 @@ export default class Game extends Vue {
       return name;
     }
     return '';
+  }
+
+  get showTouch(): boolean {
+    return !this.canShowCards && this.isCurrentPlayer(this.user.userId) && !this.waitingDefuse
+      && !this.waitingNope && this.gameType !== GameInfoType.favoring;
   }
 
   /**
@@ -391,20 +396,29 @@ export default class Game extends Vue {
   }
 
   setTarget(): void {
+    if (!this.targetPlayer) {
+      this.$toast({ message: '必须选择一名玩家哦！' });
+      return;
+    }
     this.hideTargetPop();
     if (this.selectedCards.length > 2) {
       // 出三张牌
       this.showWishPop();
     } else {
       this.showCards();
+      this.targetPlayer = '';
     }
-    this.targetPlayer = '';
   }
 
   setWishfulCard(): void {
+    if (this.wishfulCard === null) {
+      this.$toast({ message: '必须选择一张你想要的卡哦！' });
+      return;
+    }
     this.hideWishPop();
     this.showCards();
     this.wishfulCard = null;
+    this.targetPlayer = '';
   }
 
   /**
