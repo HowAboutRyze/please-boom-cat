@@ -50,6 +50,8 @@ export default class Game extends Vue {
   @Getter('wasFavored') wasFavored;
   @Getter('stealSuccess') stealSuccess;
   @Getter('wasStealed') wasStealed;
+  @Getter('robSuccess') robSuccess;
+  @Getter('wasRobed') wasRobed;
   @Action('removeCards') removeCards;
   @Action('triggerNopePop') triggerNopePop;
 
@@ -79,11 +81,11 @@ export default class Game extends Vue {
   private watchStealSuccess(val) {
     if (val) {
       if (!this.gameCards || !this.gameCards.length) {
-        this.$toast({ message: '你的对子啥也没偷到' });
+        this.$toast({ message: '你的 “对子” 啥也没偷到' });
         return;
       }
       const card = this.gameCards[0];
-      this.$toast({ message: `你的对子得到了 “${this.getCardName(card)}”` });
+      this.$toast({ message: `你的 “对子” 得到了 “${this.getCardName(card)}”` });
     }
   }
 
@@ -91,11 +93,35 @@ export default class Game extends Vue {
   private watchWasStealed(val) {
     if (val) {
       if (!this.gameCards || !this.gameCards.length) {
-        this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的对子从你这偷了个寂寞` });
+        this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的 “对子” 从你这偷了个寂寞` });
         return;
       }
       const card = this.gameCards[0];
-      this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的对子偷了你一张 “${this.getCardName(card)}”` });
+      this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的 “对子” 偷了你一张 “${this.getCardName(card)}”` });
+    }
+  }
+
+  @Watch('robSuccess')
+  private watchRobSuccess(val) {
+    if (val) {
+      if (!this.gameCards || !this.gameCards.length) {
+        this.$toast({ message: '你的 “三条” 得到了个寂寞' });
+        return;
+      }
+      const card = this.gameCards[0];
+      this.$toast({ message: `你的 “三条” 得到了 “${this.getCardName(card)}”` });
+    }
+  }
+
+  @Watch('wasRobed')
+  private watchWasRobed(val) {
+    if (val) {
+      if (!this.gameCards || !this.gameCards.length) {
+        this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的 “三条” 从你这抢了个寂寞` });
+        return;
+      }
+      const card = this.gameCards[0];
+      this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的 “三条” 抢了你一张 “${this.getCardName(card)}”` });
     }
   }
 

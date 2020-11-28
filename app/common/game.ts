@@ -315,8 +315,8 @@ export default class Game {
         // 三张，指定要玩家一张卡，没有就没有咯
         console.log('>>>> 出三张，指定要一张卡', wishfulCard);
         this.waitReleaseSkill(data, () => {
-          this.robCard(origin, target, wishfulCard);
-          this.sendGameInfo({ type: GameInfoType.system, origin });
+          const robCards = this.robCard(origin, target, wishfulCard);
+          this.sendGameInfo({ type: GameInfoType.rob, origin, target, cards: robCards });
         });
       }
       return;
@@ -460,20 +460,21 @@ export default class Game {
    * @param target 被抢牌人
    * @param card 要抢的牌
    */
-  public robCard(origin: string, target: string, card: number): boolean {
+  public robCard(origin: string, target: string, card: number): number[] | null {
     const originPlayer = this.getPlayerById(origin);
     const targetPlayer = this.getPlayerById(target);
     if (originPlayer && targetPlayer) {
       const cardIndex = targetPlayer.cards.indexOf(card);
       if (cardIndex === -1) {
         console.log('>>>> 三张牌指定的对手没有指定的卡');
+        return [];
       } else {
         const cards = targetPlayer.cards.splice(cardIndex, 1);
         originPlayer.cards.push(...cards);
+        return cards;
       }
-      return true;
     } else {
-      return false;
+      return null;
     }
   }
 

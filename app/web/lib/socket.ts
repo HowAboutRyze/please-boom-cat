@@ -92,6 +92,12 @@ export class Socket {
               this.store.dispatch('saveGame', data);
               break;
             }
+            case GameInfoType.rob: {
+              // 三条，抢牌
+              console.log('>>>> socket监听到，三条抢牌');
+              this.store.dispatch('saveGame', data);
+              break;
+            }
             case GameInfoType.boom: {
               // 玩家爆炸，开始插爆炸牌
               this.store.dispatch('playerBoom', data);

@@ -56,6 +56,14 @@ export default class GameModule implements Module<GameState, RootState> {
     wasStealed(state, getters, rootState) {
       return state.type === GameInfoType.steal && state.target === rootState.user.user.userId;
     },
+    // 三条，玩家抢到牌了
+    robSuccess(state, getters, rootState) {
+      return state.type === GameInfoType.rob && state.origin === rootState.user.user.userId;
+    },
+    // 三条，玩家被别人抢了牌
+    wasRobed(state, getters, rootState) {
+      return state.type === GameInfoType.rob && state.target === rootState.user.user.userId;
+    },
   };
 
   actions: ActionTree<GameState, RootState> = {
