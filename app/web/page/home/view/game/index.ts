@@ -144,7 +144,8 @@ export default class Game extends Vue {
 
   // 已出的牌
   get showedCard(): string {
-    if (this.gameCards && this.gameCards.length > 0) {
+    const privateTypes = [GameInfoType.favored, GameInfoType.steal, GameInfoType.rob];
+    if (this.gameCards && this.gameCards.length > 0 && privateTypes.indexOf(this.gameType) === -1) {
       const name = cardMap[this.gameCards[0]].name;
       if (this.gameCards.length === 2) {
         return `对子：${name}`;

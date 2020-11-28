@@ -58,6 +58,7 @@
       </p>
       <CmpCard
         v-for="(card, index) in gameCards"
+        v-show="showedCard"
         :key="card + '-' + index"
         class="desk-card"
         :card="card"
