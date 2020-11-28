@@ -91,8 +91,8 @@ export default class Game {
    */
   public initGame(): void {
     const playerNum = this.playerList.length;
-    // for (let i = 0; i <= CardType.beardcat; i++) {
-    for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
+    for (let i = 0; i <= CardType.beardcat; i++) {
+    // for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];

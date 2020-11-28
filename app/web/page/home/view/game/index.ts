@@ -343,6 +343,10 @@ export default class Game extends Vue {
       this.showTargetPop();
       return;
     }
+    if (cardType >= CardType.tacocat) {
+      this.$toast.fail('出牌失败，普通牌不能单张出');
+      return;
+    }
     if (cardType === CardType.favor) {
       console.log('>>> 帮助');
       // 选玩家
