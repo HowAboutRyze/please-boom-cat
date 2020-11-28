@@ -21,7 +21,6 @@ export default class Game extends Vue {
   public positionPopShow  = false;
   public targetPopShow  = false;
   public wishPopShow  = false;
-  public favoringCard = false;
   public wishfulCard: number | null = null;
   public allCards = Object.keys(cardMap).slice(1);
 
@@ -46,6 +45,9 @@ export default class Game extends Vue {
   @Getter('waitingDefuse') waitingDefuse;
   @Getter('someoneBoom') someoneBoom;
   @Getter('someoneFavor') someoneFavor;
+  @Getter('favoringCard') favoringCard;
+  @Getter('favored') favored;
+  @Getter('wasFavored') wasFavored;
   @Action('removeCards') removeCards;
   @Action('triggerNopePop') triggerNopePop;
 
@@ -56,13 +58,18 @@ export default class Game extends Vue {
     }
   }
 
-  @Watch('someoneFavor')
-  private watchFavor(val) {
-    if (val && val === this.user.userId) {
-      console.log('帮助中');
-      this.favoringCard = true;
-    } else {
-      this.favoringCard = false;
+  @Watch('favored')
+  private watchFavored(val) {
+    if (val) {
+      this.$toast({ message: `你帮助了 “${this.getNickName(this.gameTarget)}”` });
+    }
+  }
+
+  @Watch('wasFavored')
+  private watchWasFavored(val) {
+    if (val) {
+      const card = this.gameCards[0];
+      this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 帮助了你一张 “${this.getCardName(card)}”` });
     }
   }
 

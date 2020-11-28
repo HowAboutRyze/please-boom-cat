@@ -80,6 +80,12 @@ export class Socket {
               this.store.dispatch('saveGame', data);
               break;
             }
+            case GameInfoType.favored: {
+              // 帮助
+              console.log('>>>> socket监听到已帮助');
+              this.store.dispatch('saveGame', data);
+              break;
+            }
             case GameInfoType.boom: {
               // 玩家爆炸，开始插爆炸牌
               this.store.dispatch('playerBoom', data);

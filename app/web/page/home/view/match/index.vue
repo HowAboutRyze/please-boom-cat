@@ -61,6 +61,7 @@ h1 {
 }
 .matching {
   margin: 10px;
+  color: #966;
   text-align: center;
 }
 p > em {

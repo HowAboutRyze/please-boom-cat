@@ -558,6 +558,6 @@ export default class Game {
     }
     this.playerRemoveCard(origin, cards);
     this.playerAddCard(target, cards);
-    this.sendGameInfo({ type: GameInfoType.system, origin: target });
+    this.sendGameInfo({ type: GameInfoType.favored, origin, target, cards });
   }
 }

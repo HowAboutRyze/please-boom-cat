@@ -24,6 +24,9 @@ export enum GameInfoType {
   skillFail, // 释放技能失败（被否决了）
   predict, // 预言中
   favoring, // 帮助
+  favored, // 已帮助
+  steal, // 对子，偷牌
+  rob, // 三条，抢劫
   boom, // 爆炸
   waitDefuse, // 等待拆解
   gameOver, // 游戏结束

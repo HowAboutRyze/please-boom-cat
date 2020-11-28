@@ -36,6 +36,18 @@ export default class GameModule implements Module<GameState, RootState> {
     someoneFavor(state) {
       return state.type === GameInfoType.favoring ? state.target : '';
     },
+    // 玩家被帮助指定了
+    favoringCard(state, getters, rootState) {
+      return state.type === GameInfoType.favoring && state.target === rootState.user.user.userId;
+    },
+    // 玩家帮助了别人
+    favored(state, getters, rootState) {
+      return state.type === GameInfoType.favored && state.origin === rootState.user.user.userId;
+    },
+    // 玩家被别人帮助了
+    wasFavored(state, getters, rootState) {
+      return state.type === GameInfoType.favored && state.target === rootState.user.user.userId;
+    },
   };
 
   actions: ActionTree<GameState, RootState> = {
