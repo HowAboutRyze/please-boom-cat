@@ -208,6 +208,11 @@ export default class Game {
       });
       // 预言中会给他前三张牌
       const predictCards = isPredict && player.userId === origin ? this.deck.slice(0, 3) : [];
+
+      // 如果是两个人之间的卡牌交易，就不要给其他人知道了
+      const privateTypes = [GameInfoType.favored, GameInfoType.steal, GameInfoType.rob];
+      const emptyCards = privateTypes.indexOf(type) !== -1 && (player.userId !== target && player.userId !== origin);
+
       const data: GameInfo = {
         id: this.id,
         msg,
@@ -215,7 +220,7 @@ export default class Game {
         remain: this.total,
         origin,
         target,
-        cards,
+        cards: emptyCards ? [] : cards,
         waitingNope: this.waitingNope,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,
