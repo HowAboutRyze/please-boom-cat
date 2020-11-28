@@ -48,6 +48,8 @@ export default class Game extends Vue {
   @Getter('favoringCard') favoringCard;
   @Getter('favored') favored;
   @Getter('wasFavored') wasFavored;
+  @Getter('stealSuccess') stealSuccess;
+  @Getter('wasStealed') wasStealed;
   @Action('removeCards') removeCards;
   @Action('triggerNopePop') triggerNopePop;
 
@@ -70,6 +72,30 @@ export default class Game extends Vue {
     if (val) {
       const card = this.gameCards[0];
       this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 帮助了你一张 “${this.getCardName(card)}”` });
+    }
+  }
+
+  @Watch('stealSuccess')
+  private watchStealSuccess(val) {
+    if (val) {
+      if (!this.gameCards || !this.gameCards.length) {
+        this.$toast({ message: '你的对子啥也没偷到' });
+        return;
+      }
+      const card = this.gameCards[0];
+      this.$toast({ message: `你的对子得到了 “${this.getCardName(card)}”` });
+    }
+  }
+
+  @Watch('wasStealed')
+  private watchWasStealed(val) {
+    if (val) {
+      if (!this.gameCards || !this.gameCards.length) {
+        this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的对子从你这偷了个寂寞` });
+        return;
+      }
+      const card = this.gameCards[0];
+      this.$toast({ message: `“${this.getNickName(this.gameOrigin)}” 的对子偷了你一张 “${this.getCardName(card)}”` });
     }
   }
 

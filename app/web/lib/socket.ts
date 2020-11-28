@@ -81,8 +81,14 @@ export class Socket {
               break;
             }
             case GameInfoType.favored: {
-              // 帮助
+              // 已帮助
               console.log('>>>> socket监听到已帮助');
+              this.store.dispatch('saveGame', data);
+              break;
+            }
+            case GameInfoType.steal: {
+              // 对子，偷牌
+              console.log('>>>> socket监听到，对子偷牌');
               this.store.dispatch('saveGame', data);
               break;
             }

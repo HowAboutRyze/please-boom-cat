@@ -48,6 +48,14 @@ export default class GameModule implements Module<GameState, RootState> {
     wasFavored(state, getters, rootState) {
       return state.type === GameInfoType.favored && state.target === rootState.user.user.userId;
     },
+    // 对子，玩家偷到牌了
+    stealSuccess(state, getters, rootState) {
+      return state.type === GameInfoType.steal && state.origin === rootState.user.user.userId;
+    },
+    // 对子，玩家被别人偷了牌
+    wasStealed(state, getters, rootState) {
+      return state.type === GameInfoType.steal && state.target === rootState.user.user.userId;
+    },
   };
 
   actions: ActionTree<GameState, RootState> = {

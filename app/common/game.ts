@@ -91,8 +91,8 @@ export default class Game {
    */
   public initGame(): void {
     const playerNum = this.playerList.length;
-    for (let i = 0; i <= CardType.beardcat; i++) {
-    // for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
+    // for (let i = 0; i <= CardType.beardcat; i++) {
+    for (let i = 0; i <= CardType.future; i++) { // FIXME: 临时把牌减少用于开发
       const carInfo = cardMap[i];
       const num: number = typeof carInfo.initNum === 'function' ? carInfo.initNum(playerNum) : carInfo.initNum;
       const cards = [];
@@ -308,8 +308,8 @@ export default class Game {
         // 对子
         console.log('>>>> 出对子，偷一张卡');
         this.waitReleaseSkill(data, () => {
-          this.stealCard(origin, target);
-          this.sendGameInfo({ type: GameInfoType.system, origin });
+          const stealCards = this.stealCard(origin, target);
+          this.sendGameInfo({ type: GameInfoType.steal, origin, target, cards: stealCards });
         });
       } else if (cards.length > 2) {
         // 三张，指定要玩家一张卡，没有就没有咯
@@ -435,21 +435,22 @@ export default class Game {
    * @param origin 偷卡人
    * @param target 被偷卡人
    */
-  public stealCard(origin: string, target: string): boolean {
+  public stealCard(origin: string, target: string): number[] | null {
     const originPlayer = this.getPlayerById(origin);
     const targetPlayer = this.getPlayerById(target);
     if (originPlayer && targetPlayer) {
       const maxIndex = targetPlayer.cards.length - 1;
       if (maxIndex === -1) {
         console.log('>>>> 偷卡技能对手没有卡啊');
+        return [];
       } else {
         const cardIndex = randomInt(0, maxIndex);
         const cards = targetPlayer.cards.splice(cardIndex, 1);
         originPlayer.cards.push(...cards);
+        return cards;
       }
-      return true;
     } else {
-      return false;
+      return null;
     }
   }
 
