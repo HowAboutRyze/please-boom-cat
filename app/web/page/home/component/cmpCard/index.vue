@@ -1,6 +1,11 @@
 <template>
   <div :class="className">
     {{ cardName }}
+    <van-icon
+      v-show="isSteal"
+      name="cart-circle"
+      color="#f33"
+    />
   </div>
 </template>
 <style lang="stylus" scoped>
@@ -12,6 +17,7 @@ for $item, $i in $cardImg
       {$name} $value
 
 .cmp-card
+  position relative
   box-sizing border-box
   // 130*200 为基准
   width 91px
@@ -25,5 +31,10 @@ for $item, $i in $cardImg
   &.selected
     transform translateY(-10%)
 
+  .van-icon-cart-circle
+    position absolute
+    top: 24px
+    left: 3px
+    font-size: 22px;
 </style>
 <script type="ts"  src="./index.ts"></script>

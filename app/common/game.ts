@@ -183,7 +183,7 @@ export default class Game {
       return;
     }
 
-    const { type = GameInfoType.system, msg = '', origin, target = '', cards = [] } = info;
+    const { type = GameInfoType.system, msg = '', origin, target = '', cards = [], attacking } = info;
     const normalList = this.playerList.map(({ userId, avatar, nickName, cards, isOver, status }) => ({ userId, avatar, nickName, total: cards.length, cards: [], isOver, status }));
     const isPredict = type === GameInfoType.predict;
 
@@ -222,6 +222,7 @@ export default class Game {
         target,
         cards: emptyCards ? [] : cards,
         waitingNope: this.waitingNope,
+        attacking,
         playerList: formatPlayerList,
         currentPlayer: this.currentPlayer,
         predictCards: predictCards,
@@ -360,7 +361,7 @@ export default class Game {
         // 到下一个玩家，并增加攻击状态
         this.nextPlayerTurn();
         this.attacking = true;
-        this.sendGameInfo({ type: GameInfoType.next, origin });
+        this.sendGameInfo({ type: GameInfoType.next, origin, attacking: true });
       });
     } else if (card === CardType.future) {
       // 先知

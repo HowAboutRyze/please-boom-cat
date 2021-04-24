@@ -8,6 +8,7 @@ import { cardMap } from '../../../../../lib/constant';
 export default class CmpCard extends Vue {
   @Prop(Number) card!: number;
   @Prop(Boolean) isSelected!: boolean;
+  @Prop(Boolean) isSteal!: boolean;
 
   get cardName(): string {
     return cardMap[this.card]?.name || '未知卡牌';

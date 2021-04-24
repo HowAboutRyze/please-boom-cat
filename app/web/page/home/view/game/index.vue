@@ -26,7 +26,9 @@
         />
         <p>手牌数：{{ player.total }}</p>
         <p>
-          <span v-show="isCurrentPlayer(player.userId)">(当前回合玩家{{ waitingDefuse ? '，等待拆解' : '' }})</span>
+          <span v-show="isCurrentPlayer(player.userId)">
+            (当前回合玩家{{ waitingDefuse ? '，等待拆解' : '' }} {{ attacking ? '，被攻击中' : '' }})
+          </span>
           <span v-if="isBoomPlayer(player.userId)">~爆炸了~</span>
           <span v-if="player.isOver">（尸体）</span>
           <span v-if="isOffline(player.status)">{{ offlineText(player.status) }}</span>
@@ -90,7 +92,9 @@
         />
         <p>手牌数：{{ selfGameInfo.total }}</p>
         <p>
-          <span v-show="isCurrentPlayer(user.userId)">(当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }})</span>
+          <span v-show="isCurrentPlayer(user.userId)">
+            (当前回合玩家{{ waitingDefuse ? '，快出拆解啊！！' : '' }}{{ attacking ? '，被攻击中' : '' }})
+          </span>
           <span v-if="isBoomPlayer(user.userId)">~爆炸了~</span>
           <span v-if="selfGameInfo.isOver">（尸体）</span>
         </p>
@@ -127,156 +131,145 @@
         :key="card + '-' + index"
         :card="card"
         :is-selected="isSelected(index)"
+        :is-steal="isSteal(index)"
         @click.native="selectCard(card, index)"
       />
     </div>
 
     <!-- 弹窗们 -->
-    <div
-      class="game-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !showPop }"
+
+    <!-- 游戏信息提示弹窗 -->
+    <CmpPop
+      cmp-lass="game-pop bottom-pop"
+      :is-show="showPop"
     >
-      <!-- 游戏信息提示弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h1>{{ popTitle }}</h1>
-        <p>{{ popText }}</p>
+      <h1>{{ popTitle }}</h1>
+      <p>{{ popText }}</p>
+    </CmpPop>
+
+    <!-- 放牌弹窗 -->
+    <CmpPop
+      cmp-lass="position-pop bottom-pop"
+      :is-show="positionPopShow"
+      title="请选择爆炸猫的位置"
+    >
+      <p>牌堆顶部为 0，牌堆底部为 {{ remain }}</p>
+      <p>
+        <van-stepper
+          v-model="position"
+          min="0"
+          :max="remain"
+        />
+      </p>
+      <van-button
+        round
+        type="primary"
+        @click="setBoomPosition"
+      >
+        放好了
+      </van-button>
+    </CmpPop>
+
+    <!-- 游戏信息提示弹窗 -->
+    <CmpPop
+      cmp-lass="nope-pop bottom-pop"
+      :is-show="nopePopShow"
+      :title="nonePopTitle"
+    >
+      <div class="btn-group">
+        <van-button
+          round
+          type="info"
+          style="margin-right: 10px;"
+          @click="popShowNope"
+        >
+          出
+        </van-button>
+        <van-button
+          round
+          type="warning"
+          @click="popRefuseNope"
+        >
+          不出
+        </van-button>
       </div>
-    </div>
-    <div
-      class="position-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !positionPopShow }"
+    </CmpPop>
+
+    <!-- 预言卡牌弹窗 -->
+    <CmpPop
+      cmp-lass="predict-pop"
+      :is-show="predictPopShow"
+      title="预言看到的小猫们"
     >
-      <!-- 放牌弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h3>请选择爆炸猫的位置</h3>
-        <p>牌堆顶部为 0，牌堆底部为 {{ remain }}</p>
-        <p>
-          <van-stepper
-            v-model="position"
-            min="0"
-            :max="remain"
+      <div class="predict-list">
+        <CmpCard
+          v-for="(card, index) in predictCards"
+          :key="card + '-' + index"
+          class="predict-card"
+          :card="card"
+          :is-selected="false"
+        />
+      </div>
+    </CmpPop>
+
+    <!-- 选择目标弹窗 -->
+    <CmpPop
+      cmp-lass="target-pop"
+      :is-show="targetPopShow"
+      title="请选择目标"
+    >
+      <div>
+        <div
+          v-for="(player) in otherPlayers"
+          :key="player.userId"
+          :class="{ 'target-player': isTargetPlayer(player.userId) }"
+          @click="selectTarget(player.userId, player.isOver)"
+        >
+          <CmpUserInfo
+            :avatar="player.avatar"
+            :nick-name="player.nickName"
           />
-        </p>
-        <van-button
-          round
-          type="primary"
-          @click="setBoomPosition"
+          <p v-if="player.isOver">
+            （不能选择尸体）
+          </p>
+          <p>手牌数：{{ player.total }}</p>
+        </div>
+      </div>
+      <van-button
+        round
+        type="primary"
+        style="margin: 0 auto;"
+        @click="setTarget"
+      >
+        确认
+      </van-button>
+    </CmpPop>
+
+    <!-- 选择想要的牌弹窗 -->
+    <CmpPop
+      cmp-lass="wish-pop"
+      :is-show="wishPopShow"
+      title="请选择想要的牌"
+    >
+      <div class="wish-list">
+        <div
+          v-for="(card) in allCards"
+          :key="card"
+          :class="{ 'target-player': isWishfulCard(card) }"
+          @click="selectWishfulCard(card)"
         >
-          放好了
-        </van-button>
-      </div>
-    </div>
-    <div
-      class="nope-pop bottom-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !nopePopShow }"
-    >
-      <!-- 游戏信息提示弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h3>是否要出否决(5秒考虑)</h3>
-        <div class="btn-group">
-          <van-button
-            round
-            type="info"
-            style="margin-right: 10px;"
-            @click="popShowNope"
-          >
-            出
-          </van-button>
-          <van-button
-            round
-            type="warning"
-            @click="popRefuseNope"
-          >
-            不出
-          </van-button>
+          {{ getCardName(card) }}
         </div>
       </div>
-    </div>
-    <div
-      class="predict-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !predictPopShow }"
-    >
-      <!-- 预言卡牌弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h3>预言看到的小猫们</h3>
-        <div class="predict-list">
-          <CmpCard
-            v-for="(card, index) in predictCards"
-            :key="card + '-' + index"
-            class="predict-card"
-            :card="card"
-            :is-selected="false"
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      class="target-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !targetPopShow }"
-    >
-      <!-- 选择目标弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h3>请选择目标</h3>
-        <div>
-          <div
-            v-for="(player) in otherPlayers"
-            :key="player.userId"
-            :class="{ 'target-player': isTargetPlayer(player.userId) }"
-            @click="selectTarget(player.userId, player.isOver)"
-          >
-            <CmpUserInfo
-              :avatar="player.avatar"
-              :nick-name="player.nickName"
-            />
-            <p v-if="player.isOver">
-              （不能选择尸体）
-            </p>
-            <p>手牌数：{{ player.total }}</p>
-          </div>
-        </div>
-        <van-button
-          round
-          type="primary"
-          style="margin: 0 auto;"
-          @click="setTarget"
-        >
-          确认
-        </van-button>
-      </div>
-    </div>
-    <div
-      class="wish-pop normal-pop"
-      :class="{ 'normal-pop-hidden': !wishPopShow }"
-    >
-      <!-- 选择想要的牌弹窗 -->
-      <!-- TODO: 后面弹窗做成个组件 -->
-      <div class="pop-content">
-        <h3>请选择想要的牌</h3>
-        <div class="wish-list">
-          <div
-            v-for="(card) in allCards"
-            :key="card"
-            :class="{ 'target-player': isWishfulCard(card) }"
-            @click="selectWishfulCard(card)"
-          >
-            {{ getCardName(card) }}
-          </div>
-        </div>
-        <van-button
-          round
-          type="primary"
-          style="margin: 0 auto;"
-          @click="setWishfulCard"
-        >
-          确认
-        </van-button>
-      </div>
-    </div>
+      <van-button
+        round
+        type="primary"
+        style="margin: 0 auto;"
+        @click="setWishfulCard"
+      >
+        确认
+      </van-button>
+    </CmpPop>
 
     <div
       v-if="isGameOver"
@@ -376,29 +369,8 @@
     height 100px
     border-radius 5px
     box-shadow 2px 2px 10px 0 #ccc, 0 -2px 0 0 #58bc58
-.normal-pop
-  box-sizing border-box
-  display flex
-  align-items center
-  justify-content center
-  position fixed
-  top 0
-  right 0
-  bottom 0
-  left 0
-  background-color rgba(0,0,0,.5)
-  animation: 1s hiddenPop 1;
-  &.bottom-pop
+.normal-pop.bottom-pop
     align-items flex-end
-  .pop-content
-    display flex
-    flex-direction column
-    align-items center
-    justify-content center
-    padding 20px
-    background-color white
-.normal-pop-hidden
-  display none
 .position-pop
   p
     padding 10px

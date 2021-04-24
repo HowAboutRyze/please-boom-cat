@@ -43,6 +43,7 @@ export interface GameInfo {
   target?: string; // 事件目标
   cards?: number[]; // 出的牌
   waitingNope: boolean; // 等待否决中
+  attacking?: boolean; // 攻击中
   playerList: Player[];
   currentPlayer: string;
   predictCards: number[]; // 预言卡牌

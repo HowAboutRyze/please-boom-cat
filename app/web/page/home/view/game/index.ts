@@ -4,12 +4,16 @@ import { cardMap, CardType } from '../../../../../lib/constant';
 import { GamePlay, PlayerStatus, PlayInfoType, GameInfoType } from '../../../../../model/game';
 import CmpUserInfo from '../../component/cmpUserInfo/index.vue';
 import CmpCard from '../../component/cmpCard/index.vue';
+import CmpPop from '../../component/cmpPop/index.vue';
 import RootState from '@store/state';
+
+let nopePopTimer: NodeJS.Timeout;
 
 @Component({
   components: {
     CmpUserInfo,
     CmpCard,
+    CmpPop,
   },
 })
 export default class Game extends Vue {
@@ -23,6 +27,7 @@ export default class Game extends Vue {
   public wishPopShow  = false;
   public wishfulCard: number | null = null;
   public allCards = Object.keys(cardMap).slice(1);
+  public nopePopCount = 5;
 
   @State((state: RootState) => state.user.user) user;
   @State((state: RootState) => state.game.id) gameId;
@@ -31,6 +36,7 @@ export default class Game extends Vue {
   @State((state: RootState) => state.game.target) gameTarget;
   @State((state: RootState) => state.game.cards) gameCards;
   @State((state: RootState) => state.game.waitingNope) waitingNope;
+  @State((state: RootState) => state.game.attacking) attacking;
   @State((state: RootState) => state.game.currentPlayer) currentPlayer;
   @State((state: RootState) => state.game.predictCards) predictCards;
   @State((state: RootState) => state.game.remain) remain;
@@ -66,6 +72,13 @@ export default class Game extends Vue {
   private watchFavored(val) {
     if (val) {
       this.$toast({ message: `你帮助了 “${this.getNickName(this.gameTarget)}”` });
+    }
+  }
+
+  @Watch('favoringCard')
+  private watchFavoringCard(val) {
+    if (val && !this.selfGameInfo.isOver) {
+      this.$toast({ message: `你需要帮助 ${this.getNickName(this.currentPlayer)} 一张牌` });
     }
   }
 
@@ -134,6 +147,22 @@ export default class Game extends Vue {
     }
   }
 
+  @Watch('nopePopShow')
+  private watchNopePopShow(val) {
+    if (val) {
+      clearInterval(nopePopTimer);
+      this.nopePopCount = 5;
+      nopePopTimer = setInterval(() => {
+        this.nopePopCount -= 1;
+        if (this.nopePopCount === 0) {
+          clearInterval(nopePopTimer);
+        }
+      }, 1000);
+    } else if (nopePopTimer) {
+      clearInterval(nopePopTimer);
+    }
+  }
+
   get canShowCards(): boolean {
     return this.selectedCards.length > 0;
   }
@@ -160,6 +189,10 @@ export default class Game extends Vue {
   get showTouch(): boolean {
     return !this.canShowCards && this.isCurrentPlayer(this.user.userId) && !this.waitingDefuse
       && !this.waitingNope && this.gameType !== GameInfoType.favoring;
+  }
+
+  get nonePopTitle(): string {
+    return `是否要出否决(剩余 ${ this.nopePopCount } 秒考虑)`;
   }
 
   /**
@@ -243,6 +276,20 @@ export default class Game extends Vue {
   }
 
   /**
+   * 偷来的卡牌
+   * @param index 卡牌序号
+   */
+  isSteal(index: number): boolean {
+    const hasStealed = this.stealSuccess || this.robSuccess || this.wasFavored;
+    if (hasStealed && this.selfGameInfo.cards) {
+      const card = this.gameCards[0];
+      // 手上第一张偷到的卡
+      return index === this.selfGameInfo.cards.lastIndexOf(card);
+    }
+    return false;
+  }
+
+  /**
    * 摸牌
    */
   touchCard(): void {
@@ -264,6 +311,7 @@ export default class Game extends Vue {
    * @param index 卡牌序号
    */
   selectCard(type: number, index: number): void {
+    console.log('>>>>>>>>>>>>>', this.attacking);
     if (this.waitingDefuse && type !== CardType.defuse && this.isCurrentPlayer(this.user.userId)) {
       this.$toast.fail('你只能出拆解');
       return;
