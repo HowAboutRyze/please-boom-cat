@@ -4,6 +4,10 @@
 
 基于 Egg + Vue + socket.io + Webpack SSR 服务端渲染和 CSR 前端渲染工程骨架项目。
 
+## 依赖
+
+请使用node@14，目前已知node@16安装依赖有坑
+
 ## QuickStart
 
 - Development
@@ -13,7 +17,7 @@ $ npm install
 $ npm run dev
 $ open http://localhost:7001
 ```
-> 如果`npm install`无法成功安装，可以使用淘宝镜像逐个安装 或使用`yarn`进行安装。  
+> 如果`npm install`无法成功安装，可以使用淘宝镜像逐个安装 或使用`yarn`进行安装。
 
 
 > 开发过程中多次启动应用，可能会导致 7001 端口进程未关闭，影响开发，可以使用 `npm run kill 7001` 干掉端口进程
